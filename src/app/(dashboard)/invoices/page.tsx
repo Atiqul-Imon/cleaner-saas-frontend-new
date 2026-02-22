@@ -1,6 +1,7 @@
 'use client';
 
 import { Suspense, useState } from 'react';
+import { RequireOwner } from '@/components/require-owner';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -14,7 +15,7 @@ import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
 import { MessageCircle } from 'lucide-react';
 
-function InvoicesContent() {
+function InvoicesContentInner() {
   const searchParams = useSearchParams();
   const status = searchParams.get('status') as 'PAID' | 'UNPAID' | null;
 
@@ -116,8 +117,10 @@ function InvoicesContent() {
 
 export default function InvoicesPage() {
   return (
-    <Suspense fallback={<div className="p-8">Loading…</div>}>
-      <InvoicesContent />
-    </Suspense>
+    <RequireOwner>
+      <Suspense fallback={<div className="p-8">Loading…</div>}>
+        <InvoicesContentInner />
+      </Suspense>
+    </RequireOwner>
   );
 }

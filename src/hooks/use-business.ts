@@ -15,7 +15,8 @@ export function useBusiness() {
     queryKey: ['business'],
     queryFn: async () => {
       try {
-        return await api.get<Business>('/business', { silent: true });
+        const data = await api.get<Business>('/business', { silent: true });
+        return data ?? null;
       } catch {
         return null;
       }

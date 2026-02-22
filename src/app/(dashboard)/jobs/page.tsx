@@ -1,9 +1,10 @@
 'use client';
 
-import { Suspense, useEffect } from 'react';
+import { Suspense } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
+import { RequireOwner } from '@/components/require-owner';
 import { Plus } from 'lucide-react';
 import { api } from '@/lib/api';
 import { useUser } from '@/hooks/use-user';
@@ -14,17 +15,10 @@ import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 
 function JobsContent() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const status = searchParams.get('status') ?? undefined;
-  const { user, isLoading: userLoading } = useUser();
+  const { user } = useUser();
   const isOwner = user?.role === 'OWNER' || user?.role === 'ADMIN';
-
-  useEffect(() => {
-    if (!userLoading && user?.role === 'CLEANER') {
-      router.replace('/my-jobs');
-    }
-  }, [user, userLoading, router]);
 
   const { data: jobs, isLoading } = useQuery({
     queryKey: ['jobs', status],
@@ -33,14 +27,6 @@ function JobsContent() {
   });
 
   const list = Array.isArray(jobs) ? jobs : (jobs as { data?: Job[] })?.data ?? [];
-
-  if (!userLoading && user?.role === 'CLEANER') {
-    return (
-      <div className="flex min-h-[40vh] items-center justify-center">
-        <p className="text-zinc-500">Redirecting…</p>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-8">
@@ -116,8 +102,10 @@ function JobsContent() {
 
 export default function JobsPage() {
   return (
-    <Suspense fallback={<div className="p-8">Loading…</div>}>
-      <JobsContent />
-    </Suspense>
+    <RequireOwner>
+      <Suspense fallback={<div className="p-8">Loading…</div>}>
+        <JobsContent />
+      </Suspense>
+    </RequireOwner>
   );
 }

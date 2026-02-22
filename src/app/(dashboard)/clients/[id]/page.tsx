@@ -2,6 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
+import { RequireOwner } from '@/components/require-owner';
 import { useParams } from 'next/navigation';
 import {
   Phone,
@@ -25,7 +26,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { format } from 'date-fns';
 
-export default function ClientDetailPage() {
+function ClientDetailContent() {
   const params = useParams();
   const id = params.id as string;
   const { user } = useUser();
@@ -223,5 +224,13 @@ export default function ClientDetailPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function ClientDetailPage() {
+  return (
+    <RequireOwner>
+      <ClientDetailContent />
+    </RequireOwner>
   );
 }

@@ -54,8 +54,15 @@ async function handleResponse<T>(res: Response, options?: { silent?: boolean }):
     if (res.status === 401 && typeof window !== 'undefined') {
       const supabase = createSupabaseBrowserClient();
       await supabase.auth.signOut();
-      // Avoid redirect loop: only redirect if not already on login page
-      if (!window.location.pathname.startsWith('/login')) {
+      const path = window.location.pathname;
+      const isPublicRoute =
+        path === '/' ||
+        path.startsWith('/login') ||
+        path.startsWith('/register') ||
+        path.startsWith('/forgot-password') ||
+        path.startsWith('/reset-password');
+      // Only redirect to login from protected routes where auth is required
+      if (!isPublicRoute) {
         window.location.href = '/login?session=expired';
       }
       throw new ApiError('Session expired. Please sign in again.', 401);

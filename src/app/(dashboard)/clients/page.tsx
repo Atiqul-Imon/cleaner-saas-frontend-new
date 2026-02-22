@@ -1,6 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
+import { RequireOwner } from '@/components/require-owner';
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
 import { api } from '@/lib/api';
@@ -8,7 +9,7 @@ import type { Client } from '@/types/api';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
-export default function ClientsPage() {
+function ClientsContent() {
   const { data: clients, isLoading } = useQuery({
     queryKey: ['clients'],
     queryFn: () => api.get<{ data: Client[] } | Client[]>('/clients'),
@@ -65,5 +66,13 @@ export default function ClientsPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function ClientsPage() {
+  return (
+    <RequireOwner>
+      <ClientsContent />
+    </RequireOwner>
   );
 }

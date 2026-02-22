@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import Link from 'next/link';
+import { RequireOwner } from '@/components/require-owner';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { useUser } from '@/hooks/use-user';
@@ -50,7 +51,7 @@ interface CreateCleanerResponse {
   tempPassword?: string;
 }
 
-export default function WorkersPage() {
+function WorkersContent() {
   const queryClient = useQueryClient();
   const { user, isLoading: userLoading } = useUser();
 
@@ -134,30 +135,6 @@ export default function WorkersPage() {
     navigator.clipboard.writeText(text);
     toast.success('Copied to clipboard');
   };
-
-  if (!userLoading && user && user.role !== 'OWNER' && user.role !== 'ADMIN') {
-    return (
-      <div className="space-y-8">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-zinc-900">Access Denied</h1>
-          <p className="mt-1 text-zinc-600">Only business owners can manage staff.</p>
-        </div>
-        <Card className="border-zinc-200">
-          <CardContent className="flex flex-col items-center justify-center py-16">
-            <div className="mb-4 flex size-16 items-center justify-center rounded-full bg-amber-100">
-              <UserX className="size-8 text-amber-600" />
-            </div>
-            <p className="mb-6 text-center text-zinc-600">
-              You need owner or admin access to view and manage staff members.
-            </p>
-            <Button asChild>
-              <Link href="/dashboard">Back to Dashboard</Link>
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
   const list = workers ?? [];
 
@@ -443,5 +420,13 @@ export default function WorkersPage() {
         </DialogContent>
       </Dialog>
     </div>
+  );
+}
+
+export default function WorkersPage() {
+  return (
+    <RequireOwner>
+      <WorkersContent />
+    </RequireOwner>
   );
 }

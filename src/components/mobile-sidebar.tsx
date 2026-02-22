@@ -29,7 +29,6 @@ const ownerNavItems = [
 const cleanerNavItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/my-jobs', label: 'My Jobs', icon: ClipboardList },
-  { href: '/settings', label: 'Settings', icon: Settings },
 ];
 
 interface MobileSidebarProps {

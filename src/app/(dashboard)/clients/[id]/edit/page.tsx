@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { RequireOwner } from '@/components/require-owner';
 import { useRouter, useParams } from 'next/navigation';
 import { toast } from 'sonner';
 import Link from 'next/link';
@@ -25,7 +26,7 @@ import {
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-export default function EditClientPage() {
+function EditClientContent() {
   const router = useRouter();
   const params = useParams();
   const id = params.id as string;
@@ -227,5 +228,13 @@ export default function EditClientPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function EditClientPage() {
+  return (
+    <RequireOwner>
+      <EditClientContent />
+    </RequireOwner>
   );
 }

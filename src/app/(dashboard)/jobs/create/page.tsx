@@ -1,6 +1,7 @@
 'use client';
 
 import { Suspense, useState, useEffect } from 'react';
+import { RequireOwner } from '@/components/require-owner';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { useQuery } from '@tanstack/react-query';
@@ -62,14 +63,8 @@ function CreateJobContent() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const { user, isLoading: userLoading } = useUser();
+  const { user } = useUser();
   const canAssignCleaners = user?.role === 'OWNER' || user?.role === 'ADMIN';
-
-  useEffect(() => {
-    if (!userLoading && user?.role === 'CLEANER') {
-      router.replace('/my-jobs');
-    }
-  }, [user, userLoading, router]);
 
   const { data: clients } = useQuery({
     queryKey: ['clients'],
@@ -123,14 +118,6 @@ function CreateJobContent() {
     } finally {
       setLoading(false);
     }
-  }
-
-  if (!userLoading && user?.role === 'CLEANER') {
-    return (
-      <div className="flex min-h-[40vh] items-center justify-center">
-        <p className="text-zinc-500">Redirecting…</p>
-      </div>
-    );
   }
 
   return (
@@ -410,8 +397,10 @@ function CreateJobContent() {
 
 export default function CreateJobPage() {
   return (
-    <Suspense fallback={<div className="p-8">Loading…</div>}>
-      <CreateJobContent />
-    </Suspense>
+    <RequireOwner>
+      <Suspense fallback={<div className="p-8">Loading…</div>}>
+        <CreateJobContent />
+      </Suspense>
+    </RequireOwner>
   );
 }

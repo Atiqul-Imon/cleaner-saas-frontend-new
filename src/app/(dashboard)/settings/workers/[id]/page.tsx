@@ -1,6 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
+import { RequireOwner } from '@/components/require-owner';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
@@ -37,7 +38,7 @@ interface WorkerDetail {
   activatedAt?: string;
 }
 
-export default function WorkerDetailPage() {
+function WorkerDetailContent() {
   const params = useParams();
   const cleanerId = params.id as string;
   const { user } = useUser();
@@ -157,5 +158,13 @@ export default function WorkerDetailPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function WorkerDetailPage() {
+  return (
+    <RequireOwner>
+      <WorkerDetailContent />
+    </RequireOwner>
   );
 }

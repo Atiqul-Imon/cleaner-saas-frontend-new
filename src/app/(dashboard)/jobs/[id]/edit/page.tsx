@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { RequireOwner } from '@/components/require-owner';
 import { useRouter, useParams } from 'next/navigation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
@@ -19,12 +20,12 @@ import {
 } from '@/components/ui/card';
 import { format } from 'date-fns';
 
-export default function EditJobPage() {
+function EditJobContent() {
   const router = useRouter();
   const params = useParams();
   const queryClient = useQueryClient();
   const id = params.id as string;
-  const { user, isLoading: userLoading } = useUser();
+  const { user } = useUser();
 
   const { data: job, isLoading } = useQuery({
     queryKey: ['job', id],
@@ -32,15 +33,9 @@ export default function EditJobPage() {
     enabled: !!user && (user.role === 'OWNER' || user.role === 'ADMIN'),
   });
 
-  useEffect(() => {
-    if (!userLoading && user?.role === 'CLEANER') {
-      router.replace(`/jobs/${id}`);
-    }
-  }, [user, userLoading, router, id]);
-
   const mutation = useMutation({
     mutationFn: (data: { scheduledDate?: string; scheduledTime?: string; status?: string }) =>
-      api.patch(`/jobs/${id}`, data),
+      api.put(`/jobs/${id}`, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['job', id] });
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
@@ -70,14 +65,6 @@ export default function EditJobPage() {
       scheduledTime: scheduledTime || undefined,
       status,
     });
-  }
-
-  if (userLoading || (user?.role === 'CLEANER')) {
-    return (
-      <div className="flex min-h-[40vh] items-center justify-center">
-        <p className="text-zinc-500">Redirecting…</p>
-      </div>
-    );
   }
 
   if (isLoading || !job) {
@@ -142,5 +129,13 @@ export default function EditJobPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function EditJobPage() {
+  return (
+    <RequireOwner>
+      <EditJobContent />
+    </RequireOwner>
   );
 }

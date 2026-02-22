@@ -1,6 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
+import { RequireCleaner } from '@/components/require-cleaner';
 import Link from 'next/link';
 import { api } from '@/lib/api';
 import type { Job } from '@/types/api';
@@ -16,7 +17,7 @@ import { ListItemSkeleton } from '@/components/loading-skeleton';
 import { format } from 'date-fns';
 import { Briefcase } from 'lucide-react';
 
-export default function MyJobsPage() {
+function MyJobsContent() {
   const { data: jobs, isLoading } = useQuery({
     queryKey: ['jobs', 'cleaner'],
     queryFn: () => api.get<{ data: Job[] } | Job[]>('/jobs'),
@@ -83,5 +84,13 @@ export default function MyJobsPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function MyJobsPage() {
+  return (
+    <RequireCleaner>
+      <MyJobsContent />
+    </RequireCleaner>
   );
 }

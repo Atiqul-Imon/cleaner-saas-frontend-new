@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { RequireOwner } from '@/components/require-owner';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
@@ -14,16 +15,17 @@ import { format } from 'date-fns';
 import { shareInvoiceWithPdf } from '@/lib/whatsapp-share';
 import { MessageCircle, Download } from 'lucide-react';
 
-export default function InvoiceDetailPage() {
+function InvoiceDetailContent() {
   const params = useParams();
   const id = params.id as string;
+  const [sending, setSending] = useState(false);
 
-  const { data: invoice, isLoading } = useQuery({
+  const { data: invoice, isLoading, isError, error } = useQuery({
     queryKey: ['invoice', id],
     queryFn: () => api.get<Invoice>(`/invoices/${id}`),
   });
 
-  if (isLoading || !invoice) {
+  if (isLoading) {
     return (
       <div className="space-y-8">
         <p className="text-zinc-500">Loading…</p>
@@ -31,7 +33,27 @@ export default function InvoiceDetailPage() {
     );
   }
 
-  const [sending, setSending] = useState(false);
+  if (isError) {
+    return (
+      <div className="space-y-8">
+        <p className="text-red-600">{error instanceof Error ? error.message : 'Failed to load invoice'}</p>
+        <Button variant="outline" asChild>
+          <Link href="/invoices">Back to invoices</Link>
+        </Button>
+      </div>
+    );
+  }
+
+  if (!invoice) {
+    return (
+      <div className="space-y-8">
+        <p className="text-zinc-500">Invoice not found</p>
+        <Button variant="outline" asChild>
+          <Link href="/invoices">Back to invoices</Link>
+        </Button>
+      </div>
+    );
+  }
 
   async function handleSendViaWhatsApp() {
     if (!invoice) return;
@@ -130,5 +152,13 @@ export default function InvoiceDetailPage() {
         </p>
       )}
     </div>
+  );
+}
+
+export default function InvoiceDetailPage() {
+  return (
+    <RequireOwner>
+      <InvoiceDetailContent />
+    </RequireOwner>
   );
 }

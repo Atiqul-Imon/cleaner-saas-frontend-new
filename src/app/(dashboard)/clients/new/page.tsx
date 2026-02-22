@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { RequireOwner } from '@/components/require-owner';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import Link from 'next/link';
@@ -23,7 +24,7 @@ import {
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-export default function NewClientPage() {
+function NewClientContent() {
   const router = useRouter();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -196,5 +197,13 @@ export default function NewClientPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function NewClientPage() {
+  return (
+    <RequireOwner>
+      <NewClientContent />
+    </RequireOwner>
   );
 }
