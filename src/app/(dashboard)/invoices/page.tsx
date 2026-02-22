@@ -51,33 +51,33 @@ function InvoicesContentInner() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-5 sm:space-y-8">
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-zinc-900">Invoices</h1>
-        <p className="text-zinc-600">Manage invoices</p>
+        <p className="mt-1 text-base leading-relaxed text-zinc-700">Manage invoices</p>
       </div>
 
-      <Card className="border-zinc-200 bg-white">
+      <Card className="border-zinc-200 bg-white shadow-sm">
         <CardHeader>
-          <CardTitle className="text-zinc-900">All invoices</CardTitle>
-          <CardDescription>{list.length} invoice(s)</CardDescription>
+          <CardTitle className="text-lg font-semibold text-zinc-900">All invoices</CardTitle>
+          <CardDescription className="text-zinc-700">{list.length} invoice(s)</CardDescription>
         </CardHeader>
         <CardContent>
           {isLoading ? (
             <p className="text-sm text-zinc-500">Loading…</p>
           ) : list.length ? (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-2 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {list.map((inv) => {
                 const hasPhone = !!inv.client?.phone;
                 return (
                   <Link
                     key={inv.id}
                     href={`/invoices/${inv.id}`}
-                    className="flex flex-col justify-between rounded-lg border border-zinc-200 bg-zinc-50/50 p-4 transition-colors hover:border-zinc-300 hover:bg-zinc-100"
+                    className="flex flex-col justify-between rounded-lg border border-zinc-200 bg-zinc-50/80 p-3 transition-colors hover:border-zinc-300 hover:bg-white hover:shadow-sm sm:p-4"
                   >
                     <div>
                       <p className="font-medium text-zinc-900">#{inv.invoiceNumber}</p>
-                      <p className="mt-1 text-sm text-zinc-500">
+                      <p className="mt-0.5 text-sm leading-relaxed text-zinc-600">
                         {inv.client?.name} · {format(new Date(inv.dueDate), 'MMM d')}
                       </p>
                     </div>
@@ -105,8 +105,8 @@ function InvoicesContentInner() {
               })}
             </div>
           ) : (
-            <div className="rounded-lg border border-dashed border-zinc-300 py-12 text-center">
-              <p className="text-sm text-zinc-600">No invoices yet</p>
+            <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50/50 py-12 text-center">
+              <p className="text-base text-zinc-700">No invoices yet</p>
             </div>
           )}
         </CardContent>

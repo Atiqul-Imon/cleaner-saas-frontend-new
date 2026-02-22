@@ -122,5 +122,33 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-size: 1rem;
+    line-height: 1.6;
+    letter-spacing: 0.01em;
+  }
+  p {
+    line-height: 1.7;
+  }
+  /* Improve readability for body text and descriptions */
+  .text-zinc-600,
+  .text-zinc-500,
+  .text-muted-foreground {
+    line-height: 1.65;
+  }
+  /* Mobile: increase font size for owner/cleaner dashboard readability */
+  @media (max-width: 767px) {
+    .dashboard-app {
+      font-size: 1.0625rem;
+    }
+    .dashboard-app h1,
+    .dashboard-app .text-2xl {
+      font-size: 1.625rem;
+    }
+    .dashboard-app .text-sm {
+      font-size: 0.9375rem;
+    }
+    .dashboard-app .text-xs {
+      font-size: 0.8125rem;
+    }
   }
 }

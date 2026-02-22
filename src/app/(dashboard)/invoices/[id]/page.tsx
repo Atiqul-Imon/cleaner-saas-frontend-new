@@ -115,16 +115,16 @@ function InvoiceDetailContent() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <p className="text-sm font-medium text-zinc-500">Client</p>
-            <p>{invoice.client?.name}</p>
+            <p className="text-sm font-medium text-zinc-700">Client</p>
+            <p className="mt-0.5 text-base leading-relaxed text-zinc-900">{invoice.client?.name}</p>
           </div>
           <div>
-            <p className="text-sm font-medium text-zinc-500">Amount</p>
-            <p className="text-xl font-semibold">£{Number(invoice.totalAmount)}</p>
+            <p className="text-sm font-medium text-zinc-700">Amount</p>
+            <p className="mt-0.5 text-xl font-bold text-zinc-900">£{Number(invoice.totalAmount)}</p>
           </div>
           <div>
-            <p className="text-sm font-medium text-zinc-500">Due date</p>
-            <p>{format(new Date(invoice.dueDate), 'MMMM d, yyyy')}</p>
+            <p className="text-sm font-medium text-zinc-700">Due date</p>
+            <p className="mt-0.5 text-base leading-relaxed text-zinc-900">{format(new Date(invoice.dueDate), 'MMMM d, yyyy')}</p>
           </div>
         </CardContent>
       </Card>

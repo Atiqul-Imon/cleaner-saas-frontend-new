@@ -41,11 +41,11 @@ export function MobileBottomNav() {
               key={href}
               href={href}
               className={cn(
-                'flex flex-1 flex-col items-center gap-1 py-2 text-xs transition-colors',
+                'flex flex-1 flex-col items-center gap-1 py-2 text-sm transition-colors',
                 active ? 'text-zinc-900' : 'text-zinc-500'
               )}
             >
-              <Icon className={cn('size-5', active && 'stroke-[2.5]')} />
+              <Icon className={cn('size-6', active && 'stroke-[2.5]')} />
               {label}
             </Link>
           );

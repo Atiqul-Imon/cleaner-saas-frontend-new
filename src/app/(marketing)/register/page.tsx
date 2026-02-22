@@ -8,6 +8,7 @@ import { api } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { PasswordInput } from '@/components/ui/password-input';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   Card,
@@ -52,24 +53,29 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="flex flex-1 items-center justify-center px-4 py-16">
-      <div className="w-full max-w-md">
-        <div className="mb-8 text-center">
-          <h1 className="text-2xl font-bold tracking-tight text-zinc-900">Create your account</h1>
-          <p className="mt-2 text-zinc-600">Start your free trial—no credit card required</p>
+    <div className="flex min-h-[calc(100vh-8rem)] flex-1 items-center justify-center px-4 py-12 sm:py-16">
+      <div className="w-full max-w-[420px]">
+        <div className="mb-10 text-center">
+          <Link href="/" className="inline-block font-semibold text-zinc-900">
+            Clenvora
+          </Link>
+          <h1 className="mt-6 text-2xl font-bold tracking-tight text-zinc-900">
+            Create your account
+          </h1>
+          <p className="mt-2 text-sm text-zinc-600">
+            Start your free trial—no credit card
+          </p>
         </div>
 
-        <Card className="border-zinc-200 bg-white shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-xl">Sign up</CardTitle>
-            <CardDescription>
-              All fields are required. Use at least 6 characters for your password.
-            </CardDescription>
+        <Card className="border-zinc-200 shadow-lg shadow-zinc-200/50">
+          <CardHeader className="space-y-1 pb-4">
+            <CardTitle className="text-lg">Sign up</CardTitle>
+            <CardDescription>All fields required. Password: min 6 characters.</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-0">
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2">
-                <Label htmlFor="email">Email address</Label>
+                <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   type="email"
@@ -83,9 +89,8 @@ export default function RegisterPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
-                <Input
+                <PasswordInput
                   id="password"
-                  type="password"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -93,16 +98,14 @@ export default function RegisterPage() {
                   autoComplete="new-password"
                   className="h-11"
                 />
-                <p className="text-xs text-zinc-500">Must be at least 6 characters</p>
                 {password && !passwordValid && (
-                  <p className="text-xs text-amber-600">Password is too short</p>
+                  <p className="text-xs text-amber-600">At least 6 characters</p>
                 )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">Confirm password</Label>
-                <Input
+                <PasswordInput
                   id="confirmPassword"
-                  type="password"
                   placeholder="••••••••"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
@@ -111,22 +114,18 @@ export default function RegisterPage() {
                   className="h-11"
                 />
                 {confirmPassword && !passwordMatch && (
-                  <p className="text-xs text-red-600">Passwords do not match</p>
+                  <p className="text-xs text-red-600">Passwords don&apos;t match</p>
                 )}
               </div>
               <div className="flex items-start gap-3">
-                <Checkbox
-                  id="terms"
-                  checked={agreeTerms}
-                  onCheckedChange={(v) => setAgreeTerms(!!v)}
-                />
+                <Checkbox id="terms" checked={agreeTerms} onCheckedChange={(v) => setAgreeTerms(!!v)} />
                 <label htmlFor="terms" className="text-sm leading-relaxed text-zinc-600">
                   I agree to the{' '}
-                  <Link href="#" className="font-medium text-zinc-900 underline hover:no-underline">
-                    Terms of Service
+                  <Link href="#" className="font-medium text-emerald-600 underline hover:no-underline">
+                    Terms
                   </Link>{' '}
                   and{' '}
-                  <Link href="#" className="font-medium text-zinc-900 underline hover:no-underline">
+                  <Link href="#" className="font-medium text-emerald-600 underline hover:no-underline">
                     Privacy Policy
                   </Link>
                 </label>
@@ -138,15 +137,15 @@ export default function RegisterPage() {
               )}
               <Button
                 type="submit"
-                className="h-11 w-full"
+                className="h-11 w-full bg-emerald-600 font-medium hover:bg-emerald-700"
                 disabled={loading || !canSubmit}
               >
-                {loading ? 'Creating account…' : 'Create account'}
+                {loading ? 'Creating…' : 'Create account'}
               </Button>
             </form>
             <p className="mt-6 text-center text-sm text-zinc-600">
               Already have an account?{' '}
-              <Link href="/login" className="font-semibold text-zinc-900 hover:underline">
+              <Link href="/login" className="font-semibold text-emerald-600 hover:text-emerald-700">
                 Sign in
               </Link>
             </p>

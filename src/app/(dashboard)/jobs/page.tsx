@@ -29,11 +29,11 @@ function JobsContent() {
   const list = Array.isArray(jobs) ? jobs : (jobs as { data?: Job[] })?.data ?? [];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-5 sm:space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-zinc-900">Jobs</h1>
-          <p className="text-zinc-600">Manage cleaning jobs</p>
+          <p className="mt-1 text-base leading-relaxed text-zinc-700">Manage cleaning jobs</p>
         </div>
         {isOwner && (
           <Button asChild>
@@ -45,29 +45,29 @@ function JobsContent() {
         )}
       </div>
 
-      <Card className="border-zinc-200 bg-white">
+      <Card className="border-zinc-200 bg-white shadow-sm">
         <CardHeader>
-          <CardTitle className="text-zinc-900">All jobs</CardTitle>
-          <CardDescription>{list.length} job(s)</CardDescription>
+          <CardTitle className="text-lg font-semibold text-zinc-900">All jobs</CardTitle>
+          <CardDescription className="text-zinc-700">{list.length} job(s)</CardDescription>
         </CardHeader>
         <CardContent>
           {isLoading ? (
             <p className="text-sm text-zinc-500">Loading…</p>
           ) : list.length ? (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-2 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {list.map((job) => (
                 <Link
                   key={job.id}
                   href={`/jobs/${job.id}`}
-                  className="flex flex-col justify-between rounded-lg border border-zinc-200 bg-zinc-50/50 p-4 transition-colors hover:border-zinc-300 hover:bg-zinc-100"
+                  className="flex flex-col justify-between rounded-lg border border-zinc-200 bg-zinc-50/80 p-3 transition-colors hover:border-zinc-300 hover:bg-white hover:shadow-sm sm:p-4"
                 >
                   <div>
                     <p className="font-medium text-zinc-900">{job.client?.name ?? 'Unknown'}</p>
-                    <p className="mt-1 text-sm text-zinc-500">
+                    <p className="mt-0.5 text-sm leading-relaxed text-zinc-600">
                       {format(new Date(job.scheduledDate), 'MMM d, yyyy')}
                       {job.scheduledTime && ` · ${job.scheduledTime}`}
                     </p>
-                    <p className="text-xs text-zinc-500">{job.type}</p>
+                    <p className="mt-0.5 text-xs text-zinc-600">{job.type}</p>
                   </div>
                   <Badge
                     className="mt-3 w-fit"
@@ -85,8 +85,8 @@ function JobsContent() {
               ))}
             </div>
           ) : (
-            <div className="rounded-lg border border-dashed border-zinc-300 py-12 text-center">
-              <p className="text-sm text-zinc-600">No jobs yet</p>
+            <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50/50 py-12 text-center">
+              <p className="text-base text-zinc-700">No jobs yet</p>
               {isOwner && (
                 <Button asChild variant="outline" size="sm" className="mt-3">
                   <Link href="/jobs/create">Create first job</Link>

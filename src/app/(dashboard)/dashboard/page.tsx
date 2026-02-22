@@ -58,58 +58,58 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-5 sm:space-y-8">
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-zinc-900">Dashboard</h1>
-        <p className="text-zinc-600">
+        <p className="mt-1 text-base leading-relaxed text-zinc-700">
           {format(new Date(), 'EEEE, MMMM d')}
         </p>
       </div>
 
       {isOwner && (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <StatCard
             title="Today's jobs"
             value={stats?.todayJobs ?? 0}
             loading={isLoading}
-            accent="border-l-emerald-600"
+            variant="emerald"
           />
           <StatCard
             title="Unpaid invoices"
             value={stats?.unpaidInvoices ?? 0}
             loading={isLoading}
-            accent="border-l-amber-600"
+            variant="amber"
           />
           <StatCard
             title="Monthly earnings"
             value={stats?.monthlyEarnings != null ? `£${stats.monthlyEarnings}` : '—'}
             loading={isLoading}
-            accent="border-l-blue-600"
+            variant="blue"
           />
           <StatCard
             title="Total jobs"
             value={stats?.totalJobs ?? 0}
             loading={isLoading}
-            accent="border-l-violet-600"
+            variant="violet"
           />
         </div>
       )}
 
       {isOwner && (
-        <Card className="border-zinc-200 bg-white">
+        <Card className="border-zinc-200 bg-white shadow-sm">
           <CardHeader>
-            <CardTitle className="text-zinc-900">Quick actions</CardTitle>
-            <CardDescription>Shortcuts to common tasks</CardDescription>
+            <CardTitle className="text-lg font-semibold text-zinc-900">Quick actions</CardTitle>
+            <CardDescription className="text-zinc-700">Shortcuts to common tasks</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+            <div className="grid grid-cols-2 gap-2 sm:gap-3 sm:grid-cols-3 lg:grid-cols-5">
               {quickActions.map(({ href, label, icon: Icon, bg }) => (
                 <Link key={href} href={href}>
-                  <div className="flex items-center gap-3 rounded-lg border border-zinc-200 bg-white p-4 transition-colors hover:border-zinc-300 hover:bg-zinc-50">
+                  <div className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-white p-3 transition-colors hover:border-zinc-300 hover:bg-zinc-50 hover:shadow-sm sm:gap-3 sm:p-4">
                     <div className={cn('flex size-10 shrink-0 items-center justify-center rounded-lg text-white', bg)}>
                       <Icon className="size-5" />
                     </div>
-                    <span className="text-sm font-medium text-zinc-900">{label}</span>
+                    <span className="text-base font-medium text-zinc-900">{label}</span>
                   </div>
                 </Link>
               ))}
@@ -118,11 +118,11 @@ export default function DashboardPage() {
         </Card>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        <Card className="border-zinc-200 bg-white">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
+        <Card className="border-zinc-200 bg-white shadow-sm">
           <CardHeader>
-            <CardTitle className="text-zinc-900">Today's jobs</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-lg font-semibold text-zinc-900">Today&apos;s jobs</CardTitle>
+            <CardDescription className="text-zinc-700">
               {stats?.todayJobsList?.length
                 ? `${stats.todayJobsList.length} job(s) scheduled`
                 : 'No jobs scheduled today'}
@@ -132,16 +132,16 @@ export default function DashboardPage() {
             {isLoading ? (
               <p className="text-sm text-zinc-500">Loading…</p>
             ) : stats?.todayJobsList?.length ? (
-              <div className="grid gap-3 sm:grid-cols-2">
+              <div className="grid gap-2 sm:gap-3 sm:grid-cols-2">
                 {stats.todayJobsList.slice(0, 6).map((job) => (
                   <Link
                     key={job.id}
                     href={`/jobs/${job.id}`}
-                    className="flex items-center justify-between rounded-lg border border-zinc-200 bg-zinc-50/50 p-4 transition-colors hover:border-zinc-300 hover:bg-zinc-100"
+                    className="flex items-center justify-between rounded-lg border border-zinc-200 bg-zinc-50/80 p-3 transition-colors hover:border-zinc-300 hover:bg-white hover:shadow-sm sm:p-4"
                   >
                     <div>
                       <p className="font-medium text-zinc-900">{job.client?.name ?? 'Unknown'}</p>
-                      <p className="text-sm text-zinc-500">
+                      <p className="mt-0.5 text-sm leading-relaxed text-zinc-600">
                         {job.scheduledTime ?? '—'} · {job.type}
                       </p>
                     </div>
@@ -161,16 +161,16 @@ export default function DashboardPage() {
                 {stats.todayJobsList.length > 6 && (
                   <Link
                     href={isOwner ? '/jobs' : '/my-jobs'}
-                    className="col-span-full flex items-center justify-center rounded-lg border border-dashed border-zinc-300 py-3 text-sm font-medium text-zinc-600 hover:bg-zinc-50"
+                    className="col-span-full flex items-center justify-center rounded-lg border border-dashed border-zinc-300 py-3 text-base font-medium text-zinc-700 hover:bg-zinc-100"
                   >
                     View all jobs
                   </Link>
                 )}
               </div>
             ) : (
-              <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50/50 py-12 text-center">
-                <Briefcase className="mx-auto size-12 text-zinc-400" />
-                <p className="mt-2 text-sm text-zinc-600">No jobs today</p>
+              <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50/80 py-12 text-center">
+                <Briefcase className="mx-auto size-12 text-zinc-500" />
+                <p className="mt-2 text-base text-zinc-700">No jobs today</p>
                 {isOwner && (
                   <Button asChild variant="outline" size="sm" className="mt-3">
                     <Link href="/jobs/create">Create job</Link>
@@ -185,27 +185,30 @@ export default function DashboardPage() {
   );
 }
 
+const statVariants = {
+  emerald: 'bg-emerald-600 text-white',
+  amber: 'bg-amber-600 text-white',
+  blue: 'bg-blue-600 text-white',
+  violet: 'bg-violet-600 text-white',
+} as const;
+
 function StatCard({
   title,
   value,
   loading,
-  accent,
+  variant = 'emerald',
 }: {
   title: string;
   value: string | number;
   loading: boolean;
-  accent?: string;
+  variant?: keyof typeof statVariants;
 }) {
   return (
-    <Card className={cn('border-zinc-200 bg-white', accent && `border-l-4 ${accent}`)}>
-      <CardHeader className="pb-2">
-        <CardDescription className="text-zinc-600">{title}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <p className="text-2xl font-bold text-zinc-900">
-          {loading ? '…' : value}
-        </p>
-      </CardContent>
-    </Card>
+    <div className={cn('rounded-xl p-4 shadow-md sm:p-5', statVariants[variant])}>
+      <p className="text-sm font-medium opacity-90">{title}</p>
+      <p className="mt-2 text-2xl font-bold tracking-tight">
+        {loading ? '…' : value}
+      </p>
+    </div>
   );
 }

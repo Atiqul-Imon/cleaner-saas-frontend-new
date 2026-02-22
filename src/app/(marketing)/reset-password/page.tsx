@@ -6,8 +6,8 @@ import Link from 'next/link';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { PasswordInput } from '@/components/ui/password-input';
 import {
   Card,
   CardContent,
@@ -70,17 +70,15 @@ export default function ResetPasswordPage() {
 
   if (isValidLink === false) {
     return (
-      <div className="flex flex-1 items-center justify-center px-4 py-16">
-        <div className="w-full max-w-md">
-          <Card className="border-zinc-200 bg-white shadow-sm">
+      <div className="flex min-h-[calc(100vh-8rem)] flex-1 items-center justify-center px-4 py-12">
+        <div className="w-full max-w-[420px]">
+          <Card className="border-zinc-200 shadow-lg shadow-zinc-200/50">
             <CardHeader>
               <CardTitle>Invalid link</CardTitle>
-              <CardDescription>
-                This reset link is invalid or expired. Request a new one.
-              </CardDescription>
+              <CardDescription>This reset link is invalid or expired.</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button asChild className="w-full h-11">
+              <Button asChild className="h-11 w-full bg-emerald-600 hover:bg-emerald-700">
                 <Link href="/forgot-password">Request new link</Link>
               </Button>
             </CardContent>
@@ -91,24 +89,31 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="flex flex-1 items-center justify-center px-4 py-16">
-      <div className="w-full max-w-md">
-        <div className="mb-8 text-center">
-          <h1 className="text-2xl font-bold tracking-tight text-zinc-900">Reset password</h1>
-          <p className="mt-2 text-zinc-600">Enter your new password below</p>
+    <div className="flex min-h-[calc(100vh-8rem)] flex-1 items-center justify-center px-4 py-12 sm:py-16">
+      <div className="w-full max-w-[420px]">
+        <div className="mb-10 text-center">
+          <Link href="/" className="inline-block font-semibold text-zinc-900">
+            Clenvora
+          </Link>
+          <h1 className="mt-6 text-2xl font-bold tracking-tight text-zinc-900">
+            Reset password
+          </h1>
+          <p className="mt-2 text-sm text-zinc-600">
+            Enter your new password
+          </p>
         </div>
-        <Card className="border-zinc-200 bg-white shadow-sm">
-          <CardHeader>
-            <CardTitle>Set new password</CardTitle>
-            <CardDescription>Use at least 6 characters</CardDescription>
+
+        <Card className="border-zinc-200 shadow-lg shadow-zinc-200/50">
+          <CardHeader className="space-y-1 pb-4">
+            <CardTitle className="text-lg">New password</CardTitle>
+            <CardDescription>Minimum 6 characters</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-0">
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2">
-                <Label htmlFor="password">New password</Label>
-                <Input
+                <Label htmlFor="password">Password</Label>
+                <PasswordInput
                   id="password"
-                  type="password"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -120,9 +125,8 @@ export default function ResetPasswordPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">Confirm password</Label>
-                <Input
+                <PasswordInput
                   id="confirmPassword"
-                  type="password"
                   placeholder="••••••••"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
@@ -132,12 +136,16 @@ export default function ResetPasswordPage() {
                   className="h-11"
                 />
               </div>
-              <Button type="submit" className="h-11 w-full" disabled={loading}>
+              <Button
+                type="submit"
+                className="h-11 w-full bg-emerald-600 font-medium hover:bg-emerald-700"
+                disabled={loading}
+              >
                 {loading ? 'Resetting…' : 'Reset password'}
               </Button>
             </form>
             <p className="mt-6 text-center text-sm text-zinc-600">
-              <Link href="/login" className="font-medium text-zinc-900 hover:underline">
+              <Link href="/login" className="font-semibold text-emerald-600 hover:text-emerald-700">
                 Back to sign in
               </Link>
             </p>

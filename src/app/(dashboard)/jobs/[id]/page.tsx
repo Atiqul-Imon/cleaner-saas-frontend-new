@@ -116,7 +116,7 @@ export default function JobDetailPage() {
     <div className="mx-auto max-w-4xl space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <Link href={backHref} className="text-sm text-zinc-600 hover:underline">
+          <Link href={backHref} className="text-sm font-medium text-zinc-700 hover:underline">
             ← Back
           </Link>
           <h1 className="mt-2 text-2xl font-bold tracking-tight text-zinc-900">

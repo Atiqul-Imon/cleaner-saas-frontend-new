@@ -143,7 +143,7 @@ function WorkersContent() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-zinc-900">Staff</h1>
-          <p className="text-zinc-600">Manage cleaners and team members</p>
+          <p className="mt-1 text-base leading-relaxed text-zinc-700">Manage cleaners and team members</p>
         </div>
         <Button onClick={() => setShowAddModal(true)} size="sm" className="shrink-0">
           <Plus className="size-4" />
@@ -151,10 +151,10 @@ function WorkersContent() {
         </Button>
       </div>
 
-      <Card className="border-zinc-200">
+      <Card className="border-zinc-200 bg-white shadow-sm">
         <CardHeader>
-          <CardTitle className="text-zinc-900">Team members</CardTitle>
-          <CardDescription>{list.length} member(s)</CardDescription>
+          <CardTitle className="text-lg font-semibold text-zinc-900">Team members</CardTitle>
+          <CardDescription className="text-zinc-700">{list.length} member(s)</CardDescription>
         </CardHeader>
         <CardContent>
           {isLoading ? (

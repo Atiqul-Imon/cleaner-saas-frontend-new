@@ -29,7 +29,7 @@ export function MarketingHeader() {
               <Link href="/login" className="text-sm font-medium text-zinc-600 hover:text-zinc-900">
                 Sign in
               </Link>
-              <Button asChild>
+              <Button asChild className="bg-emerald-600 hover:bg-emerald-700">
                 <Link href="/register">Get started</Link>
               </Button>
             </>
@@ -37,7 +37,7 @@ export function MarketingHeader() {
         </nav>
         <div className="flex items-center gap-2 md:hidden">
           {!isLoading && user ? (
-            <Button size="sm" asChild>
+            <Button size="sm" asChild className="bg-emerald-600 hover:bg-emerald-700">
               <Link href="/dashboard">Dashboard</Link>
             </Button>
           ) : (
@@ -45,7 +45,7 @@ export function MarketingHeader() {
               <Button variant="ghost" size="sm" asChild>
                 <Link href="/login">Sign in</Link>
               </Button>
-              <Button size="sm" asChild>
+              <Button size="sm" asChild className="bg-emerald-600 hover:bg-emerald-700">
                 <Link href="/register">Get started</Link>
               </Button>
             </>

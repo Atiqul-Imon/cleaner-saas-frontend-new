@@ -48,7 +48,7 @@ export function AppHeader() {
   return (
     <>
       <header className="sticky top-0 z-30 flex h-14 items-center justify-center border-b border-zinc-200 bg-white">
-        <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 md:px-6 lg:px-8">
+        <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-2 sm:px-3 md:px-6 lg:px-8">
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
@@ -73,7 +73,7 @@ export function AppHeader() {
                       'flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
                       active
                         ? 'bg-zinc-900 text-white'
-                        : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900'
+                        : 'text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900'
                     )}
                   >
                     <Icon className="size-4" />
@@ -83,7 +83,7 @@ export function AppHeader() {
               })}
             </nav>
           </div>
-          <Button variant="ghost" size="sm" onClick={handleSignOut} className="text-zinc-600">
+          <Button variant="ghost" size="sm" onClick={handleSignOut} className="text-zinc-700 hover:text-zinc-900">
             <LogOut className="size-4 md:mr-2" />
             <span className="hidden md:inline">Sign out</span>
           </Button>

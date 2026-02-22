@@ -19,27 +19,23 @@ const footerLinks = {
 
 export function MarketingFooter() {
   return (
-    <footer className="border-t border-zinc-200 bg-zinc-50">
-      <div className="mx-auto max-w-7xl px-4 py-12 md:px-6 lg:px-8">
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-5">
+    <footer className="border-t border-zinc-800 bg-zinc-900">
+      <div className="mx-auto max-w-7xl px-4 py-14 md:px-6 lg:px-8">
+        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-5">
           <div className="lg:col-span-2">
-            <Link href="/" className="font-semibold text-zinc-900">
+            <Link href="/" className="font-semibold text-white">
               Clenvora
             </Link>
-            <p className="mt-3 max-w-sm text-sm text-zinc-600">
-              Run your cleaning business smoothly. Manage clients, schedule jobs, and get paid
-              faster.
+            <p className="mt-3 max-w-sm text-sm leading-relaxed text-zinc-400">
+              Run your cleaning business smoothly. Manage clients, schedule jobs, get paid faster.
             </p>
           </div>
           <div>
-            <h4 className="text-sm font-semibold text-zinc-900">Product</h4>
+            <h4 className="text-sm font-semibold text-white">Product</h4>
             <ul className="mt-4 space-y-3">
               {footerLinks.product.map((link) => (
                 <li key={link.label}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-zinc-600 transition-colors hover:text-zinc-900"
-                  >
+                  <Link href={link.href} className="text-sm text-zinc-400 transition-colors hover:text-white">
                     {link.label}
                   </Link>
                 </li>
@@ -47,14 +43,11 @@ export function MarketingFooter() {
             </ul>
           </div>
           <div>
-            <h4 className="text-sm font-semibold text-zinc-900">Company</h4>
+            <h4 className="text-sm font-semibold text-white">Company</h4>
             <ul className="mt-4 space-y-3">
               {footerLinks.company.map((link) => (
                 <li key={link.label}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-zinc-600 transition-colors hover:text-zinc-900"
-                  >
+                  <Link href={link.href} className="text-sm text-zinc-400 transition-colors hover:text-white">
                     {link.label}
                   </Link>
                 </li>
@@ -62,14 +55,11 @@ export function MarketingFooter() {
             </ul>
           </div>
           <div>
-            <h4 className="text-sm font-semibold text-zinc-900">Legal</h4>
+            <h4 className="text-sm font-semibold text-white">Legal</h4>
             <ul className="mt-4 space-y-3">
               {footerLinks.legal.map((link) => (
                 <li key={link.label}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-zinc-600 transition-colors hover:text-zinc-900"
-                  >
+                  <Link href={link.href} className="text-sm text-zinc-400 transition-colors hover:text-white">
                     {link.label}
                   </Link>
                 </li>
@@ -77,7 +67,7 @@ export function MarketingFooter() {
             </ul>
           </div>
         </div>
-        <div className="mt-12 border-t border-zinc-200 pt-8">
+        <div className="mt-12 border-t border-zinc-800 pt-8">
           <p className="text-center text-sm text-zinc-500">
             © {new Date().getFullYear()} Clenvora. All rights reserved.
           </p>

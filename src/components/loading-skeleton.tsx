@@ -3,14 +3,10 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
 export function StatCardSkeleton() {
   return (
-    <Card>
-      <CardHeader className="pb-2">
-        <Skeleton className="h-4 w-24" />
-      </CardHeader>
-      <CardContent>
-        <Skeleton className="h-8 w-16" />
-      </CardContent>
-    </Card>
+    <div className="rounded-xl bg-zinc-200 p-5">
+      <Skeleton className="h-4 w-24 bg-white/50" />
+      <Skeleton className="mt-2 h-8 w-16 bg-white/50" />
+    </div>
   );
 }
 

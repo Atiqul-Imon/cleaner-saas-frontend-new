@@ -8,6 +8,7 @@ import { useUser } from '@/hooks/use-user';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { PasswordInput } from '@/components/ui/password-input';
 import {
   Card,
   CardContent,
@@ -23,15 +24,15 @@ function LoginForm() {
   const registered = searchParams.get('registered') === '1';
 
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!userLoading && user) {
       router.replace('/dashboard');
     }
   }, [user, userLoading, router]);
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -62,27 +63,34 @@ function LoginForm() {
   }
 
   return (
-    <div className="flex flex-1 items-center justify-center px-4 py-16">
-      <div className="w-full max-w-md">
-        <div className="mb-8 text-center">
-          <h1 className="text-2xl font-bold tracking-tight text-zinc-900">Welcome back</h1>
-          <p className="mt-2 text-zinc-600">Sign in to your account to continue</p>
+    <div className="flex min-h-[calc(100vh-8rem)] flex-1 items-center justify-center px-4 py-12 sm:py-16">
+      <div className="w-full max-w-[420px]">
+        <div className="mb-10 text-center">
+          <Link href="/" className="inline-block font-semibold text-zinc-900">
+            Clenvora
+          </Link>
+          <h1 className="mt-6 text-2xl font-bold tracking-tight text-zinc-900">
+            Welcome back
+          </h1>
+          <p className="mt-2 text-sm text-zinc-600">
+            Sign in to your account to continue
+          </p>
         </div>
 
-        <Card className="border-zinc-200 bg-white shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-xl">Sign in</CardTitle>
-            <CardDescription>Enter your credentials to access your account</CardDescription>
+        <Card className="border-zinc-200 shadow-lg shadow-zinc-200/50">
+          <CardHeader className="space-y-1 pb-4">
+            <CardTitle className="text-lg">Sign in</CardTitle>
+            <CardDescription>Enter your credentials</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-0">
             {registered && (
-              <div className="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800">
+              <div className="mb-5 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800">
                 Account created successfully. Sign in to continue.
               </div>
             )}
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2">
-                <Label htmlFor="email">Email address</Label>
+                <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   type="email"
@@ -97,13 +105,15 @@ function LoginForm() {
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="password">Password</Label>
-                  <Link href="/forgot-password" className="text-sm font-medium text-zinc-600 hover:text-zinc-900">
+                  <Link
+                    href="/forgot-password"
+                    className="text-xs font-medium text-emerald-600 hover:text-emerald-700"
+                  >
                     Forgot password?
                   </Link>
                 </div>
-                <Input
+                <PasswordInput
                   id="password"
-                  type="password"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -117,27 +127,31 @@ function LoginForm() {
                   {error}
                 </div>
               )}
-              <Button type="submit" className="h-11 w-full" disabled={loading}>
+              <Button
+                type="submit"
+                className="h-11 w-full bg-emerald-600 font-medium hover:bg-emerald-700"
+                disabled={loading}
+              >
                 {loading ? 'Signing in…' : 'Sign in'}
               </Button>
             </form>
             <p className="mt-6 text-center text-sm text-zinc-600">
               Don&apos;t have an account?{' '}
-              <Link href="/register" className="font-semibold text-zinc-900 hover:underline">
+              <Link href="/register" className="font-semibold text-emerald-600 hover:text-emerald-700">
                 Create one
               </Link>
             </p>
           </CardContent>
         </Card>
 
-        <p className="mt-6 text-center text-xs text-zinc-500">
+        <p className="mt-8 text-center text-xs text-zinc-500">
           By signing in, you agree to our{' '}
           <Link href="#" className="underline hover:text-zinc-700">
-            Terms of Service
+            Terms
           </Link>{' '}
           and{' '}
           <Link href="#" className="underline hover:text-zinc-700">
-            Privacy Policy
+            Privacy
           </Link>
         </p>
       </div>
