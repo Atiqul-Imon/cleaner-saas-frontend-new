@@ -21,8 +21,7 @@ export function JobPhotoUpload({ jobId, photoType, onSuccess, onError }: JobPhot
     if (!file) return;
     setUploading(true);
     try {
-      const { uploadToImageKit } = await import('@/lib/imagekit');
-      const result = await uploadToImageKit(file, 'job-photos');
+      const result = await api.uploadImage(file);
       await api.post(`/jobs/${jobId}/photos`, {
         imageUrl: result.url,
         photoType,

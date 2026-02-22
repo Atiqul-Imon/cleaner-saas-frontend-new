@@ -132,6 +132,29 @@ export const api = {
     return handleResponse<T>(res, options);
   },
 
+  /** Upload an image file via backend (uses backend ImageKit credentials). Returns { url, fileId, name }. */
+  async uploadImage(file: File): Promise<{ url: string; fileId: string; name: string }> {
+    const headers: Record<string, string> = {};
+    const supabase = createSupabaseBrowserClient();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    const token = session?.access_token;
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const res = await fetch(`${API_BASE}/upload/image`, {
+      method: 'POST',
+      headers,
+      body: formData,
+      credentials: 'include',
+    });
+    return handleResponse<{ url: string; fileId: string; name: string }>(res);
+  },
+
   getBaseUrl: () => API_BASE,
 };
 
