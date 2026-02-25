@@ -1,11 +1,17 @@
 import type { Metadata } from 'next';
-import { Roboto } from 'next/font/google';
+import { Roboto, Inter } from 'next/font/google';
 import './globals.css';
 import { QueryProvider } from '@/providers/query-provider';
 import { Toaster } from '@/components/ui/sonner';
 
 const roboto = Roboto({
-  variable: '--font-sans',
+  variable: '--font-roboto',
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+});
+
+const inter = Inter({
+  variable: '--font-inter',
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
 });
@@ -22,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${roboto.variable} font-sans antialiased`}>
+      <body className={`${roboto.variable} ${inter.variable} font-sans antialiased`}>
         <QueryProvider>
           {children}
           <Toaster position="top-right" richColors closeButton />

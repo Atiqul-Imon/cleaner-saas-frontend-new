@@ -24,6 +24,7 @@ export function useUser() {
     isError: query.isError,
     isOwner: query.data?.role === 'OWNER',
     isCleaner: query.data?.role === 'CLEANER',
+    isAdmin: query.data?.role === 'ADMIN',
     refetch: query.refetch,
   };
 }
