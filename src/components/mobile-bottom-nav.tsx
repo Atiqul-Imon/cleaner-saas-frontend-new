@@ -9,6 +9,7 @@ import {
   FileText,
   Settings,
   ClipboardList,
+  UserCog,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useUser } from '@/hooks/use-user';
@@ -18,6 +19,7 @@ const ownerNavItems = [
   { href: '/jobs', label: 'Jobs', icon: Briefcase },
   { href: '/clients', label: 'Clients', icon: Users },
   { href: '/invoices', label: 'Invoices', icon: FileText },
+  { href: '/settings/workers', label: 'Staff', icon: UserCog },
   { href: '/settings', label: 'Settings', icon: Settings },
 ];
 

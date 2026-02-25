@@ -12,6 +12,7 @@ import {
   LogOut,
   ClipboardList,
   X,
+  UserCog,
 } from 'lucide-react';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 import { cn } from '@/lib/utils';
@@ -23,6 +24,7 @@ const ownerNavItems = [
   { href: '/jobs', label: 'Jobs', icon: Briefcase },
   { href: '/clients', label: 'Clients', icon: Users },
   { href: '/invoices', label: 'Invoices', icon: FileText },
+  { href: '/settings/workers', label: 'Staff', icon: UserCog },
   { href: '/settings', label: 'Settings', icon: Settings },
 ];
 

@@ -10,13 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { PasswordInput } from '@/components/ui/password-input';
 import { Checkbox } from '@/components/ui/checkbox';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -68,11 +62,7 @@ export default function RegisterPage() {
         </div>
 
         <Card className="border-zinc-200 shadow-lg shadow-zinc-200/50">
-          <CardHeader className="space-y-1 pb-4">
-            <CardTitle className="text-lg">Sign up</CardTitle>
-            <CardDescription>All fields required. Password: min 6 characters.</CardDescription>
-          </CardHeader>
-          <CardContent className="pt-0">
+          <CardContent className="pt-6">
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>

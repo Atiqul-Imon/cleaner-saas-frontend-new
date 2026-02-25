@@ -59,11 +59,21 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-5 sm:space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight text-zinc-900">Dashboard</h1>
-        <p className="mt-1 text-base leading-relaxed text-zinc-700">
-          {format(new Date(), 'EEEE, MMMM d')}
-        </p>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-zinc-900">Dashboard</h1>
+          <p className="mt-1 text-base leading-relaxed text-zinc-700">
+            {format(new Date(), 'EEEE, MMMM d')}
+          </p>
+        </div>
+        {isOwner && (
+          <Button asChild size="lg" className="shrink-0 bg-emerald-600 hover:bg-emerald-700">
+            <Link href="/jobs/create" className="gap-2">
+              <Plus className="size-5" />
+              Create Job
+            </Link>
+          </Button>
+        )}
       </div>
 
       {isOwner && (
