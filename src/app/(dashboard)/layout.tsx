@@ -14,7 +14,7 @@ export default function DashboardLayout({
       <AdminRedirectGuard>
         <div className="min-h-screen bg-zinc-50">
           <AppHeader />
-          <main className="min-h-screen pb-20 pt-14 md:pb-10 md:pt-8">
+          <main className="min-h-screen pb-28 pt-14 md:pb-10 md:pt-8">
             <div className="dashboard-app mx-auto w-full max-w-7xl px-2 sm:px-3 md:px-6 lg:px-8">
               <OnboardingGuard>{children}</OnboardingGuard>
             </div>
