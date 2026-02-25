@@ -29,7 +29,7 @@ const cleanerNavItems = [
 export function MobileBottomNav() {
   const pathname = usePathname();
   const { user, isLoading } = useUser();
-  const navItems = isLoading ? ownerNavItems : user?.role === 'OWNER' || user?.role === 'ADMIN' ? ownerNavItems : cleanerNavItems;
+  const navItems = isLoading ? ownerNavItems : user?.role === 'OWNER' ? ownerNavItems : cleanerNavItems;
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-zinc-200 bg-white md:hidden">

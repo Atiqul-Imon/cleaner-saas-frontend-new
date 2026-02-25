@@ -12,7 +12,6 @@ import {
   LogOut,
   ClipboardList,
   Menu,
-  ShieldCheck,
 } from 'lucide-react';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 import { cn } from '@/lib/utils';
@@ -38,7 +37,7 @@ export function AppHeader() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const handleCloseSidebar = useCallback(() => setSidebarOpen(false), []);
   const { user, isLoading } = useUser();
-  const navItems = isLoading ? ownerNavItems : user?.role === 'OWNER' || user?.role === 'ADMIN' ? ownerNavItems : cleanerNavItems;
+  const navItems = isLoading ? ownerNavItems : user?.role === 'OWNER' ? ownerNavItems : cleanerNavItems;
 
   async function handleSignOut() {
     const supabase = createSupabaseBrowserClient();
@@ -64,20 +63,6 @@ export function AppHeader() {
               Clenvora
             </Link>
             <nav className="hidden items-center gap-1 md:flex">
-              {user?.role === 'ADMIN' && (
-                <Link
-                  href="/admin"
-                  className={cn(
-                    'flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
-                    pathname?.startsWith('/admin')
-                      ? 'bg-zinc-900 text-white'
-                      : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200 hover:text-emerald-800'
-                  )}
-                >
-                  <ShieldCheck className="size-4" />
-                  Admin
-                </Link>
-              )}
               {navItems.map(({ href, label, icon: Icon }) => {
                 const active = pathname === href || pathname.startsWith(href + '/');
                 return (

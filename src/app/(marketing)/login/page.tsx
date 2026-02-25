@@ -4,6 +4,7 @@ import { Suspense, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
+import { api } from '@/lib/api';
 import { useUser } from '@/hooks/use-user';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,7 +31,7 @@ function LoginForm() {
 
   useEffect(() => {
     if (!userLoading && user) {
-      router.replace('/dashboard');
+      router.replace(user.role === 'ADMIN' ? '/admin' : '/dashboard');
     }
   }, [user, userLoading, router]);
 
@@ -45,7 +46,8 @@ function LoginForm() {
         password,
       });
       if (err) throw err;
-      router.push('/dashboard');
+      const userData = await api.get<{ role?: string }>('/auth/me', { silent: true }).catch(() => null);
+      router.push(userData?.role === 'ADMIN' ? '/admin' : '/dashboard');
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Sign in failed');

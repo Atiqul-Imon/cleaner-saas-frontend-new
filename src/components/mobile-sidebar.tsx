@@ -12,7 +12,6 @@ import {
   LogOut,
   ClipboardList,
   X,
-  ShieldCheck,
 } from 'lucide-react';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 import { cn } from '@/lib/utils';
@@ -57,7 +56,7 @@ export function MobileSidebar({ open, onClose }: MobileSidebarProps) {
       document.body.style.overflow = '';
     };
   }, [open]);
-  const navItems = isLoading ? ownerNavItems : user?.role === 'OWNER' || user?.role === 'ADMIN' ? ownerNavItems : cleanerNavItems;
+  const navItems = isLoading ? ownerNavItems : user?.role === 'OWNER' ? ownerNavItems : cleanerNavItems;
 
   async function handleSignOut() {
     const supabase = createSupabaseBrowserClient();
@@ -100,21 +99,6 @@ export function MobileSidebar({ open, onClose }: MobileSidebarProps) {
           </Button>
         </div>
         <nav className="flex flex-1 flex-col gap-1 overflow-y-auto p-4">
-          {user?.role === 'ADMIN' && (
-            <Link
-              href="/admin"
-              onClick={onClose}
-              className={cn(
-                'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
-                pathname?.startsWith('/admin')
-                  ? 'bg-zinc-900 text-white'
-                  : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200 hover:text-emerald-800'
-              )}
-            >
-              <ShieldCheck className="size-5 shrink-0" />
-              Admin Panel
-            </Link>
-          )}
           {navItems.map(({ href, label, icon: Icon }) => {
             const active = pathname === href || pathname.startsWith(href + '/');
             return (
