@@ -7,7 +7,6 @@ import {
   Briefcase,
   Users,
   FileText,
-  Settings,
   ClipboardList,
   UserCog,
 } from 'lucide-react';
@@ -20,7 +19,6 @@ const ownerNavItems = [
   { href: '/clients', label: 'Clients', icon: Users },
   { href: '/invoices', label: 'Invoices', icon: FileText },
   { href: '/settings/workers', label: 'Staff', icon: UserCog },
-  { href: '/settings', label: 'Settings', icon: Settings },
 ];
 
 const cleanerNavItems = [
