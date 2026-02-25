@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/hooks/use-user';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -30,13 +30,151 @@ interface BusinessSettings {
   invoiceTemplate?: string | null;
 }
 
-const INVOICE_TEMPLATES: { id: InvoiceTemplate; label: string }[] = [
-  { id: 'classic', label: 'Classic' },
-  { id: 'modern', label: 'Modern' },
-  { id: 'minimal', label: 'Minimal' },
-  { id: 'professional', label: 'Professional' },
-  { id: 'elegant', label: 'Elegant' },
-  { id: 'bold', label: 'Bold' },
+const INVOICE_TEMPLATES: {
+  id: InvoiceTemplate;
+  label: string;
+  description: string;
+  preview: ReactNode;
+}[] = [
+  {
+    id: 'classic',
+    label: 'Classic',
+    description: 'Traditional layout with clear sections',
+    preview: (
+      <div className="rounded border border-zinc-300 bg-white p-2.5">
+        <div className="flex justify-between border-b-2 border-zinc-300 pb-2 text-[10px]">
+          <div>
+            <div className="font-bold text-zinc-900">Business Name</div>
+            <div className="text-zinc-500">Address</div>
+          </div>
+          <div className="text-right">
+            <div className="font-bold text-zinc-900">INVOICE</div>
+            <div className="text-zinc-500">#INV-001</div>
+          </div>
+        </div>
+        <div className="mt-2 rounded bg-zinc-50 p-1.5 text-[10px]">
+          <div className="font-semibold text-zinc-900">Client Name</div>
+        </div>
+        <div className="mt-2 flex justify-between border-t pt-2 text-[10px]">
+          <span className="text-zinc-600">Total</span>
+          <span className="font-bold text-zinc-900">£100.00</span>
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: 'modern',
+    label: 'Modern',
+    description: 'Clean design with subtle accents',
+    preview: (
+      <div className="rounded border border-zinc-200 bg-white p-2.5 shadow-sm">
+        <div className="flex justify-between border-b border-zinc-200 pb-2 text-[10px]">
+          <div className="font-bold text-zinc-900">Business Name</div>
+          <div className="font-bold text-zinc-900">INVOICE</div>
+        </div>
+        <div className="mt-2 space-y-1 text-[10px]">
+          <div className="text-[9px] uppercase text-zinc-500">Bill To</div>
+          <div className="font-semibold text-zinc-900">Client Name</div>
+        </div>
+        <div className="mt-2 rounded bg-zinc-50 p-2 text-[10px]">
+          <div className="flex justify-between">
+            <span className="text-zinc-600">Total</span>
+            <span className="font-bold text-zinc-900">£100.00</span>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: 'minimal',
+    label: 'Minimal',
+    description: 'Simple and uncluttered',
+    preview: (
+      <div className="rounded border border-zinc-200 bg-white p-2.5">
+        <div className="pb-3 text-center text-[10px]">
+          <div className="font-light text-zinc-900">Business Name</div>
+          <div className="text-[9px] text-zinc-500">INVOICE #INV-001</div>
+        </div>
+        <div className="space-y-1 border-y border-zinc-200 py-3 text-[10px]">
+          <div className="text-zinc-500">Bill To</div>
+          <div className="font-medium text-zinc-900">Client Name</div>
+        </div>
+        <div className="mt-3 text-center text-lg font-light text-zinc-900">£100.00</div>
+      </div>
+    ),
+  },
+  {
+    id: 'professional',
+    label: 'Professional',
+    description: 'Corporate style with dark accents',
+    preview: (
+      <div className="rounded border border-zinc-200 bg-white p-2.5">
+        <div className="flex justify-between border-b-2 border-zinc-900 pb-2">
+          <div className="text-[10px]">
+            <div className="mb-1 h-5 w-5 rounded bg-zinc-900" />
+            <div className="font-bold text-zinc-900">Business Name</div>
+          </div>
+          <div className="rounded bg-zinc-900 px-2 py-1 text-[9px] text-white">
+            <div className="uppercase">Invoice</div>
+            <div className="font-bold">#INV-001</div>
+          </div>
+        </div>
+        <div className="mt-2 border-l-4 border-zinc-900 bg-zinc-50 p-2 text-[10px]">
+          <div className="font-bold text-zinc-900">Client Name</div>
+        </div>
+        <div className="mt-2 rounded bg-zinc-900 p-2 text-[10px] text-white">
+          <div className="flex justify-between">
+            <span className="uppercase">Total</span>
+            <span className="font-bold">£100.00</span>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: 'elegant',
+    label: 'Elegant',
+    description: 'Refined with centered layout',
+    preview: (
+      <div className="rounded border border-zinc-200 border-t-2 border-t-zinc-900 bg-white p-2.5">
+        <div className="pb-3 text-center">
+          <div className="inline-block rounded border-2 border-zinc-900 px-2 py-1 text-[10px] font-medium text-zinc-900">
+            Business Name
+          </div>
+          <div className="mt-1 text-[9px] text-zinc-500">INVOICE #INV-001</div>
+        </div>
+        <div className="space-y-2 text-[10px]">
+          <div className="text-[9px] uppercase text-zinc-500">Bill To</div>
+          <div className="font-semibold text-zinc-900">Client Name</div>
+        </div>
+        <div className="mt-2 border-y-2 border-zinc-900 py-3 text-center text-base font-medium text-zinc-900">
+          £100.00
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: 'bold',
+    label: 'Bold',
+    description: 'Strong typography with dark header',
+    preview: (
+      <div className="rounded border-2 border-zinc-900 bg-white p-2.5">
+        <div className="flex justify-between rounded-t bg-zinc-900 p-2 text-[10px] text-white">
+          <div className="font-bold">Business Name</div>
+          <div className="rounded bg-white/20 px-1.5 py-0.5 text-[9px] font-bold text-white">
+            #INV-001
+          </div>
+        </div>
+        <div className="space-y-1 p-2 text-[10px]">
+          <div className="text-[9px] font-bold uppercase text-zinc-500">Bill To</div>
+          <div className="font-bold text-zinc-900">Client Name</div>
+        </div>
+        <div className="rounded-b bg-zinc-900 p-2 text-center text-[10px] font-bold text-white">
+          £100.00
+        </div>
+      </div>
+    ),
+  },
 ];
 
 function SettingsContent() {
@@ -185,19 +323,31 @@ function SettingsContent() {
             <CardDescription>Choose the default layout for your invoices</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {INVOICE_TEMPLATES.map((t) => (
                 <button
                   key={t.id}
                   type="button"
                   onClick={() => setInvoiceTemplate(t.id)}
-                  className={`rounded-lg border px-3 py-2.5 text-sm font-medium transition-colors ${
+                  className={`text-left transition-all ${
                     invoiceTemplate === t.id
-                      ? 'border-emerald-600 bg-emerald-50 text-emerald-700'
-                      : 'border-zinc-200 bg-white text-zinc-700 hover:border-zinc-300 hover:bg-zinc-50'
-                  }`}
+                      ? 'ring-2 ring-emerald-600 ring-offset-2'
+                      : 'hover:ring-2 hover:ring-zinc-300'
+                  } rounded-lg border border-zinc-200 bg-white p-3 transition-shadow hover:border-zinc-300`}
                 >
-                  {t.label}
+                  <div className="pointer-events-none mb-3 h-24 overflow-hidden rounded border border-zinc-100 bg-zinc-50/50">
+                    {t.preview}
+                  </div>
+                  <div className="font-semibold text-zinc-900">{t.label}</div>
+                  <p className="mt-0.5 text-xs text-zinc-600">{t.description}</p>
+                  {invoiceTemplate === t.id && (
+                    <div className="mt-2 flex items-center gap-1.5 text-sm font-medium text-emerald-600">
+                      <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      Selected
+                    </div>
+                  )}
                 </button>
               ))}
             </div>

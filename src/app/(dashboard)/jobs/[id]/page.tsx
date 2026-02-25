@@ -47,8 +47,10 @@ export default function JobDetailPage() {
   const isCleaner = user?.role === 'CLEANER';
   const isOwner = user?.role === 'OWNER' || user?.role === 'ADMIN';
   const isAssignedToMe = isCleaner && job?.cleanerId === user?.id;
-  const canUpdateStatus = isAssignedToMe || (isOwner && !job?.cleanerId);
-  const canUploadPhotos = isAssignedToMe || (isOwner && !job?.cleanerId);
+  // Owner can update status and upload photos when: no cleaner assigned, or assigned to themselves
+  const isOwnerDoingItThemselves = isOwner && (!job?.cleanerId || job?.cleanerId === user?.id);
+  const canUpdateStatus = isAssignedToMe || isOwnerDoingItThemselves;
+  const canUploadPhotos = isAssignedToMe || isOwnerDoingItThemselves;
   const [sendingPhotos, setSendingPhotos] = useState<string | null>(null);
 
   async function handleSendPhotosViaWhatsApp(photoType: 'BEFORE' | 'AFTER' | 'ALL') {
