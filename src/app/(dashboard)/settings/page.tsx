@@ -2,6 +2,7 @@
 
 import { useState, useEffect, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useUser } from '@/hooks/use-user';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
@@ -253,6 +254,30 @@ function SettingsContent() {
         <h1 className="text-2xl font-bold tracking-tight text-zinc-900">Settings</h1>
         <p className="mt-1 text-sm text-zinc-600">Manage your business profile and preferences</p>
       </div>
+
+      {/* Quick Links */}
+      <Card>
+        <CardContent className="p-6">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Link href="/settings/subscription">
+              <Button variant="outline" className="h-auto w-full justify-start p-4 text-left">
+                <div>
+                  <div className="font-semibold text-zinc-900">Subscription & Usage</div>
+                  <p className="mt-0.5 text-xs text-zinc-600">View your plan and upgrade</p>
+                </div>
+              </Button>
+            </Link>
+            <Link href="/settings/workers">
+              <Button variant="outline" className="h-auto w-full justify-start p-4 text-left">
+                <div>
+                  <div className="font-semibold text-zinc-900">Manage Staff</div>
+                  <p className="mt-0.5 text-xs text-zinc-600">Add and manage cleaners</p>
+                </div>
+              </Button>
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
 
       {message && (
         <InlineMessage type={message.type}>{message.text}</InlineMessage>
