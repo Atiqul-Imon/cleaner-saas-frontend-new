@@ -49,7 +49,6 @@ interface Worker {
 }
 
 interface CreateCleanerResponse {
-  tempPassword?: string;
   inviteLink?: string;
   email?: string;
   message?: string;
@@ -60,7 +59,6 @@ function WorkersContent() {
   const { user, isLoading: userLoading } = useUser();
 
   const [showAddModal, setShowAddModal] = useState(false);
-  const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [showInviteLinkModal, setShowInviteLinkModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showDeactivateModal, setShowDeactivateModal] = useState(false);
@@ -76,9 +74,8 @@ function WorkersContent() {
     displayName: string;
   } | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
-  const [createdStaff, setCreatedStaff] = useState<{ email: string; password: string } | null>(null);
   const [createdInvite, setCreatedInvite] = useState<{ email: string; inviteLink: string } | null>(null);
-  const [formData, setFormData] = useState({ email: '', name: '', method: 'password' as 'password' | 'invite' });
+  const [formData, setFormData] = useState({ email: '', name: '', method: 'invite' as 'invite' });
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   const { data: workers, isLoading } = useQuery({
@@ -92,19 +89,15 @@ function WorkersContent() {
       api.post<CreateCleanerResponse>('/business/cleaners', data),
     onSuccess: (result, variables) => {
       queryClient.invalidateQueries({ queryKey: ['workers'] });
-      if (result?.tempPassword) {
-        setCreatedStaff({ email: variables.email, password: result.tempPassword });
-        setShowAddModal(false);
-        setShowPasswordModal(true);
-      } else if (result?.inviteLink) {
+      if (result?.inviteLink) {
         setCreatedInvite({ email: result.email ?? variables.email, inviteLink: result.inviteLink });
         setShowAddModal(false);
         setShowInviteLinkModal(true);
       } else {
         setShowAddModal(false);
-        setFormData({ email: '', name: '', method: 'password' });
+        setFormData({ email: '', name: '', method: 'invite' });
       }
-      setFormData({ email: '', name: '', method: 'password' });
+      setFormData({ email: '', name: '', method: 'invite' });
       setMessage({ type: 'success', text: 'Staff member added.' });
     },
     onError: (err) => {
@@ -300,45 +293,16 @@ function WorkersContent() {
       {/* Add Staff Modal */}
       <Dialog open={showAddModal} onOpenChange={setShowAddModal}>
         <DialogContent
-          onPointerDownOutside={() => setFormData({ email: '', name: '', method: 'password' })}
-          onEscapeKeyDown={() => setFormData({ email: '', name: '', method: 'password' })}
+          onPointerDownOutside={() => setFormData({ email: '', name: '', method: 'invite' })}
+          onEscapeKeyDown={() => setFormData({ email: '', name: '', method: 'invite' })}
         >
           <DialogHeader>
             <DialogTitle>Add New Staff Member</DialogTitle>
             <DialogDescription>
-              Enter the staff member&apos;s email. A temporary password will be generated.
+              Enter the staff member&apos;s email. An invite link will be created.
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label>How to add</Label>
-              <div className="flex flex-col gap-3">
-                <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-zinc-200 p-3">
-                  <input
-                    type="radio"
-                    name="method"
-                    value="password"
-                    checked={formData.method === 'password'}
-                    onChange={() => setFormData((p) => ({ ...p, method: 'password' }))}
-                    className="rounded-full border-zinc-300"
-                  />
-                  <span className="text-sm font-medium">Create with temp password</span>
-                  <span className="text-xs text-zinc-500">Share password with staff</span>
-                </label>
-                <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-zinc-200 p-3">
-                  <input
-                    type="radio"
-                    name="method"
-                    value="invite"
-                    checked={formData.method === 'invite'}
-                    onChange={() => setFormData((p) => ({ ...p, method: 'invite' }))}
-                    className="rounded-full border-zinc-300"
-                  />
-                  <span className="text-sm font-medium">Invite via link</span>
-                  <span className="text-xs text-zinc-500">Staff signs up with Google or email</span>
-                </label>
-              </div>
-            </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email address</Label>
               <Input
@@ -361,9 +325,7 @@ function WorkersContent() {
               />
             </div>
             <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-3 text-sm text-zinc-700">
-              {formData.method === 'invite'
-                ? 'A link will be generated. Share it with the staff member so they can sign up with Google or email.'
-                : 'A temporary password will be generated and shown after creation. Share it securely with the staff member.'}
+              A link will be generated. Share it with the staff member so they can sign up with Google or email.
             </div>
             <DialogFooter>
               <Button
@@ -371,7 +333,7 @@ function WorkersContent() {
                 variant="outline"
                 onClick={() => {
                     setShowAddModal(false);
-                    setFormData({ email: '', name: '', method: 'password' });
+                    setFormData({ email: '', name: '', method: 'invite' });
                   }}
               >
                 Cancel
@@ -381,63 +343,6 @@ function WorkersContent() {
               </Button>
             </DialogFooter>
           </form>
-        </DialogContent>
-      </Dialog>
-
-      {/* Password Display Modal */}
-      <Dialog
-        open={showPasswordModal}
-        onOpenChange={(open) => {
-          setShowPasswordModal(open);
-          if (!open) setCreatedStaff(null);
-        }}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Staff Member Created</DialogTitle>
-            <DialogDescription>
-              Share these credentials securely with the staff member
-            </DialogDescription>
-          </DialogHeader>
-          {createdStaff && (
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label>Email</Label>
-                <div className="flex gap-2">
-                  <Input readOnly value={createdStaff.email} className="font-mono" />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon"
-                    onClick={() => copyToClipboard(createdStaff.email)}
-                  >
-                    <Copy className="size-4" />
-                  </Button>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label>Temporary password</Label>
-                <div className="flex gap-2">
-                  <Input readOnly value={createdStaff.password} className="font-mono font-semibold" />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon"
-                    onClick={() => copyToClipboard(createdStaff.password)}
-                  >
-                    <Copy className="size-4" />
-                  </Button>
-                </div>
-              </div>
-              <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
-                This password remains valid until the staff member changes it. Share it securely via
-                WhatsApp, SMS, or email.
-              </div>
-              <Button className="w-full" onClick={() => setShowPasswordModal(false)}>
-                Got it, I&apos;ve saved the credentials
-              </Button>
-            </div>
-          )}
         </DialogContent>
       </Dialog>
 
