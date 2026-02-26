@@ -59,7 +59,11 @@ function WorkersContent() {
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteConfirmEmail, setDeleteConfirmEmail] = useState('');
-  const [staffToDelete, setStaffToDelete] = useState<{ id: string; email: string } | null>(null);
+  const [staffToDelete, setStaffToDelete] = useState<{
+    id: string;
+    email: string;
+    displayName: string;
+  } | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [createdStaff, setCreatedStaff] = useState<{ email: string; password: string } | null>(null);
   const [formData, setFormData] = useState({ email: '', name: '' });
@@ -114,12 +118,15 @@ function WorkersContent() {
     createMutation.mutate({ email: formData.email.trim(), name: formData.name.trim() || undefined });
   };
 
-  const handleRemoveClick = useCallback((cleanerId: string, email: string) => {
-    setStaffToDelete({ id: cleanerId, email });
-    setDeleteConfirmEmail('');
-    setDeleteError(null);
-    setShowDeleteModal(true);
-  }, []);
+  const handleRemoveClick = useCallback(
+    (cleanerId: string, email: string, displayName: string) => {
+      setStaffToDelete({ id: cleanerId, email, displayName });
+      setDeleteConfirmEmail('');
+      setDeleteError(null);
+      setShowDeleteModal(true);
+    },
+    [],
+  );
 
   const handleDeleteConfirm = useCallback(() => {
     if (!staffToDelete) return;
@@ -205,7 +212,7 @@ function WorkersContent() {
                       className="shrink-0 border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
                       onClick={(e) => {
                         e.preventDefault();
-                        handleRemoveClick(w.cleanerId, w.email);
+                        handleRemoveClick(w.cleanerId, w.email, getStaffDisplayName(w.name, w.email));
                       }}
                     >
                       <Trash2 className="size-4" />
@@ -362,7 +369,7 @@ function WorkersContent() {
             <DialogDescription>
               {staffToDelete && (
                 <>
-                  This will permanently remove <strong>{staffToDelete.email}</strong> from your
+                  This will permanently remove <strong>{staffToDelete.displayName}</strong> from your
                   business. They will no longer be able to view or manage jobs.
                 </>
               )}

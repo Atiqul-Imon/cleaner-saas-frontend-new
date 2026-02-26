@@ -59,14 +59,14 @@ function InvoiceDetailContent() {
     if (!invoice) return;
     setSending(true);
     try {
-      toast.info('Opening WhatsApp…');
+      toast.info('Preparing invoice…');
       await shareInvoiceWithPdf(
         invoice.id,
         invoice.invoiceNumber,
         invoice.client?.name ?? 'Client',
         invoice.business?.name ?? 'Clenvora',
       );
-      toast.success('WhatsApp opened! Send the message to share the invoice.');
+      toast.success('Invoice ready! Select WhatsApp from share menu, or file was downloaded.');
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Failed to open WhatsApp');
     } finally {

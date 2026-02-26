@@ -1,6 +1,6 @@
 /**
  * WhatsApp Share Utilities
- * Handles sharing invoices and job photos via Web Share API (mobile) or WhatsApp links (desktop)
+ * Matches old frontend: mobile = Web Share with files (for WhatsApp/share sheet), desktop = download file (ZIP or PDF).
  */
 
 import { api } from './api';
@@ -57,8 +57,26 @@ export async function sendInvoiceViaWhatsApp(invoiceId: string): Promise<void> {
 }
 
 /**
- * Share invoice PDF via Web Share (mobile) - attaches actual PDF for WhatsApp
- * Falls back to opening wa.me link if Web Share not available
+ * Download invoice PDF (desktop fallback, same as old frontend)
+ */
+export async function downloadInvoicePdf(invoiceId: string, invoiceNumber: string): Promise<void> {
+  const baseUrl = api.getBaseUrl();
+  const headers = await getAuthHeaders();
+  const response = await fetch(`${baseUrl}/invoices/${invoiceId}/pdf`, { headers });
+  if (!response.ok) throw new Error('Failed to fetch invoice PDF');
+
+  const blob = await response.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `invoice-${invoiceNumber}.pdf`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+/**
+ * Share invoice: mobile = Web Share with PDF (user can pick WhatsApp); desktop = download PDF.
+ * Same behaviour as old frontend.
  */
 export async function shareInvoiceWithPdf(
   invoiceId: string,
@@ -86,11 +104,11 @@ export async function shareInvoiceWithPdf(
         return;
       }
     } catch {
-      // Fall through to wa.me link
+      // Fall through to download
     }
   }
 
-  await sendInvoiceViaWhatsApp(invoiceId);
+  await downloadInvoicePdf(invoiceId, invoiceNumber);
 }
 
 /**
@@ -109,8 +127,8 @@ export async function getJobPhotosWhatsAppLink(
 }
 
 /**
- * Share job photos via Web Share (mobile) - attaches actual images for WhatsApp
- * Falls back to opening wa.me link if Web Share not available
+ * Share job photos: mobile = Web Share with images (user can pick WhatsApp); desktop = download ZIP.
+ * Same behaviour as old frontend.
  */
 export async function shareJobPhotosViaWhatsApp(
   jobId: string,
@@ -148,15 +166,11 @@ export async function shareJobPhotosViaWhatsApp(
         return;
       }
     } catch {
-      // Fall through to wa.me link
+      // Fall through to download ZIP
     }
   }
 
-  const { whatsappUrl, error } = await getJobPhotosWhatsAppLink(jobId, type);
-  if (error || !whatsappUrl) {
-    throw new Error(error ?? 'Client has no phone number. Add a phone number to send via WhatsApp.');
-  }
-  openWhatsAppLink(whatsappUrl);
+  await downloadJobPhotosZip(jobId);
 }
 
 /**

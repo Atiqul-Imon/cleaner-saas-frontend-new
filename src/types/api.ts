@@ -69,6 +69,7 @@ export interface Job {
   cleaner?: { id: string; email: string; name?: string | null } | null;
   checklist?: JobChecklistItem[];
   photos?: JobPhoto[];
+  invoice?: { id: string; invoiceNumber: string } | null;
   createdAt: string;
 }
 

@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { api } from '@/lib/api';
-import { sendInvoiceViaWhatsApp } from '@/lib/whatsapp-share';
+import { shareInvoiceWithPdf } from '@/lib/whatsapp-share';
 import type { Invoice } from '@/types/api';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -35,16 +35,17 @@ function InvoicesContentInner() {
   async function handleQuickWhatsApp(e: React.MouseEvent, inv: Invoice) {
     e.preventDefault();
     e.stopPropagation();
-    if (!inv.client?.phone) {
-      toast.error('Add phone number to client to send via WhatsApp');
-      return;
-    }
     setSendingId(inv.id);
     try {
-      await sendInvoiceViaWhatsApp(inv.id);
-      toast.success('WhatsApp opened');
+      await shareInvoiceWithPdf(
+        inv.id,
+        inv.invoiceNumber,
+        inv.client?.name ?? 'Client',
+        inv.business?.name ?? 'Clenvora',
+      );
+      toast.success('Select WhatsApp from share menu, or file was downloaded.');
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Failed to open WhatsApp');
+      toast.error(err instanceof Error ? err.message : 'Failed to share invoice');
     } finally {
       setSendingId(null);
     }
@@ -67,9 +68,7 @@ function InvoicesContentInner() {
             <p className="text-sm text-zinc-500">Loading…</p>
           ) : list.length ? (
             <div className="grid gap-2 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {list.map((inv) => {
-                const hasPhone = !!inv.client?.phone;
-                return (
+              {list.map((inv) => (
                   <Link
                     key={inv.id}
                     href={`/invoices/${inv.id}`}
@@ -88,21 +87,18 @@ function InvoicesContentInner() {
                           {inv.status}
                         </Badge>
                       </div>
-                      {hasPhone && (
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          className="size-8 shrink-0 text-[#25D366] hover:bg-[#25D366]/10"
-                          onClick={(e) => handleQuickWhatsApp(e, inv)}
-                          disabled={sendingId === inv.id}
-                        >
-                          <MessageCircle className="size-4" />
-                        </Button>
-                      )}
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="size-8 shrink-0 text-[#25D366] hover:bg-[#25D366]/10"
+                        onClick={(e) => handleQuickWhatsApp(e, inv)}
+                        disabled={sendingId === inv.id}
+                      >
+                        <MessageCircle className="size-4" />
+                      </Button>
                     </div>
                   </Link>
-                );
-              })}
+              ))}
             </div>
           ) : (
             <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50/50 py-12 text-center">

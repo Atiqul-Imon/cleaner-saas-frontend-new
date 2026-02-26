@@ -14,6 +14,7 @@ import {
   Briefcase,
   CheckCircle2,
   MessageCircle,
+  FileText,
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import type { Job } from '@/types/api';
@@ -29,6 +30,8 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { JobChecklist } from '@/components/job-checklist';
 import { JobPhotoUpload } from '@/components/job-photo-upload';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { shareJobPhotosViaWhatsApp } from '@/lib/whatsapp-share';
@@ -52,19 +55,21 @@ export default function JobDetailPage() {
   const canUpdateStatus = isAssignedToMe || isOwnerDoingItThemselves;
   const canUploadPhotos = isAssignedToMe || isOwnerDoingItThemselves;
   const [sendingPhotos, setSendingPhotos] = useState<string | null>(null);
+  const [invoiceAmount, setInvoiceAmount] = useState('');
+  const [creatingInvoice, setCreatingInvoice] = useState(false);
 
   async function handleSendPhotosViaWhatsApp(photoType: 'BEFORE' | 'AFTER' | 'ALL') {
     if (!job) return;
     setSendingPhotos(photoType);
     try {
-      toast.info('Opening WhatsApp…');
+      toast.info('Preparing photos…');
       await shareJobPhotosViaWhatsApp(
         job.id,
         job.client?.name ?? 'Client',
         'Clenvora',
         photoType,
       );
-      toast.success('WhatsApp opened! Send to share the photos.');
+      toast.success('Photos ready! Select WhatsApp from share menu, or file was downloaded.');
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Failed to open WhatsApp');
     } finally {
@@ -82,6 +87,28 @@ export default function JobDetailPage() {
       queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
     } catch {
       toast.error('Failed to update status');
+    }
+  }
+
+  async function handleCreateInvoice(e: React.FormEvent) {
+    e.preventDefault();
+    const amount = Number(invoiceAmount);
+    if (!Number.isFinite(amount) || amount <= 0) {
+      toast.error('Please enter a valid amount');
+      return;
+    }
+    setCreatingInvoice(true);
+    try {
+      const invoice = await api.post<{ id: string }>(`/invoices/from-job/${id}`, { amount });
+      toast.success('Invoice created');
+      queryClient.invalidateQueries({ queryKey: ['job', id] });
+      queryClient.invalidateQueries({ queryKey: ['invoices'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
+      window.location.href = `/invoices/${invoice.id}`;
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to create invoice');
+    } finally {
+      setCreatingInvoice(false);
     }
   }
 
@@ -410,6 +437,52 @@ export default function JobDetailPage() {
                     <CheckCircle2 className="size-5 shrink-0" />
                     <span className="font-medium">Job completed</span>
                   </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
+          {isOwner && job.status === 'COMPLETED' && (
+            <Card className="border-zinc-200 bg-white">
+              <CardHeader>
+                <CardTitle className="text-zinc-900 flex items-center gap-2">
+                  <FileText className="size-5" />
+                  Invoice
+                </CardTitle>
+                <CardDescription>
+                  {job.invoice
+                    ? 'An invoice has been created for this job.'
+                    : 'Create an invoice for this completed job.'}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {job.invoice ? (
+                  <Button asChild variant="default" className="w-full">
+                    <Link href={`/invoices/${job.invoice.id}`}>
+                      View invoice #{job.invoice.invoiceNumber}
+                    </Link>
+                  </Button>
+                ) : (
+                  <form onSubmit={handleCreateInvoice} className="space-y-3">
+                    <div className="space-y-2">
+                      <Label htmlFor="invoice-amount">Amount (£)</Label>
+                      <Input
+                        id="invoice-amount"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        placeholder="0.00"
+                        value={invoiceAmount}
+                        onChange={(e) => setInvoiceAmount(e.target.value)}
+                        required
+                        disabled={creatingInvoice}
+                        className="w-full"
+                      />
+                    </div>
+                    <Button type="submit" className="w-full" disabled={creatingInvoice}>
+                      {creatingInvoice ? 'Creating…' : 'Create invoice'}
+                    </Button>
+                  </form>
                 )}
               </CardContent>
             </Card>
