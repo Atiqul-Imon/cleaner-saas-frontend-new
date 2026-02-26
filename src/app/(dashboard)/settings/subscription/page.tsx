@@ -6,7 +6,7 @@ import { api } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { RequireOwner } from '@/components/require-owner';
-import { CheckCircle2, ArrowLeft, Mail, MessageCircle, Sparkles, TrendingUp } from 'lucide-react';
+import { CheckCircle2, ArrowLeft, Sparkles, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
 
 interface Subscription {
@@ -96,17 +96,17 @@ const PLANS = [
 function SubscriptionContent() {
   const { user } = useUser();
 
-  const { data: subscription, isLoading: subLoading } = useQuery({
+  const { data: subscription, isLoading: subLoading, refetch: refetchSubscription } = useQuery({
     queryKey: ['subscription'],
     queryFn: () => api.get<Subscription>('/subscriptions'),
   });
 
-  const { data: usageStats, isLoading: usageLoading } = useQuery({
+  const { data: usageStats, isLoading: usageLoading, refetch: refetchUsage } = useQuery({
     queryKey: ['subscription-usage'],
     queryFn: () => api.get<UsageStats>('/subscriptions/usage'),
   });
 
-  const { data: business, isLoading: businessLoading } = useQuery({
+  const { data: business, isLoading: businessLoading, refetch: refetchBusiness } = useQuery({
     queryKey: ['business', 'settings'],
     queryFn: () => api.get<Business>('/business'),
   });
@@ -133,19 +133,18 @@ function SubscriptionContent() {
   const staffLimit = usageStats?.cleanerLimit || 1;
   const isNearStaffLimit = activeStaffCount >= staffLimit * 0.8;
 
-  const handleUpgradeRequest = (planType: 'TEAM' | 'BUSINESS') => {
-    const subject = encodeURIComponent(`Upgrade Request: ${planType} Plan`);
-    const body = encodeURIComponent(
-      `Hi,\n\nI'd like to upgrade my subscription to the ${planType} plan.\n\nBusiness: ${business?.name || 'N/A'}\nCurrent Plan: ${subscription?.planType || 'N/A'}\n\nPlease let me know the next steps.\n\nThanks!`
-    );
-    window.location.href = `mailto:support@yourcleanerapp.com?subject=${subject}&body=${body}`;
-  };
-
-  const handleWhatsAppRequest = (planType: 'TEAM' | 'BUSINESS') => {
-    const message = encodeURIComponent(
-      `Hi! I'd like to upgrade to the ${planType} plan. Business: ${business?.name}. Current: ${subscription?.planType}.`
-    );
-    window.open(`https://wa.me/447911123456?text=${message}`, '_blank');
+  const handleUpgradeRequest = async (planType: 'TEAM' | 'BUSINESS') => {
+    try {
+      await api.post('/upgrade-requests', { toPlan: planType });
+      // Refetch subscription data
+      refetchSubscription();
+      refetchUsage();
+      refetchBusiness();
+      alert('Plan upgraded successfully! You will be charged for the new plan next billing cycle.');
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Failed to upgrade plan';
+      alert(message);
+    }
   };
 
   return (
@@ -302,23 +301,14 @@ function SubscriptionContent() {
               <div className="flex-1">
                 <h3 className="text-lg font-bold text-zinc-900">Ready to grow your team?</h3>
                 <p className="mt-1 text-sm text-zinc-700">
-                  Upgrade to Team for just £14.99/month and add up to 15 staff with unlimited jobs.
+                  Upgrade to Team for just £14.99/month and add up to 15 staff with unlimited jobs. Your new plan starts immediately, and you'll be charged next billing cycle.
                 </p>
-                <div className="mt-4 flex flex-wrap gap-3">
+                <div className="mt-4">
                   <Button
                     onClick={() => handleUpgradeRequest('TEAM')}
                     className="bg-emerald-600 hover:bg-emerald-700"
                   >
-                    <Mail className="mr-2 size-4" />
-                    Email to upgrade
-                  </Button>
-                  <Button
-                    onClick={() => handleWhatsAppRequest('TEAM')}
-                    variant="outline"
-                    className="border-emerald-600 text-emerald-700 hover:bg-emerald-50"
-                  >
-                    <MessageCircle className="mr-2 size-4" />
-                    WhatsApp us
+                    Upgrade to Team Now
                   </Button>
                 </div>
               </div>
@@ -419,28 +409,10 @@ function SubscriptionContent() {
 
           {/* Contact Info */}
           <div className="mt-8 rounded-lg bg-zinc-50 p-4">
-            <h4 className="font-semibold text-zinc-900">Need help choosing?</h4>
+            <h4 className="font-semibold text-zinc-900">How upgrades work</h4>
             <p className="mt-1 text-sm text-zinc-600">
-              Contact us and we'll help you find the right plan for your business.
+              When you upgrade, your new plan starts immediately. You'll be charged for the new plan on your next billing cycle. No immediate payment required.
             </p>
-            <div className="mt-3 flex flex-wrap gap-3">
-              <Button
-                onClick={() => handleUpgradeRequest('TEAM')}
-                variant="outline"
-                size="sm"
-              >
-                <Mail className="mr-2 size-4" />
-                Email us
-              </Button>
-              <Button
-                onClick={() => handleWhatsAppRequest('TEAM')}
-                variant="outline"
-                size="sm"
-              >
-                <MessageCircle className="mr-2 size-4" />
-                WhatsApp
-              </Button>
-            </div>
           </div>
         </CardContent>
       </Card>

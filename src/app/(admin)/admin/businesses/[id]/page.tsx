@@ -7,7 +7,7 @@ import { api } from '@/lib/api';
 import { useUser } from '@/hooks/use-user';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, ArrowLeft, Users, Calendar, FileText, Mail, Phone, UserCog, Briefcase } from 'lucide-react';
+import { Loader2, ArrowLeft, Users, Calendar, FileText, UserCog, Briefcase } from 'lucide-react';
 
 interface BusinessDetails {
   id: string;
@@ -334,29 +334,6 @@ export default function BusinessDetailsPage({ params }: { params: Promise<{ id: 
           <Card className="p-6">
             <h2 className="mb-4 text-xl font-bold text-zinc-900">Quick Actions</h2>
             <div className="space-y-3">
-              <Button
-                variant="outline"
-                className="w-full justify-start"
-                onClick={() => {
-                  window.location.href = `mailto:${business.user.email}?subject=Regarding your ${business.name} account`;
-                }}
-              >
-                <Mail className="mr-2 h-4 w-4" />
-                Email Owner
-              </Button>
-              {business.user.phone && (
-                <Button
-                  variant="outline"
-                  className="w-full justify-start"
-                  onClick={() => {
-                    const phone = business.user.phone?.replace(/\D/g, '') || '';
-                    window.open(`https://wa.me/${phone}`, '_blank');
-                  }}
-                >
-                  <Phone className="mr-2 h-4 w-4" />
-                  WhatsApp Owner
-                </Button>
-              )}
               <Button
                 variant="outline"
                 className="w-full justify-start"
