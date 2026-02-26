@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { RequireOwner } from '@/components/require-owner';
 import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
 import Link from 'next/link';
 import { api } from '@/lib/api';
 import { Button } from '@/components/ui/button';
@@ -36,11 +35,13 @@ function NewClientContent() {
   const [preferences, setPreferences] = useState('');
   const [notesOpen, setNotesOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const hasNotes = !!(keySafe || alarmCode || accessInfo || pets || preferences);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setError('');
     setLoading(true);
     try {
       const notes: Record<string, string> = {};
@@ -56,11 +57,10 @@ function NewClientContent() {
         address: address.trim() || undefined,
         notes: Object.keys(notes).length ? notes : undefined,
       });
-      toast.success('Client added');
       router.push(`/clients/${client.id}`);
       router.refresh();
-    } catch {
-      // api shows toast on error
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to add client.');
     } finally {
       setLoading(false);
     }
@@ -83,6 +83,11 @@ function NewClientContent() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
+            {error && (
+              <p className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700" role="alert">
+                {error}
+              </p>
+            )}
             <div className="space-y-4">
               <div>
                 <label className="mb-1.5 block text-sm font-medium">Name</label>

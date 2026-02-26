@@ -6,7 +6,7 @@ import { RequireOwner } from '@/components/require-owner';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { useUser } from '@/hooks/use-user';
-import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 import {
   Dialog,
   DialogContent,
@@ -67,6 +67,7 @@ function WorkersContent() {
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [createdStaff, setCreatedStaff] = useState<{ email: string; password: string } | null>(null);
   const [formData, setFormData] = useState({ email: '', name: '' });
+  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   const { data: workers, isLoading } = useQuery({
     queryKey: ['workers'],
@@ -88,11 +89,11 @@ function WorkersContent() {
         setFormData({ email: '', name: '' });
       }
       setFormData({ email: '', name: '' });
-      toast.success('Staff member added successfully');
+      setMessage({ type: 'success', text: 'Staff member added.' });
     },
     onError: (err) => {
       const msg = err instanceof Error ? err.message : 'Failed to add staff member';
-      toast.error(msg);
+      setMessage({ type: 'error', text: msg });
     },
   });
 
@@ -104,12 +105,12 @@ function WorkersContent() {
       setStaffToDelete(null);
       setDeleteConfirmEmail('');
       setDeleteError(null);
-      toast.success('Staff member removed successfully');
+      setMessage({ type: 'success', text: 'Staff member removed.' });
     },
     onError: (err) => {
       const msg = err instanceof Error ? err.message : 'Failed to remove staff member';
       setDeleteError(msg);
-      toast.error(msg);
+      setMessage({ type: 'error', text: msg });
     },
   });
 
@@ -140,7 +141,7 @@ function WorkersContent() {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    toast.success('Copied to clipboard');
+    setMessage({ type: 'success', text: 'Copied to clipboard.' });
   };
 
   const list = workers ?? [];
@@ -157,6 +158,18 @@ function WorkersContent() {
           Add Staff
         </Button>
       </div>
+
+      {message && (
+        <div
+          role="alert"
+          className={cn(
+            'rounded-lg border p-4 text-sm',
+            message.type === 'success' ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-red-200 bg-red-50 text-red-700'
+          )}
+        >
+          {message.text}
+        </div>
+      )}
 
       <Card className="border-zinc-200 bg-white shadow-sm">
         <CardHeader>

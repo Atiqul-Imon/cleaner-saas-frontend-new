@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { api } from '@/lib/api';
-import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -19,16 +18,17 @@ export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
+  const [error, setError] = useState('');
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setError('');
     setLoading(true);
     try {
       await api.post('/auth/forgot-password', { email: email.trim() }, { silent: true });
       setSent(true);
-      toast.success('Check your email for reset instructions');
     } catch {
-      toast.error('Failed to send reset email. Check the address.');
+      setError('Failed to send reset email. Check the address.');
     } finally {
       setLoading(false);
     }
@@ -76,6 +76,11 @@ export default function ForgotPasswordPage() {
           </CardHeader>
           <CardContent className="pt-0">
             <form onSubmit={handleSubmit} className="space-y-5">
+              {error && (
+                <p className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700" role="alert">
+                  {error}
+                </p>
+              )}
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input

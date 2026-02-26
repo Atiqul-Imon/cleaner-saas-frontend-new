@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
-import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -22,18 +21,19 @@ export default function OnboardingPage() {
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setError('');
     setLoading(true);
     try {
       await api.post('/business', { name, phone: phone || undefined, address: address || undefined });
       await queryClient.invalidateQueries({ queryKey: ['business'] });
-      toast.success('Business created');
       router.push('/dashboard');
       router.refresh();
-    } catch {
-      // api shows toast on error
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create business.');
     } finally {
       setLoading(false);
     }
@@ -50,6 +50,11 @@ export default function OnboardingPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
+            {error && (
+              <p className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700" role="alert">
+                {error}
+              </p>
+            )}
             <div>
               <label className="mb-1.5 block text-sm font-medium">Business name</label>
               <Input

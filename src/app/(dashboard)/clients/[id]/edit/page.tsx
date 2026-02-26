@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { RequireOwner } from '@/components/require-owner';
 import { useRouter, useParams } from 'next/navigation';
-import { toast } from 'sonner';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
@@ -41,6 +40,7 @@ function EditClientContent() {
   const [preferences, setPreferences] = useState('');
   const [notesOpen, setNotesOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const { data: client, isLoading } = useQuery({
     queryKey: ['client', id],
@@ -64,6 +64,7 @@ function EditClientContent() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setError('');
     setLoading(true);
     try {
       const notes: Record<string, string> = {};
@@ -79,11 +80,10 @@ function EditClientContent() {
         address: address.trim() || undefined,
         notes: Object.keys(notes).length ? notes : undefined,
       });
-      toast.success('Client updated');
       router.push(`/clients/${id}`);
       router.refresh();
-    } catch {
-      // api shows toast on error
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update client.');
     } finally {
       setLoading(false);
     }
@@ -114,6 +114,11 @@ function EditClientContent() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
+            {error && (
+              <p className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700" role="alert">
+                {error}
+              </p>
+            )}
             <div className="space-y-4">
               <div>
                 <label className="mb-1.5 block text-sm font-medium">Name</label>

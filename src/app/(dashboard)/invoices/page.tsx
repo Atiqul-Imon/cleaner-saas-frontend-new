@@ -5,7 +5,6 @@ import { RequireOwner } from '@/components/require-owner';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { toast } from 'sonner';
 import { api } from '@/lib/api';
 import { shareInvoiceWithPdf } from '@/lib/whatsapp-share';
 import type { Invoice } from '@/types/api';
@@ -31,10 +30,12 @@ function InvoicesContentInner() {
     ? invoices
     : (invoices as { data?: Invoice[] })?.data ?? [];
   const [sendingId, setSendingId] = useState<string | null>(null);
+  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   async function handleQuickWhatsApp(e: React.MouseEvent, inv: Invoice) {
     e.preventDefault();
     e.stopPropagation();
+    setMessage(null);
     setSendingId(inv.id);
     try {
       await shareInvoiceWithPdf(
@@ -43,9 +44,9 @@ function InvoicesContentInner() {
         inv.client?.name ?? 'Client',
         inv.business?.name ?? 'Clenvora',
       );
-      toast.success('Select WhatsApp from share menu, or file was downloaded.');
+      setMessage({ type: 'success', text: 'Use share menu or check downloads.' });
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Failed to share invoice');
+      setMessage({ type: 'error', text: err instanceof Error ? err.message : 'Failed to share invoice.' });
     } finally {
       setSendingId(null);
     }
@@ -57,6 +58,15 @@ function InvoicesContentInner() {
         <h1 className="text-2xl font-bold tracking-tight text-zinc-900">Invoices</h1>
         <p className="mt-1 text-base leading-relaxed text-zinc-700">Manage invoices</p>
       </div>
+
+      {message && (
+        <div
+          role="alert"
+          className={`rounded-lg border p-4 text-sm ${message.type === 'success' ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-red-200 bg-red-50 text-red-700'}`}
+        >
+          {message.text}
+        </div>
+      )}
 
       <Card className="border-zinc-200 bg-white shadow-sm">
         <CardHeader>

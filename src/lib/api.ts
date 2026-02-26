@@ -1,5 +1,4 @@
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
-import { toast } from 'sonner';
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_URL ||
@@ -66,10 +65,6 @@ async function handleResponse<T>(res: Response, options?: { silent?: boolean }):
         window.location.href = '/login?session=expired';
       }
       throw new ApiError('Session expired. Please sign in again.', 401);
-    }
-
-    if (!options?.silent && typeof window !== 'undefined') {
-      toast.error(message);
     }
 
     throw new ApiError(message, res.status);

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { toast } from 'sonner';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
@@ -36,7 +35,6 @@ export default function RegisterPage() {
         email: email.trim(),
         password,
       });
-      toast.success('Account created. Sign in to continue.');
       router.push('/login?registered=1');
       router.refresh();
     } catch (err) {

@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { toast } from 'sonner';
 import {
   MapPin,
   Phone,
@@ -57,21 +56,22 @@ export default function JobDetailPage() {
   const [sendingPhotos, setSendingPhotos] = useState<string | null>(null);
   const [invoiceAmount, setInvoiceAmount] = useState('');
   const [creatingInvoice, setCreatingInvoice] = useState(false);
+  const [actionMessage, setActionMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   async function handleSendPhotosViaWhatsApp(photoType: 'BEFORE' | 'AFTER' | 'ALL') {
     if (!job) return;
+    setActionMessage(null);
     setSendingPhotos(photoType);
     try {
-      toast.info('Preparing photos…');
       await shareJobPhotosViaWhatsApp(
         job.id,
         job.client?.name ?? 'Client',
         'Clenvora',
         photoType,
       );
-      toast.success('Photos ready! Select WhatsApp from share menu, or file was downloaded.');
+      setActionMessage({ type: 'success', text: 'Photos ready. Use share menu or check downloads.' });
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Failed to open WhatsApp');
+      setActionMessage({ type: 'error', text: err instanceof Error ? err.message : 'Failed to share photos.' });
     } finally {
       setSendingPhotos(null);
     }
@@ -79,14 +79,15 @@ export default function JobDetailPage() {
 
   async function updateStatus(newStatus: 'SCHEDULED' | 'IN_PROGRESS' | 'COMPLETED') {
     if (!job) return;
+    setActionMessage(null);
     try {
       await api.put<Job>(`/jobs/${id}`, { status: newStatus });
-      toast.success(`Status updated to ${newStatus.replace('_', ' ')}`);
+      setActionMessage({ type: 'success', text: `Status updated to ${newStatus.replace('_', ' ')}.` });
       queryClient.invalidateQueries({ queryKey: ['job', id] });
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
       queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
     } catch {
-      toast.error('Failed to update status');
+      setActionMessage({ type: 'error', text: 'Failed to update status.' });
     }
   }
 
@@ -94,19 +95,20 @@ export default function JobDetailPage() {
     e.preventDefault();
     const amount = Number(invoiceAmount);
     if (!Number.isFinite(amount) || amount <= 0) {
-      toast.error('Please enter a valid amount');
+      setActionMessage({ type: 'error', text: 'Please enter a valid amount.' });
       return;
     }
+    setActionMessage(null);
     setCreatingInvoice(true);
     try {
       const invoice = await api.post<{ id: string }>(`/invoices/from-job/${id}`, { amount });
-      toast.success('Invoice created');
+      setActionMessage({ type: 'success', text: 'Invoice created.' });
       queryClient.invalidateQueries({ queryKey: ['job', id] });
       queryClient.invalidateQueries({ queryKey: ['invoices'] });
       queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
       window.location.href = `/invoices/${invoice.id}`;
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Failed to create invoice');
+      setActionMessage({ type: 'error', text: err instanceof Error ? err.message : 'Failed to create invoice.' });
     } finally {
       setCreatingInvoice(false);
     }
@@ -143,6 +145,19 @@ export default function JobDetailPage() {
 
   return (
     <div className="mx-auto max-w-4xl space-y-8">
+      {actionMessage && (
+        <div
+          role="alert"
+          className={cn(
+            'rounded-lg border p-4 text-sm',
+            actionMessage.type === 'success'
+              ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
+              : 'border-red-200 bg-red-50 text-red-700'
+          )}
+        >
+          {actionMessage.text}
+        </div>
+      )}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <Link href={backHref} className="text-sm font-medium text-zinc-700 hover:underline">
@@ -302,7 +317,7 @@ export default function JobDetailPage() {
                   jobId={job.id}
                   checklist={job.checklist}
                   onUpdate={() => queryClient.invalidateQueries({ queryKey: ['job', id] })}
-                  onError={(msg) => toast.error(msg)}
+                  onError={(msg) => setActionMessage({ type: 'error', text: msg })}
                 />
               </CardContent>
             </Card>
@@ -356,18 +371,18 @@ export default function JobDetailPage() {
                       photoType="BEFORE"
                       onSuccess={() => {
                         queryClient.invalidateQueries({ queryKey: ['job', id] });
-                        toast.success('Before photo uploaded');
+                        setActionMessage({ type: 'success', text: 'Before photo uploaded.' });
                       }}
-                      onError={(m) => toast.error(m)}
+                      onError={(m) => setActionMessage({ type: 'error', text: m })}
                     />
                     <JobPhotoUpload
                       jobId={job.id}
                       photoType="AFTER"
                       onSuccess={() => {
                         queryClient.invalidateQueries({ queryKey: ['job', id] });
-                        toast.success('After photo uploaded');
+                        setActionMessage({ type: 'success', text: 'After photo uploaded.' });
                       }}
-                      onError={(m) => toast.error(m)}
+                      onError={(m) => setActionMessage({ type: 'error', text: m })}
                     />
                     </div>
                   )}

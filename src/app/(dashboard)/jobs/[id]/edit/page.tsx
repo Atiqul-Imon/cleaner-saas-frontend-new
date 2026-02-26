@@ -8,7 +8,6 @@ import Link from 'next/link';
 import { api } from '@/lib/api';
 import { useUser } from '@/hooks/use-user';
 import type { Job } from '@/types/api';
-import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -40,7 +39,6 @@ function EditJobContent() {
       queryClient.invalidateQueries({ queryKey: ['job', id] });
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
       queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
-      toast.success('Job updated');
       router.push(`/jobs/${id}`);
       router.refresh();
     },
@@ -88,6 +86,11 @@ function EditJobContent() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
+            {mutation.isError && (
+              <p className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700" role="alert">
+                {mutation.error instanceof Error ? mutation.error.message : 'Failed to update job.'}
+              </p>
+            )}
             <div>
               <label className="mb-1.5 block text-sm font-medium">Date</label>
               <Input

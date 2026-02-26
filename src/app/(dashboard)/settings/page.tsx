@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation';
 import { useUser } from '@/hooks/use-user';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
-import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -188,6 +188,7 @@ function SettingsContent() {
   const [vatNumber, setVatNumber] = useState('');
   const [invoiceTemplate, setInvoiceTemplate] = useState<InvoiceTemplate>('classic');
   const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   const { data: business, isLoading } = useQuery({
     queryKey: ['business', 'settings'],
@@ -225,6 +226,7 @@ function SettingsContent() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setMessage(null);
     setSaving(true);
     try {
       await api.put('/business', {
@@ -236,9 +238,9 @@ function SettingsContent() {
         invoiceTemplate,
       });
       await queryClient.invalidateQueries({ queryKey: ['business'] });
-      toast.success('Settings saved');
+      setMessage({ type: 'success', text: 'Settings saved.' });
     } catch {
-      toast.error('Failed to save settings');
+      setMessage({ type: 'error', text: 'Failed to save settings.' });
     } finally {
       setSaving(false);
     }
@@ -250,6 +252,18 @@ function SettingsContent() {
         <h1 className="text-2xl font-bold tracking-tight text-zinc-900">Settings</h1>
         <p className="mt-1 text-sm text-zinc-600">Manage your business profile and preferences</p>
       </div>
+
+      {message && (
+        <div
+          role="alert"
+          className={cn(
+            'rounded-lg border p-4 text-sm',
+            message.type === 'success' ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-red-200 bg-red-50 text-red-700'
+          )}
+        >
+          {message.text}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit}>
         <Card>

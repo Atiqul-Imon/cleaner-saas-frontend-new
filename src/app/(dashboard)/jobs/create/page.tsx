@@ -3,7 +3,6 @@
 import { Suspense, useState, useEffect } from 'react';
 import { RequireOwner } from '@/components/require-owner';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { toast } from 'sonner';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useUser } from '@/hooks/use-user';
@@ -82,6 +81,8 @@ function CreateJobContent() {
     ? clients
     : (clients as { data?: Client[] })?.data ?? [];
   const cleanerList = cleaners ?? [];
+  const hasClients = clientList.length > 0;
+  const clientsLoading = canAssignCleaners && clients === undefined;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -110,7 +111,6 @@ function CreateJobContent() {
         reminderEnabled,
         reminderTime,
       });
-      toast.success('Job created');
       router.push(`/jobs/${job.id}`);
       router.refresh();
     } catch (err) {
@@ -118,6 +118,27 @@ function CreateJobContent() {
     } finally {
       setLoading(false);
     }
+  }
+
+  if (!clientsLoading && !hasClients) {
+    return (
+      <div className="mx-auto max-w-2xl space-y-8">
+        <div>
+          <Link href="/jobs" className="text-sm text-zinc-600 hover:underline">
+            ← Back to jobs
+          </Link>
+          <h1 className="mt-2 text-2xl font-bold tracking-tight">New job</h1>
+          <p className="text-zinc-600">Schedule a cleaning job with date and time</p>
+        </div>
+        <div className="rounded-lg border border-amber-200 bg-amber-50 p-6 text-center">
+          <p className="font-medium text-amber-900">Add a client first to create a job.</p>
+          <p className="mt-1 text-sm text-amber-800">You need at least one client before scheduling jobs.</p>
+          <Button asChild className="mt-4">
+            <Link href="/clients/new">Add client</Link>
+          </Button>
+        </div>
+      </div>
+    );
   }
 
   return (

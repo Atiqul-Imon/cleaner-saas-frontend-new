@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
-import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { PasswordInput } from '@/components/ui/password-input';
@@ -22,6 +21,7 @@ export default function ResetPasswordPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [isValidLink, setIsValidLink] = useState<boolean | null>(null);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const hashParams = new URLSearchParams(window.location.hash.substring(1));
@@ -32,12 +32,13 @@ export default function ResetPasswordPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setError('');
     if (password !== confirmPassword) {
-      toast.error('Passwords do not match');
+      setError('Passwords do not match.');
       return;
     }
     if (password.length < 6) {
-      toast.error('Password must be at least 6 characters');
+      setError('Password must be at least 6 characters.');
       return;
     }
 
@@ -49,20 +50,20 @@ export default function ResetPasswordPage() {
       const refreshToken = hashParams.get('refresh_token');
 
       if (!accessToken || !refreshToken) {
-        toast.error('Invalid reset link');
+        setError('Invalid reset link.');
+        setLoading(false);
         return;
       }
 
       await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
-      const { error } = await supabase.auth.updateUser({ password });
+      const { error: updateError } = await supabase.auth.updateUser({ password });
 
-      if (error) throw error;
+      if (updateError) throw updateError;
 
-      toast.success('Password reset. Redirecting…');
       router.push('/dashboard');
       router.refresh();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Failed to reset password');
+      setError(err instanceof Error ? err.message : 'Failed to reset password.');
     } finally {
       setLoading(false);
     }
@@ -110,6 +111,11 @@ export default function ResetPasswordPage() {
           </CardHeader>
           <CardContent className="pt-0">
             <form onSubmit={handleSubmit} className="space-y-5">
+              {error && (
+                <p className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700" role="alert">
+                  {error}
+                </p>
+              )}
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <PasswordInput

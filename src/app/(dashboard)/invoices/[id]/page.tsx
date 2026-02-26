@@ -5,8 +5,8 @@ import { RequireOwner } from '@/components/require-owner';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { toast } from 'sonner';
 import { api } from '@/lib/api';
+import { cn } from '@/lib/utils';
 import type { Invoice } from '@/types/api';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -19,6 +19,7 @@ function InvoiceDetailContent() {
   const params = useParams();
   const id = params.id as string;
   const [sending, setSending] = useState(false);
+  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   const { data: invoice, isLoading, isError, error } = useQuery({
     queryKey: ['invoice', id],
@@ -57,43 +58,59 @@ function InvoiceDetailContent() {
 
   async function handleSendViaWhatsApp() {
     if (!invoice) return;
+    setMessage(null);
     setSending(true);
     try {
-      toast.info('Preparing invoice…');
       await shareInvoiceWithPdf(
         invoice.id,
         invoice.invoiceNumber,
         invoice.client?.name ?? 'Client',
         invoice.business?.name ?? 'Clenvora',
       );
-      toast.success('Invoice ready! Select WhatsApp from share menu, or file was downloaded.');
+      setMessage({ type: 'success', text: 'Use share menu or check downloads.' });
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Failed to open WhatsApp');
+      setMessage({ type: 'error', text: err instanceof Error ? err.message : 'Failed to share invoice.' });
     } finally {
       setSending(false);
     }
   }
 
   async function handleDownloadPdf() {
-    const supabase = (await import('@/lib/supabase/client')).createSupabaseBrowserClient();
-    const { data: { session } } = await supabase.auth.getSession();
-    const token = session?.access_token;
-    const res = await fetch(`${api.getBaseUrl()}/invoices/${id}/pdf`, {
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
-    });
-    if (!res.ok) throw new Error('Download failed');
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `invoice-${invoice?.invoiceNumber ?? 'invoice'}.pdf`;
-    a.click();
-    URL.revokeObjectURL(url);
-    toast.success('PDF downloaded');
+    setMessage(null);
+    try {
+      const supabase = (await import('@/lib/supabase/client')).createSupabaseBrowserClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const res = await fetch(`${api.getBaseUrl()}/invoices/${id}/pdf`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+      if (!res.ok) throw new Error('Download failed');
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `invoice-${invoice?.invoiceNumber ?? 'invoice'}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+      setMessage({ type: 'success', text: 'PDF downloaded.' });
+    } catch {
+      setMessage({ type: 'error', text: 'Download failed.' });
+    }
   }
 
   return (
     <div className="mx-auto max-w-2xl space-y-8">
+      {message && (
+        <div
+          role="alert"
+          className={cn(
+            'rounded-lg border p-4 text-sm',
+            message.type === 'success' ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-red-200 bg-red-50 text-red-700'
+          )}
+        >
+          {message.text}
+        </div>
+      )}
       <div>
         <Link href="/invoices" className="text-sm text-zinc-600 hover:underline">
           ← Back to invoices
