@@ -25,14 +25,14 @@ export default function HomePage() {
         </div>
         <div className="relative mx-auto max-w-7xl">
           <div className="max-w-2xl">
-            <div className="mb-4 inline-block rounded-full bg-white/20 px-4 py-1.5 text-sm font-medium text-white backdrop-blur-sm">
-              Free to start
-            </div>
             <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
-              Keep Track of Your Cleaning Work
+              Simple Job & Invoice Management for UK Cleaning Businesses
             </h1>
             <p className="mt-4 text-lg leading-relaxed text-white/95 sm:text-xl">
-              Remember your jobs. Know who paid you. Simple as a notebook, but on your phone.
+              Manage weekly jobs, send invoices in seconds, and track who has paid — all from your phone.
+            </p>
+            <p className="mt-3 text-base font-medium text-white/90 sm:text-lg">
+              No paperwork. No missed jobs. No payment confusion.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button
@@ -40,7 +40,7 @@ export default function HomePage() {
                 size="lg"
                 className="h-12 bg-white font-semibold text-emerald-700 shadow-lg hover:bg-emerald-50 hover:text-emerald-800"
               >
-                <Link href="/register">Try it free</Link>
+                <Link href="/register">Start Free Beta</Link>
               </Button>
               <Button
                 asChild
@@ -48,20 +48,25 @@ export default function HomePage() {
                 size="lg"
                 className="h-12 border-2 border-white/80 bg-white/10 font-medium text-white backdrop-blur-sm hover:bg-white/20 hover:text-white"
               >
-                <Link href="/login">Sign in</Link>
+                <Link href="/login">Sign In</Link>
               </Button>
             </div>
-            <p className="mt-5 flex flex-wrap gap-x-4 gap-y-1 text-sm text-white/90">
-              <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="size-4" /> Free to start
-              </span>
-              <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="size-4" /> Works on your phone
-              </span>
-              <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="size-4" /> Easy to use
-              </span>
-            </p>
+            <div className="mt-5 space-y-1">
+              <p className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-white/90">
+                <span className="flex items-center gap-1.5">
+                  <CheckCircle2 className="size-4" /> Free to start
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <CheckCircle2 className="size-4" /> Built for solo cleaners & small teams
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <CheckCircle2 className="size-4" /> Works on your phone
+                </span>
+              </p>
+              <p className="text-sm text-white/80">
+                Takes less than 1 minute to get started.
+              </p>
+            </div>
           </div>
         </div>
       </section>
