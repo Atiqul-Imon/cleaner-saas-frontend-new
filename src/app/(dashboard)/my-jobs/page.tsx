@@ -1,6 +1,8 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import { RequireCleaner } from '@/components/require-cleaner';
 import Link from 'next/link';
 import { api, normalizeList } from '@/lib/api';
@@ -15,23 +17,79 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { ListItemSkeleton } from '@/components/loading-skeleton';
 import { format } from 'date-fns';
-import { Briefcase } from 'lucide-react';
+import { Briefcase, LogOut, Building2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 function MyJobsContent() {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const [showLeaveModal, setShowLeaveModal] = useState(false);
+
   const { data: jobs, isLoading } = useQuery({
     queryKey: ['jobs', 'cleaner'],
     queryFn: () => api.get<{ data: Job[] } | Job[]>('/jobs'),
   });
 
+  const { data: myBusiness, isLoading: businessLoading } = useQuery({
+    queryKey: ['my-business'],
+    queryFn: () => api.get<{ id: string; name: string }>('/business/cleaners/my-business'),
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
+
+  const leaveMutation = useMutation({
+    mutationFn: () => api.post('/business/cleaners/leave', {}),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['my-business'] });
+      queryClient.invalidateQueries({ queryKey: ['jobs'] });
+      queryClient.invalidateQueries({ queryKey: ['user'] });
+      setShowLeaveModal(false);
+      router.push('/become-owner');
+      router.refresh();
+    },
+  });
+
   const list = normalizeList<Job>(jobs);
+  const hasBusiness = !!myBusiness && !businessLoading;
 
   return (
     <div className="space-y-5 sm:space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight text-zinc-900">My Jobs</h1>
-        <p className="mt-1 text-base leading-relaxed text-zinc-700">Jobs assigned to you</p>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-zinc-900">My Jobs</h1>
+          <p className="mt-1 text-base leading-relaxed text-zinc-700">Jobs assigned to you</p>
+        </div>
+        {hasBusiness && (
+          <Button
+            variant="outline"
+            size="sm"
+            className="border-amber-200 text-amber-700 hover:bg-amber-50"
+            onClick={() => setShowLeaveModal(true)}
+          >
+            <LogOut className="size-4" />
+            Leave team
+          </Button>
+        )}
       </div>
 
+      {!hasBusiness && !businessLoading ? (
+        <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50/50 p-6 text-center">
+          <Building2 className="mx-auto size-12 text-zinc-500" />
+          <p className="mt-2 text-base font-medium text-zinc-900">You&apos;re not on a team</p>
+          <p className="mt-1 text-sm text-zinc-600">Start your own business to manage clients and jobs.</p>
+          <Button asChild className="mt-4">
+            <Link href="/become-owner">Start my own business</Link>
+          </Button>
+        </div>
+      ) : (
       <Card className="border-zinc-200 bg-white shadow-sm">
         <CardHeader>
           <CardTitle className="text-lg font-semibold text-zinc-900">Assigned jobs</CardTitle>
@@ -83,6 +141,32 @@ function MyJobsContent() {
           )}
         </CardContent>
       </Card>
+      )}
+
+      <Dialog open={showLeaveModal} onOpenChange={setShowLeaveModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Leave team?</DialogTitle>
+            <DialogDescription>
+              You will no longer see jobs from this business. You can start your own business
+              afterward.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowLeaveModal(false)} disabled={leaveMutation.isPending}>
+              Cancel
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => leaveMutation.mutate()}
+              disabled={leaveMutation.isPending}
+              className="border-amber-200 text-amber-700 hover:bg-amber-50"
+            >
+              {leaveMutation.isPending ? 'Leaving…' : 'Leave team'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

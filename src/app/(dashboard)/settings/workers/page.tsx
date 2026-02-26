@@ -22,7 +22,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Copy, Plus, Trash2, UserX } from 'lucide-react';
+import { Copy, Plus, Trash2, UserX, UserMinus } from 'lucide-react';
 
 function getStaffDisplayName(name?: string | null, email?: string): string {
   if (name?.trim()) return name.trim();
@@ -50,6 +50,9 @@ interface Worker {
 
 interface CreateCleanerResponse {
   tempPassword?: string;
+  inviteLink?: string;
+  email?: string;
+  message?: string;
 }
 
 function WorkersContent() {
@@ -58,8 +61,15 @@ function WorkersContent() {
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [showInviteLinkModal, setShowInviteLinkModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showDeactivateModal, setShowDeactivateModal] = useState(false);
   const [deleteConfirmEmail, setDeleteConfirmEmail] = useState('');
+  const [staffToDeactivate, setStaffToDeactivate] = useState<{
+    id: string;
+    email: string;
+    displayName: string;
+  } | null>(null);
   const [staffToDelete, setStaffToDelete] = useState<{
     id: string;
     email: string;
@@ -67,7 +77,8 @@ function WorkersContent() {
   } | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [createdStaff, setCreatedStaff] = useState<{ email: string; password: string } | null>(null);
-  const [formData, setFormData] = useState({ email: '', name: '' });
+  const [createdInvite, setCreatedInvite] = useState<{ email: string; inviteLink: string } | null>(null);
+  const [formData, setFormData] = useState({ email: '', name: '', method: 'password' as 'password' | 'invite' });
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   const { data: workers, isLoading } = useQuery({
@@ -77,7 +88,7 @@ function WorkersContent() {
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: { email: string; name?: string }) =>
+    mutationFn: (data: { email: string; name?: string; method?: 'password' | 'invite' }) =>
       api.post<CreateCleanerResponse>('/business/cleaners', data),
     onSuccess: (result, variables) => {
       queryClient.invalidateQueries({ queryKey: ['workers'] });
@@ -85,16 +96,34 @@ function WorkersContent() {
         setCreatedStaff({ email: variables.email, password: result.tempPassword });
         setShowAddModal(false);
         setShowPasswordModal(true);
+      } else if (result?.inviteLink) {
+        setCreatedInvite({ email: result.email ?? variables.email, inviteLink: result.inviteLink });
+        setShowAddModal(false);
+        setShowInviteLinkModal(true);
       } else {
         setShowAddModal(false);
-        setFormData({ email: '', name: '' });
+        setFormData({ email: '', name: '', method: 'password' });
       }
-      setFormData({ email: '', name: '' });
+      setFormData({ email: '', name: '', method: 'password' });
       setMessage({ type: 'success', text: 'Staff member added.' });
     },
     onError: (err) => {
       const msg = err instanceof Error ? err.message : 'Failed to add staff member';
       setMessage({ type: 'error', text: msg });
+    },
+  });
+
+  const deactivateMutation = useMutation({
+    mutationFn: (cleanerId: string) =>
+      api.post(`/business/cleaners/${cleanerId}/deactivate`, {}),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['workers'] });
+      setShowDeactivateModal(false);
+      setStaffToDeactivate(null);
+      setMessage({ type: 'success', text: 'Staff member deactivated.' });
+    },
+    onError: (err) => {
+      setMessage({ type: 'error', text: err instanceof Error ? err.message : 'Failed to deactivate' });
     },
   });
 
@@ -117,7 +146,11 @@ function WorkersContent() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    createMutation.mutate({ email: formData.email.trim(), name: formData.name.trim() || undefined });
+    createMutation.mutate({
+      email: formData.email.trim(),
+      name: formData.name.trim() || undefined,
+      method: formData.method,
+    });
   };
 
   const handleRemoveClick = useCallback(
@@ -212,18 +245,39 @@ function WorkersContent() {
                         </div>
                       </div>
                     </Link>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="shrink-0 border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleRemoveClick(w.cleanerId, w.email, getStaffDisplayName(w.name, w.email));
-                      }}
-                    >
-                      <Trash2 className="size-4" />
-                      Remove
-                    </Button>
+                    <div className="flex shrink-0 gap-2">
+                      {w.status === 'ACTIVE' && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="border-amber-200 text-amber-700 hover:bg-amber-50"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setStaffToDeactivate({
+                              id: w.cleanerId,
+                              email: w.email,
+                              displayName: getStaffDisplayName(w.name, w.email),
+                            });
+                            setShowDeactivateModal(true);
+                          }}
+                        >
+                          <UserMinus className="size-4" />
+                          Deactivate
+                        </Button>
+                      )}
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleRemoveClick(w.cleanerId, w.email, getStaffDisplayName(w.name, w.email));
+                        }}
+                      >
+                        <Trash2 className="size-4" />
+                        Remove
+                      </Button>
+                    </div>
                   </div>
                 );
               })}
@@ -246,8 +300,8 @@ function WorkersContent() {
       {/* Add Staff Modal */}
       <Dialog open={showAddModal} onOpenChange={setShowAddModal}>
         <DialogContent
-          onPointerDownOutside={() => setFormData({ email: '', name: '' })}
-          onEscapeKeyDown={() => setFormData({ email: '', name: '' })}
+          onPointerDownOutside={() => setFormData({ email: '', name: '', method: 'password' })}
+          onEscapeKeyDown={() => setFormData({ email: '', name: '', method: 'password' })}
         >
           <DialogHeader>
             <DialogTitle>Add New Staff Member</DialogTitle>
@@ -256,6 +310,35 @@ function WorkersContent() {
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label>How to add</Label>
+              <div className="flex flex-col gap-3">
+                <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-zinc-200 p-3">
+                  <input
+                    type="radio"
+                    name="method"
+                    value="password"
+                    checked={formData.method === 'password'}
+                    onChange={() => setFormData((p) => ({ ...p, method: 'password' }))}
+                    className="rounded-full border-zinc-300"
+                  />
+                  <span className="text-sm font-medium">Create with temp password</span>
+                  <span className="text-xs text-zinc-500">Share password with staff</span>
+                </label>
+                <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-zinc-200 p-3">
+                  <input
+                    type="radio"
+                    name="method"
+                    value="invite"
+                    checked={formData.method === 'invite'}
+                    onChange={() => setFormData((p) => ({ ...p, method: 'invite' }))}
+                    className="rounded-full border-zinc-300"
+                  />
+                  <span className="text-sm font-medium">Invite via link</span>
+                  <span className="text-xs text-zinc-500">Staff signs up with Google or email</span>
+                </label>
+              </div>
+            </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email address</Label>
               <Input
@@ -278,17 +361,18 @@ function WorkersContent() {
               />
             </div>
             <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-3 text-sm text-zinc-700">
-              A temporary password will be generated and shown after creation. Share it securely
-              with the staff member.
+              {formData.method === 'invite'
+                ? 'A link will be generated. Share it with the staff member so they can sign up with Google or email.'
+                : 'A temporary password will be generated and shown after creation. Share it securely with the staff member.'}
             </div>
             <DialogFooter>
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => {
-                  setShowAddModal(false);
-                  setFormData({ email: '', name: '' });
-                }}
+                    setShowAddModal(false);
+                    setFormData({ email: '', name: '', method: 'password' });
+                  }}
               >
                 Cancel
               </Button>
@@ -353,6 +437,92 @@ function WorkersContent() {
                 Got it, I&apos;ve saved the credentials
               </Button>
             </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Invite Link Modal */}
+      <Dialog
+        open={showInviteLinkModal}
+        onOpenChange={(open) => {
+          setShowInviteLinkModal(open);
+          if (!open) setCreatedInvite(null);
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Invite Link Created</DialogTitle>
+            <DialogDescription>
+              Share this link with the staff member so they can sign up with Google or email
+            </DialogDescription>
+          </DialogHeader>
+          {createdInvite && (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label>Invite link</Label>
+                <div className="flex gap-2">
+                  <Input readOnly value={createdInvite.inviteLink} className="font-mono text-xs" />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={() => copyToClipboard(createdInvite.inviteLink)}
+                  >
+                    <Copy className="size-4" />
+                  </Button>
+                </div>
+              </div>
+              <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800">
+                Share via WhatsApp or SMS. The link expires in 7 days.
+              </div>
+              <Button className="w-full" onClick={() => setShowInviteLinkModal(false)}>
+                Got it
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Deactivate Modal */}
+      <Dialog
+        open={showDeactivateModal}
+        onOpenChange={(open) => {
+          setShowDeactivateModal(open);
+          if (!open) setStaffToDeactivate(null);
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Deactivate Staff Member?</DialogTitle>
+            <DialogDescription>
+              {staffToDeactivate && (
+                <>
+                  <strong>{staffToDeactivate.displayName}</strong> will no longer see new jobs. You
+                  can re-add them later. This does not delete their account.
+                </>
+              )}
+            </DialogDescription>
+          </DialogHeader>
+          {staffToDeactivate && (
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowDeactivateModal(false);
+                  setStaffToDeactivate(null);
+                }}
+                disabled={deactivateMutation.isPending}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="secondary"
+                onClick={() => deactivateMutation.mutate(staffToDeactivate.id)}
+                disabled={deactivateMutation.isPending}
+              >
+                {deactivateMutation.isPending ? 'Deactivating…' : 'Deactivate'}
+              </Button>
+            </DialogFooter>
           )}
         </DialogContent>
       </Dialog>

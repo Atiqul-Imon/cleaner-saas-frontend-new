@@ -18,6 +18,7 @@ function LoginForm() {
   const { user, isLoading: userLoading } = useUser();
   const registered = searchParams.get('registered') === '1';
   const sessionExpired = searchParams.get('error') === 'session_expired';
+  const next = searchParams.get('next') || undefined;
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -43,7 +44,8 @@ function LoginForm() {
       });
       if (err) throw err;
       const userData = await api.get<{ role?: string }>('/auth/me', { silent: true }).catch(() => null);
-      router.push(userData?.role === 'ADMIN' ? '/admin' : '/dashboard');
+      const target = next || (userData?.role === 'ADMIN' ? '/admin' : '/dashboard');
+      router.push(target.startsWith('/') ? target : `/${target}`);
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Sign in failed');
