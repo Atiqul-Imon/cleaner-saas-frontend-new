@@ -314,9 +314,9 @@ export default function BusinessDetailsPage({ params }: { params: Promise<{ id: 
                 <div>
                   <label className="text-sm font-medium text-zinc-600">Plan</label>
                   <p className="mt-1 text-lg font-semibold text-zinc-900">
-                    {business.subscription.planType === 'SOLO' && 'Solo (£4.99/mo, 0 staff)'}
-                    {business.subscription.planType === 'TEAM' && 'Team (£12.99/mo, up to 12 staff)'}
-                    {business.subscription.planType === 'BUSINESS' && 'Business (£25.99/mo, up to 100 staff)'}
+                    {business.subscription.planType === 'SOLO' && 'Solo (FREE - 1 staff, 20 jobs/mo)'}
+                    {business.subscription.planType === 'TEAM' && 'Team (£14.99/mo, 15 staff)'}
+                    {business.subscription.planType === 'BUSINESS' && 'Business (£99.99/mo, 100 staff)'}
                     {!['SOLO','TEAM','BUSINESS'].includes(business.subscription.planType) && business.subscription.planType}
                   </p>
                 </div>

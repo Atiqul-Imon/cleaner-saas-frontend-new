@@ -25,11 +25,14 @@ export default function HomePage() {
         </div>
         <div className="relative mx-auto max-w-7xl">
           <div className="max-w-2xl">
+            <div className="mb-4 inline-block rounded-full bg-white/20 px-4 py-1.5 text-sm font-medium text-white backdrop-blur-sm">
+              Forever Free Plan Available
+            </div>
             <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
-              Run Your Cleaning Business Simply
+              Job Management for UK Cleaning Businesses
             </h1>
             <p className="mt-4 text-lg leading-relaxed text-white/95 sm:text-xl">
-              Schedule jobs, track payments, get paid faster.
+              Stop juggling WhatsApp, spreadsheets, and paper invoices. Manage your team, schedule jobs, and get paid faster—all in one place.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button
@@ -37,7 +40,7 @@ export default function HomePage() {
                 size="lg"
                 className="h-12 bg-white font-semibold text-emerald-700 shadow-lg hover:bg-emerald-50 hover:text-emerald-800"
               >
-                <Link href="/register">Start free trial</Link>
+                <Link href="/register">Start free forever</Link>
               </Button>
               <Button
                 asChild
@@ -48,15 +51,15 @@ export default function HomePage() {
                 <Link href="/login">Sign in</Link>
               </Button>
             </div>
-            <p className="mt-5 flex flex-wrap gap-x-4 gap-y-1 text-sm text-white/80">
+            <p className="mt-5 flex flex-wrap gap-x-4 gap-y-1 text-sm text-white/90">
               <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="size-4" /> No credit card
+                <CheckCircle2 className="size-4" /> Free forever
               </span>
               <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="size-4" /> 14-day trial
+                <CheckCircle2 className="size-4" /> No credit card needed
               </span>
               <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="size-4" /> Cancel anytime
+                <CheckCircle2 className="size-4" /> 1 minute setup
               </span>
             </p>
           </div>
@@ -68,20 +71,21 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
             <h2 className="text-2xl font-bold tracking-tight text-zinc-900 sm:text-3xl">
-              Everything You Need
+              Built for UK Cleaners, By Cleaners
             </h2>
-            <p className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-zinc-600">
-              Tools built for cleaning businesses.
+            <p className="mx-auto mt-3 max-w-2xl text-base leading-relaxed text-zinc-600">
+              Sick of chasing payments on WhatsApp? Losing invoices in your car? We get it. 
+              That's why we built this—simple tools that actually work for cleaning businesses.
             </p>
           </div>
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {[
-              { icon: Users, title: 'Client Management', desc: 'Track clients, preferences and history.', color: 'bg-emerald-600' },
-              { icon: Calendar, title: 'Smart Scheduling', desc: 'One-off or recurring jobs, auto-generated.', color: 'bg-blue-600' },
-              { icon: Camera, title: 'Proof of Work', desc: 'Before/after photos. Works offline.', color: 'bg-amber-600' },
-              { icon: FileText, title: 'Auto Invoicing', desc: 'Generate invoices on completion.', color: 'bg-violet-600' },
-              { icon: Wallet, title: 'Payment Tracking', desc: 'Track payments, send reminders.', color: 'bg-teal-600' },
-              { icon: Smartphone, title: 'Mobile First', desc: 'Works on any device. Install as PWA.', color: 'bg-rose-600' },
+              { icon: Users, title: 'Client Management', desc: 'All your clients in one place. Track addresses, preferences, and job history.', color: 'bg-emerald-600' },
+              { icon: Calendar, title: 'Smart Scheduling', desc: "Set up recurring jobs once. We'll create them automatically every week or fortnight.", color: 'bg-blue-600' },
+              { icon: Camera, title: 'Proof of Work', desc: "Take before/after photos on the job. Works offline, syncs when you're back online.", color: 'bg-amber-600' },
+              { icon: FileText, title: 'Instant Invoicing', desc: 'Mark a job complete, invoice is ready. No more typing up invoices at home.', color: 'bg-violet-600' },
+              { icon: Wallet, title: 'Payment Tracking', desc: "See who's paid, who owes you. Send payment reminders in one tap.", color: 'bg-teal-600' },
+              { icon: Smartphone, title: 'Works Anywhere', desc: 'Phone, tablet, laptop—it all syncs. Install as an app on your home screen.', color: 'bg-rose-600' },
             ].map((item) => (
               <div
                 key={item.title}
@@ -111,10 +115,10 @@ export default function HomePage() {
           </div>
           <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              { step: '1', title: 'Schedule', desc: 'Create jobs' },
-              { step: '2', title: 'Complete', desc: 'Finish & upload photos' },
-              { step: '3', title: 'Invoice', desc: 'Auto-generated' },
-              { step: '4', title: 'Get Paid', desc: 'Track & remind' },
+              { step: '1', title: 'Schedule', desc: 'Add your jobs—one-off or recurring' },
+              { step: '2', title: 'Complete', desc: 'Mark done, snap before/after photos' },
+              { step: '3', title: 'Invoice', desc: 'Invoice generated automatically' },
+              { step: '4', title: 'Get Paid', desc: 'Track payments, send reminders' },
             ].map((item) => (
               <div key={item.step} className="text-center">
                 <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-emerald-600 text-lg font-bold text-white">
@@ -128,14 +132,152 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Pricing */}
+      <section id="pricing" className="scroll-mt-20 bg-white px-4 py-16 sm:py-20 lg:py-24">
+        <div className="mx-auto max-w-7xl">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold tracking-tight text-zinc-900 sm:text-3xl">
+              Simple, Honest Pricing
+            </h2>
+            <p className="mx-auto mt-3 max-w-2xl text-base leading-relaxed text-zinc-600">
+              Start free. Upgrade when you're ready to grow your team.
+            </p>
+          </div>
+          <div className="mt-12 grid gap-6 lg:grid-cols-3">
+            {/* SOLO - Free */}
+            <div className="rounded-2xl border-2 border-zinc-200 bg-white p-8 shadow-sm">
+              <div className="text-center">
+                <h3 className="text-xl font-bold text-zinc-900">Solo</h3>
+                <p className="mt-2 text-sm text-zinc-600">Perfect for self-employed cleaners</p>
+                <div className="mt-4">
+                  <span className="text-4xl font-bold text-zinc-900">FREE</span>
+                  <span className="ml-2 text-sm font-medium text-emerald-600">Forever</span>
+                </div>
+              </div>
+              <ul className="mt-8 space-y-3">
+                <li className="flex items-start gap-3 text-sm text-zinc-700">
+                  <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
+                  <span><strong>1 staff member</strong></span>
+                </li>
+                <li className="flex items-start gap-3 text-sm text-zinc-700">
+                  <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
+                  <span><strong>20 jobs per month</strong></span>
+                </li>
+                <li className="flex items-start gap-3 text-sm text-zinc-700">
+                  <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
+                  <span>Client management</span>
+                </li>
+                <li className="flex items-start gap-3 text-sm text-zinc-700">
+                  <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
+                  <span>Invoicing & payments</span>
+                </li>
+                <li className="flex items-start gap-3 text-sm text-zinc-700">
+                  <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
+                  <span>Photo uploads</span>
+                </li>
+              </ul>
+              <Button asChild className="mt-8 w-full" variant="outline">
+                <Link href="/register">Start free</Link>
+              </Button>
+            </div>
+
+            {/* TEAM - Most Popular */}
+            <div className="relative rounded-2xl border-2 border-emerald-600 bg-white p-8 shadow-lg lg:scale-105">
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                <span className="rounded-full bg-emerald-600 px-4 py-1 text-xs font-semibold uppercase tracking-wide text-white">
+                  Most Popular
+                </span>
+              </div>
+              <div className="text-center">
+                <h3 className="text-xl font-bold text-zinc-900">Team</h3>
+                <p className="mt-2 text-sm text-zinc-600">For growing cleaning businesses</p>
+                <div className="mt-4">
+                  <span className="text-4xl font-bold text-zinc-900">£14.99</span>
+                  <span className="ml-2 text-sm text-zinc-600">/month</span>
+                </div>
+              </div>
+              <ul className="mt-8 space-y-3">
+                <li className="flex items-start gap-3 text-sm text-zinc-700">
+                  <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
+                  <span><strong>Up to 15 staff</strong></span>
+                </li>
+                <li className="flex items-start gap-3 text-sm text-zinc-700">
+                  <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
+                  <span><strong>Unlimited jobs</strong></span>
+                </li>
+                <li className="flex items-start gap-3 text-sm text-zinc-700">
+                  <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
+                  <span>Everything in Solo</span>
+                </li>
+                <li className="flex items-start gap-3 text-sm text-zinc-700">
+                  <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
+                  <span>Team management</span>
+                </li>
+                <li className="flex items-start gap-3 text-sm text-zinc-700">
+                  <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
+                  <span>Priority support</span>
+                </li>
+              </ul>
+              <Button asChild className="mt-8 w-full bg-emerald-600 hover:bg-emerald-700">
+                <Link href="/register">Start 1-month free trial</Link>
+              </Button>
+            </div>
+
+            {/* BUSINESS */}
+            <div className="rounded-2xl border-2 border-zinc-200 bg-white p-8 shadow-sm">
+              <div className="text-center">
+                <h3 className="text-xl font-bold text-zinc-900">Business</h3>
+                <p className="mt-2 text-sm text-zinc-600">For large cleaning operations</p>
+                <div className="mt-4">
+                  <span className="text-4xl font-bold text-zinc-900">£99.99</span>
+                  <span className="ml-2 text-sm text-zinc-600">/month</span>
+                </div>
+              </div>
+              <ul className="mt-8 space-y-3">
+                <li className="flex items-start gap-3 text-sm text-zinc-700">
+                  <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
+                  <span><strong>Up to 100 staff</strong></span>
+                </li>
+                <li className="flex items-start gap-3 text-sm text-zinc-700">
+                  <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
+                  <span><strong>Unlimited jobs</strong></span>
+                </li>
+                <li className="flex items-start gap-3 text-sm text-zinc-700">
+                  <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
+                  <span>Everything in Team</span>
+                </li>
+                <li className="flex items-start gap-3 text-sm text-zinc-700">
+                  <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
+                  <span>API access</span>
+                </li>
+                <li className="flex items-start gap-3 text-sm text-zinc-700">
+                  <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
+                  <span>Dedicated support</span>
+                </li>
+              </ul>
+              <Button asChild className="mt-8 w-full" variant="outline">
+                <Link href="/register">Start 1-month free trial</Link>
+              </Button>
+            </div>
+          </div>
+
+          {/* Trust builder */}
+          <div className="mt-12 text-center">
+            <p className="text-sm text-zinc-500">
+              All plans include 1 month free trial • Cancel anytime • No hidden fees
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="bg-gradient-to-br from-emerald-600 to-teal-600 px-4 py-16 sm:py-20">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
-            Ready to Get Started?
+        <div className="mx-auto max-w-3xl text-center">
+          <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl lg:text-4xl">
+            Join UK Cleaners Already Saving Hours Every Week
           </h2>
-          <p className="mt-3 text-base leading-relaxed text-white/95">
-            Start your free trial in minutes.
+          <p className="mt-4 text-base leading-relaxed text-white/95 sm:text-lg">
+            No credit card. No commitment. Start managing your cleaning business properly in under 2 minutes.
           </p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <Button
@@ -143,7 +285,7 @@ export default function HomePage() {
               size="lg"
               className="h-12 bg-white font-semibold text-emerald-700 shadow-lg hover:bg-emerald-50 hover:text-emerald-800"
             >
-              <Link href="/register">Start free trial</Link>
+              <Link href="/register">Start free forever</Link>
             </Button>
             <Button
               asChild
@@ -154,6 +296,9 @@ export default function HomePage() {
               <Link href="/login">Sign in</Link>
             </Button>
           </div>
+          <p className="mt-6 text-sm text-white/80">
+            Free plan includes 1 staff member and 20 jobs/month. Need more? Upgrade to Team for just £14.99/month.
+          </p>
         </div>
       </section>
     </>
