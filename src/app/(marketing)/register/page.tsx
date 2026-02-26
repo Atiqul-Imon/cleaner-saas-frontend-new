@@ -109,11 +109,11 @@ export default function RegisterPage() {
                 <Checkbox id="terms" checked={agreeTerms} onCheckedChange={(v) => setAgreeTerms(!!v)} />
                 <label htmlFor="terms" className="text-sm leading-relaxed text-zinc-600">
                   I agree to the{' '}
-                  <Link href="#" className="font-medium text-emerald-600 underline hover:no-underline">
+                  <Link href="/terms" className="font-medium text-emerald-600 underline hover:no-underline">
                     Terms
                   </Link>{' '}
                   and{' '}
-                  <Link href="#" className="font-medium text-emerald-600 underline hover:no-underline">
+                  <Link href="/privacy" className="font-medium text-emerald-600 underline hover:no-underline">
                     Privacy Policy
                   </Link>
                 </label>

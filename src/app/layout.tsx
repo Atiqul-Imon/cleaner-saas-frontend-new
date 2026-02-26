@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Roboto, Inter } from 'next/font/google';
 import './globals.css';
 import { QueryProvider } from '@/providers/query-provider';
+import { CookieConsentBanner } from '@/components/cookie-consent-banner';
 
 const roboto = Roboto({
   variable: '--font-roboto',
@@ -30,6 +31,7 @@ export default function RootLayout({
       <body className={`${roboto.variable} ${inter.variable} font-sans antialiased`}>
         <QueryProvider>
           {children}
+          <CookieConsentBanner />
         </QueryProvider>
       </body>
     </html>

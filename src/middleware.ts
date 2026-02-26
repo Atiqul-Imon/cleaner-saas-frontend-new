@@ -46,11 +46,16 @@ export async function middleware(request: NextRequest) {
     request.nextUrl.pathname.startsWith('/reset-password') ||
     request.nextUrl.pathname === '/';
 
+  const isPublicRoute =
+    isAuthRoute ||
+    request.nextUrl.pathname === '/privacy' ||
+    request.nextUrl.pathname === '/terms';
+
   if (user && isAuthRoute) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
-  if (!user && !isAuthRoute) {
+  if (!user && !isPublicRoute) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 

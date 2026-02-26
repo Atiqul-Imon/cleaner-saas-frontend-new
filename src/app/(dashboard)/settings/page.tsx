@@ -6,6 +6,7 @@ import { useUser } from '@/hooks/use-user';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { Button } from '@/components/ui/button';
+import { InlineMessage } from '@/components/ui/inline-message';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -254,15 +255,7 @@ function SettingsContent() {
       </div>
 
       {message && (
-        <div
-          role="alert"
-          className={cn(
-            'rounded-lg border p-4 text-sm',
-            message.type === 'success' ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-red-200 bg-red-50 text-red-700'
-          )}
-        >
-          {message.text}
-        </div>
+        <InlineMessage type={message.type}>{message.text}</InlineMessage>
       )}
 
       <form onSubmit={handleSubmit}>

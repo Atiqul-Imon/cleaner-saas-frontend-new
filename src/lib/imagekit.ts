@@ -1,3 +1,20 @@
+/**
+ * Build an ImageKit URL with transformation (resize, quality).
+ * Use this for display so all optimization is done by ImageKit, not Next.js/Vercel.
+ */
+export function getImageKitTransformUrl(
+  imageUrl: string,
+  options: { width?: number; height?: number; quality?: number } = {}
+): string {
+  if (!imageUrl || (!imageUrl.includes('imagekit') && !imageUrl.includes('ik.imagekit.io'))) {
+    return imageUrl;
+  }
+  const { width = 800, quality = 80 } = options;
+  const tr: string[] = [`w-${width}`, `q-${quality}`, 'fo-auto'];
+  const sep = imageUrl.includes('?') ? '&' : '?';
+  return `${imageUrl}${sep}tr=${tr.join(',')}`;
+}
+
 export interface ImageKitUploadResponse {
   fileId: string;
   name: string;

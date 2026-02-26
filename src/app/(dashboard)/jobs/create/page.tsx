@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useUser } from '@/hooks/use-user';
-import { api } from '@/lib/api';
+import { api, normalizeList } from '@/lib/api';
 import type { Client } from '@/types/api';
 import {
   getTodayDateInput,
@@ -77,9 +77,7 @@ function CreateJobContent() {
     enabled: canAssignCleaners,
   });
 
-  const clientList = Array.isArray(clients)
-    ? clients
-    : (clients as { data?: Client[] })?.data ?? [];
+  const clientList = normalizeList<Client>(clients);
   const cleanerList = cleaners ?? [];
   const hasClients = clientList.length > 0;
   const clientsLoading = canAssignCleaners && clients === undefined;

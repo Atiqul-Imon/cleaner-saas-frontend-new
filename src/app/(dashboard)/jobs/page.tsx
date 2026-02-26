@@ -1,23 +1,25 @@
 'use client';
 
 import { Suspense } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { RequireOwner } from '@/components/require-owner';
 import { Plus } from 'lucide-react';
-import { api } from '@/lib/api';
+import { api, normalizeList } from '@/lib/api';
 import { useUser } from '@/hooks/use-user';
 import type { Job } from '@/types/api';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { VirtualGrid } from '@/components/ui/virtual-grid';
 import { format } from 'date-fns';
 
 function JobsContent() {
   const searchParams = useSearchParams();
   const status = searchParams.get('status') ?? undefined;
   const { user } = useUser();
+  const queryClient = useQueryClient();
   const isOwner = user?.role === 'OWNER' || user?.role === 'ADMIN';
 
   const { data: jobs, isLoading } = useQuery({
@@ -26,7 +28,7 @@ function JobsContent() {
       api.get<{ data: Job[] } | Job[]>(status ? `/jobs?status=${status}` : '/jobs'),
   });
 
-  const list = Array.isArray(jobs) ? jobs : (jobs as { data?: Job[] })?.data ?? [];
+  const list = normalizeList<Job>(jobs);
 
   return (
     <div className="space-y-5 sm:space-y-8">
@@ -54,11 +56,17 @@ function JobsContent() {
           {isLoading ? (
             <p className="text-sm text-zinc-500">Loading…</p>
           ) : list.length ? (
-            <div className="grid gap-2 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {list.map((job) => (
+            <VirtualGrid
+              items={list}
+              renderItem={(job) => (
                 <Link
-                  key={job.id}
                   href={`/jobs/${job.id}`}
+                  onMouseEnter={() => {
+                    queryClient.prefetchQuery({
+                      queryKey: ['job', job.id],
+                      queryFn: () => api.get<Job>(`/jobs/${job.id}`),
+                    });
+                  }}
                   className="flex flex-col justify-between rounded-lg border border-zinc-200 bg-zinc-50/80 p-3 transition-colors hover:border-zinc-300 hover:bg-white hover:shadow-sm sm:p-4"
                 >
                   <div>
@@ -82,8 +90,8 @@ function JobsContent() {
                     {job.status.replace('_', ' ')}
                   </Badge>
                 </Link>
-              ))}
-            </div>
+              )}
+            />
           ) : (
             <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50/50 py-12 text-center">
               <p className="text-base text-zinc-700">No jobs yet</p>

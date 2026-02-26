@@ -6,6 +6,7 @@ import { RequireOwner } from '@/components/require-owner';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { useUser } from '@/hooks/use-user';
+import { InlineMessage } from '@/components/ui/inline-message';
 import { cn } from '@/lib/utils';
 import {
   Dialog,
@@ -160,15 +161,7 @@ function WorkersContent() {
       </div>
 
       {message && (
-        <div
-          role="alert"
-          className={cn(
-            'rounded-lg border p-4 text-sm',
-            message.type === 'success' ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-red-200 bg-red-50 text-red-700'
-          )}
-        >
-          {message.text}
-        </div>
+        <InlineMessage type={message.type}>{message.text}</InlineMessage>
       )}
 
       <Card className="border-zinc-200 bg-white shadow-sm">

@@ -15,6 +15,16 @@ export class ApiError extends Error {
   }
 }
 
+/**
+ * Normalize API list responses: some endpoints return T[], others { data: T[] }.
+ * Use this so components don't repeat the same logic.
+ */
+export function normalizeList<T>(res: T[] | { data?: T[] } | undefined): T[] {
+  if (res == null) return [];
+  if (Array.isArray(res)) return res;
+  return (res as { data?: T[] }).data ?? [];
+}
+
 async function getAuthHeaders(): Promise<HeadersInit> {
   const supabase = createSupabaseBrowserClient();
   const {

@@ -1,8 +1,28 @@
-import { AppHeader } from '@/components/app-header';
-import { MobileBottomNav } from '@/components/mobile-bottom-nav';
+import dynamic from 'next/dynamic';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { OnboardingGuard } from '@/components/onboarding-guard';
 import { AdminRedirectGuard } from '@/components/admin-redirect-guard';
+
+const AppHeader = dynamic(
+  () => import('@/components/app-header').then((m) => ({ default: m.AppHeader })),
+  {
+    loading: () => (
+      <header className="h-14 shrink-0 border-b border-zinc-200 bg-white" aria-hidden="true" />
+    ),
+  }
+);
+
+const MobileBottomNav = dynamic(
+  () => import('@/components/mobile-bottom-nav').then((m) => ({ default: m.MobileBottomNav })),
+  {
+    loading: () => (
+      <div
+        className="fixed bottom-0 left-0 right-0 z-40 h-16 border-t border-zinc-200 bg-zinc-50 md:hidden"
+        aria-hidden="true"
+      />
+    ),
+  }
+);
 
 export default function DashboardLayout({
   children,

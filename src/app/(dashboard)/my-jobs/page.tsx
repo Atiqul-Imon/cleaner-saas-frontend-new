@@ -3,7 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { RequireCleaner } from '@/components/require-cleaner';
 import Link from 'next/link';
-import { api } from '@/lib/api';
+import { api, normalizeList } from '@/lib/api';
 import type { Job } from '@/types/api';
 import {
   Card,
@@ -23,7 +23,7 @@ function MyJobsContent() {
     queryFn: () => api.get<{ data: Job[] } | Job[]>('/jobs'),
   });
 
-  const list = Array.isArray(jobs) ? jobs : (jobs as { data?: Job[] })?.data ?? [];
+  const list = normalizeList<Job>(jobs);
 
   return (
     <div className="space-y-5 sm:space-y-8">

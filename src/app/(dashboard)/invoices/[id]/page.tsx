@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { api } from '@/lib/api';
-import { cn } from '@/lib/utils';
+import { InlineMessage } from '@/components/ui/inline-message';
 import type { Invoice } from '@/types/api';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -101,15 +101,7 @@ function InvoiceDetailContent() {
   return (
     <div className="mx-auto max-w-2xl space-y-8">
       {message && (
-        <div
-          role="alert"
-          className={cn(
-            'rounded-lg border p-4 text-sm',
-            message.type === 'success' ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-red-200 bg-red-50 text-red-700'
-          )}
-        >
-          {message.text}
-        </div>
+        <InlineMessage type={message.type}>{message.text}</InlineMessage>
       )}
       <div>
         <Link href="/invoices" className="text-sm text-zinc-600 hover:underline">

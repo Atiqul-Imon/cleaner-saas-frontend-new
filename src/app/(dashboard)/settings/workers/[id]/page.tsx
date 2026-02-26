@@ -4,7 +4,7 @@ import { useParams } from 'next/navigation';
 import { RequireOwner } from '@/components/require-owner';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
-import { api } from '@/lib/api';
+import { api, normalizeList } from '@/lib/api';
 import type { Job } from '@/types/api';
 import { useUser } from '@/hooks/use-user';
 import { Button } from '@/components/ui/button';
@@ -54,7 +54,7 @@ function WorkerDetailContent() {
     queryFn: () => api.get<Job[] | { data: Job[] }>('/jobs'),
   });
 
-  const jobList = Array.isArray(jobs) ? jobs : (jobs as { data?: Job[] })?.data ?? [];
+  const jobList = normalizeList<Job>(jobs);
   const staffJobs = jobList
     .filter((j) => j.cleanerId === cleanerId || j.cleaner?.id === cleanerId)
     .slice(0, 12);

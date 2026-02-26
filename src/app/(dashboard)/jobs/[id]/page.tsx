@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { getImageKitTransformUrl } from '@/lib/imagekit';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import {
@@ -33,6 +34,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { InlineMessage } from '@/components/ui/inline-message';
 import { shareJobPhotosViaWhatsApp } from '@/lib/whatsapp-share';
 
 export default function JobDetailPage() {
@@ -146,17 +148,7 @@ export default function JobDetailPage() {
   return (
     <div className="mx-auto max-w-4xl space-y-8">
       {actionMessage && (
-        <div
-          role="alert"
-          className={cn(
-            'rounded-lg border p-4 text-sm',
-            actionMessage.type === 'success'
-              ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
-              : 'border-red-200 bg-red-50 text-red-700'
-          )}
-        >
-          {actionMessage.text}
-        </div>
+        <InlineMessage type={actionMessage.type}>{actionMessage.text}</InlineMessage>
       )}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
@@ -392,11 +384,12 @@ export default function JobDetailPage() {
             <CardContent>
               {job.photos && job.photos.length > 0 ? (
                 <div className="grid gap-4 sm:grid-cols-2">
-                  {job.photos.map((photo) => (
+                  {job.photos.map((photo, index) => (
                     <div key={photo.id} className="overflow-hidden rounded-lg border border-zinc-200">
                       <img
-                        src={photo.imageUrl}
+                        src={getImageKitTransformUrl(photo.imageUrl, { width: 640, quality: 80 })}
                         alt={photo.photoType}
+                        loading={index === 0 ? 'eager' : 'lazy'}
                         className="aspect-video w-full object-cover"
                       />
                       <p className="bg-zinc-50 px-3 py-2 text-xs font-medium text-zinc-600">

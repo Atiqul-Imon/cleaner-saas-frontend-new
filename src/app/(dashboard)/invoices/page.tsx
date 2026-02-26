@@ -2,10 +2,10 @@
 
 import { Suspense, useState } from 'react';
 import { RequireOwner } from '@/components/require-owner';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { api } from '@/lib/api';
+import { api, normalizeList } from '@/lib/api';
 import { shareInvoiceWithPdf } from '@/lib/whatsapp-share';
 import type { Invoice } from '@/types/api';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,10 +13,13 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
 import { MessageCircle } from 'lucide-react';
+import { InlineMessage } from '@/components/ui/inline-message';
+import { VirtualGrid } from '@/components/ui/virtual-grid';
 
 function InvoicesContentInner() {
   const searchParams = useSearchParams();
   const status = searchParams.get('status') as 'PAID' | 'UNPAID' | null;
+  const queryClient = useQueryClient();
 
   const { data: invoices, isLoading } = useQuery({
     queryKey: ['invoices', status],
@@ -26,9 +29,7 @@ function InvoicesContentInner() {
       ),
   });
 
-  const list = Array.isArray(invoices)
-    ? invoices
-    : (invoices as { data?: Invoice[] })?.data ?? [];
+  const list = normalizeList<Invoice>(invoices);
   const [sendingId, setSendingId] = useState<string | null>(null);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
@@ -60,12 +61,7 @@ function InvoicesContentInner() {
       </div>
 
       {message && (
-        <div
-          role="alert"
-          className={`rounded-lg border p-4 text-sm ${message.type === 'success' ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-red-200 bg-red-50 text-red-700'}`}
-        >
-          {message.text}
-        </div>
+        <InlineMessage type={message.type}>{message.text}</InlineMessage>
       )}
 
       <Card className="border-zinc-200 bg-white shadow-sm">
@@ -77,39 +73,45 @@ function InvoicesContentInner() {
           {isLoading ? (
             <p className="text-sm text-zinc-500">Loading…</p>
           ) : list.length ? (
-            <div className="grid gap-2 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {list.map((inv) => (
-                  <Link
-                    key={inv.id}
-                    href={`/invoices/${inv.id}`}
-                    className="flex flex-col justify-between rounded-lg border border-zinc-200 bg-zinc-50/80 p-3 transition-colors hover:border-zinc-300 hover:bg-white hover:shadow-sm sm:p-4"
-                  >
-                    <div>
-                      <p className="font-medium text-zinc-900">#{inv.invoiceNumber}</p>
-                      <p className="mt-0.5 text-sm leading-relaxed text-zinc-600">
-                        {inv.client?.name} · {format(new Date(inv.dueDate), 'MMM d')}
-                      </p>
+            <VirtualGrid
+              items={list}
+              renderItem={(inv) => (
+                <Link
+                  href={`/invoices/${inv.id}`}
+                  onMouseEnter={() => {
+                    queryClient.prefetchQuery({
+                      queryKey: ['invoice', inv.id],
+                      queryFn: () => api.get<Invoice>(`/invoices/${inv.id}`),
+                    });
+                  }}
+                  className="flex flex-col justify-between rounded-lg border border-zinc-200 bg-zinc-50/80 p-3 transition-colors hover:border-zinc-300 hover:bg-white hover:shadow-sm sm:p-4"
+                >
+                  <div>
+                    <p className="font-medium text-zinc-900">#{inv.invoiceNumber}</p>
+                    <p className="mt-0.5 text-sm leading-relaxed text-zinc-600">
+                      {inv.client?.name} · {format(new Date(inv.dueDate), 'MMM d')}
+                    </p>
+                  </div>
+                  <div className="mt-3 flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <p className="font-medium text-zinc-900">£{Number(inv.totalAmount)}</p>
+                      <Badge variant={inv.status === 'PAID' ? 'default' : 'secondary'}>
+                        {inv.status}
+                      </Badge>
                     </div>
-                    <div className="mt-3 flex items-center justify-between gap-2">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <p className="font-medium text-zinc-900">£{Number(inv.totalAmount)}</p>
-                        <Badge variant={inv.status === 'PAID' ? 'default' : 'secondary'}>
-                          {inv.status}
-                        </Badge>
-                      </div>
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="size-8 shrink-0 text-[#25D366] hover:bg-[#25D366]/10"
-                        onClick={(e) => handleQuickWhatsApp(e, inv)}
-                        disabled={sendingId === inv.id}
-                      >
-                        <MessageCircle className="size-4" />
-                      </Button>
-                    </div>
-                  </Link>
-              ))}
-            </div>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="size-8 shrink-0 text-[#25D366] hover:bg-[#25D366]/10"
+                      onClick={(e) => handleQuickWhatsApp(e, inv)}
+                      disabled={sendingId === inv.id}
+                    >
+                      <MessageCircle className="size-4" />
+                    </Button>
+                  </div>
+                </Link>
+              )}
+            />
           ) : (
             <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50/50 py-12 text-center">
               <p className="text-base text-zinc-700">No invoices yet</p>

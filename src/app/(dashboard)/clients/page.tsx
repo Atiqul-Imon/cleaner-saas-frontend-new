@@ -1,21 +1,24 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { Suspense } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { RequireOwner } from '@/components/require-owner';
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
-import { api } from '@/lib/api';
+import { api, normalizeList } from '@/lib/api';
 import type { Client } from '@/types/api';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { VirtualGrid } from '@/components/ui/virtual-grid';
 
 function ClientsContent() {
+  const queryClient = useQueryClient();
   const { data: clients, isLoading } = useQuery({
     queryKey: ['clients'],
     queryFn: () => api.get<{ data: Client[] } | Client[]>('/clients'),
   });
 
-  const list = Array.isArray(clients) ? clients : (clients as { data?: Client[] })?.data ?? [];
+  const list = normalizeList<Client>(clients);
 
   return (
     <div className="space-y-5 sm:space-y-8">
@@ -41,11 +44,17 @@ function ClientsContent() {
           {isLoading ? (
             <p className="text-sm text-zinc-500">Loading…</p>
           ) : list.length ? (
-            <div className="grid gap-2 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {list.map((client) => (
+            <VirtualGrid
+              items={list}
+              renderItem={(client) => (
                 <Link
-                  key={client.id}
                   href={`/clients/${client.id}`}
+                  onMouseEnter={() => {
+                    queryClient.prefetchQuery({
+                      queryKey: ['client', client.id],
+                      queryFn: () => api.get<Client>(`/clients/${client.id}`),
+                    });
+                  }}
                   className="flex flex-col rounded-lg border border-zinc-200 bg-zinc-50/80 p-3 transition-colors hover:border-zinc-300 hover:bg-white hover:shadow-sm sm:p-4"
                 >
                   <p className="font-medium text-zinc-900">{client.name}</p>
@@ -53,8 +62,8 @@ function ClientsContent() {
                     <p className="mt-0.5 text-sm leading-relaxed text-zinc-600">{client.phone}</p>
                   )}
                 </Link>
-              ))}
-            </div>
+              )}
+            />
           ) : (
             <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50/50 py-12 text-center">
               <p className="text-base text-zinc-700">No clients yet</p>
@@ -72,7 +81,9 @@ function ClientsContent() {
 export default function ClientsPage() {
   return (
     <RequireOwner>
-      <ClientsContent />
+      <Suspense fallback={<div className="p-8">Loading…</div>}>
+        <ClientsContent />
+      </Suspense>
     </RequireOwner>
   );
 }
