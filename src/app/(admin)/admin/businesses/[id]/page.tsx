@@ -7,7 +7,7 @@ import { api } from '@/lib/api';
 import { useUser } from '@/hooks/use-user';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, ArrowLeft, Users, Calendar, FileText } from 'lucide-react';
+import { Loader2, ArrowLeft, Users, Calendar, FileText, Mail, Phone, UserCog, Briefcase } from 'lucide-react';
 
 interface BusinessDetails {
   id: string;
@@ -16,12 +16,15 @@ interface BusinessDetails {
   address?: string;
   vatEnabled: boolean;
   vatNumber?: string;
+  invoiceTemplate?: string;
   createdAt: string;
   updatedAt: string;
   user: {
     id: string;
     email: string;
     role: string;
+    name?: string;
+    phone?: string;
     createdAt: string;
   };
   subscription?: {
@@ -31,6 +34,9 @@ interface BusinessDetails {
     currentPeriodEnd: string;
     trialStartedAt?: string;
     trialEndsAt?: string;
+    payoneerEmail?: string;
+    adminNotes?: string;
+    paymentMethod?: string;
     createdAt: string;
   };
   clients: Array<{
@@ -52,10 +58,21 @@ interface BusinessDetails {
     status: string;
     createdAt: string;
   }>;
+  cleaners: Array<{
+    id: string;
+    cleaner: {
+      email: string;
+      name?: string;
+      phone?: string;
+    };
+    status: string;
+    createdAt: string;
+  }>;
   _count: {
     clients: number;
     jobs: number;
     invoices: number;
+    cleaners: number;
   };
 }
 
@@ -119,12 +136,26 @@ export default function BusinessDetailsPage({ params }: { params: Promise<{ id: 
               </div>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div>
-                  <label className="text-sm font-medium text-zinc-600">Email</label>
+                  <label className="text-sm font-medium text-zinc-600">Owner Email</label>
                   <p className="mt-1 text-zinc-900">{business.user.email}</p>
                 </div>
+                {business.user.name && (
+                  <div>
+                    <label className="text-sm font-medium text-zinc-600">Owner Name</label>
+                    <p className="mt-1 text-zinc-900">{business.user.name}</p>
+                  </div>
+                )}
+              </div>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                {business.user.phone && (
+                  <div>
+                    <label className="text-sm font-medium text-zinc-600">Owner Phone</label>
+                    <p className="mt-1 text-zinc-900">{business.user.phone}</p>
+                  </div>
+                )}
                 {business.phone && (
                   <div>
-                    <label className="text-sm font-medium text-zinc-600">Phone</label>
+                    <label className="text-sm font-medium text-zinc-600">Business Phone</label>
                     <p className="mt-1 text-zinc-900">{business.phone}</p>
                   </div>
                 )}
@@ -176,6 +207,47 @@ export default function BusinessDetailsPage({ params }: { params: Promise<{ id: 
                 </div>
               </div>
             </div>
+          </Card>
+
+          <Card className="p-6">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-xl font-bold text-zinc-900">Staff / Cleaners</h2>
+              <span className="text-sm text-zinc-600">{business._count.cleaners} total</span>
+            </div>
+            {business.cleaners.length === 0 ? (
+              <p className="py-8 text-center text-zinc-500">No staff added yet</p>
+            ) : (
+              <div className="space-y-3">
+                {business.cleaners.map((cleaner) => (
+                  <div
+                    key={cleaner.id}
+                    className="flex items-center justify-between rounded-lg bg-zinc-50 p-3"
+                  >
+                    <div>
+                      <p className="font-medium text-zinc-900">{cleaner.cleaner.email}</p>
+                      {cleaner.cleaner.name && (
+                        <p className="text-sm text-zinc-600">{cleaner.cleaner.name}</p>
+                      )}
+                      {cleaner.cleaner.phone && (
+                        <p className="text-sm text-zinc-600">{cleaner.cleaner.phone}</p>
+                      )}
+                      <p className="text-xs text-zinc-500">
+                        Added {new Date(cleaner.createdAt).toLocaleDateString('en-GB')}
+                      </p>
+                    </div>
+                    <span
+                      className={`rounded px-2 py-1 text-xs font-semibold ${
+                        cleaner.status === 'ACTIVE'
+                          ? 'bg-emerald-100 text-emerald-700'
+                          : 'bg-zinc-100 text-zinc-700'
+                      }`}
+                    >
+                      {cleaner.status}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
           </Card>
 
           <Card className="p-6">
@@ -260,6 +332,43 @@ export default function BusinessDetailsPage({ params }: { params: Promise<{ id: 
 
         <div className="space-y-6">
           <Card className="p-6">
+            <h2 className="mb-4 text-xl font-bold text-zinc-900">Quick Actions</h2>
+            <div className="space-y-3">
+              <Button
+                variant="outline"
+                className="w-full justify-start"
+                onClick={() => {
+                  window.location.href = `mailto:${business.user.email}?subject=Regarding your ${business.name} account`;
+                }}
+              >
+                <Mail className="mr-2 h-4 w-4" />
+                Email Owner
+              </Button>
+              {business.user.phone && (
+                <Button
+                  variant="outline"
+                  className="w-full justify-start"
+                  onClick={() => {
+                    const phone = business.user.phone?.replace(/\D/g, '') || '';
+                    window.open(`https://wa.me/${phone}`, '_blank');
+                  }}
+                >
+                  <Phone className="mr-2 h-4 w-4" />
+                  WhatsApp Owner
+                </Button>
+              )}
+              <Button
+                variant="outline"
+                className="w-full justify-start"
+                onClick={() => router.push('/admin/subscriptions')}
+              >
+                <Briefcase className="mr-2 h-4 w-4" />
+                Manage Subscription
+              </Button>
+            </div>
+          </Card>
+
+          <Card className="p-6">
             <h2 className="mb-4 text-xl font-bold text-zinc-900">Statistics</h2>
             <div className="space-y-4">
               <div className="flex items-center justify-between rounded-lg bg-blue-50 p-3">
@@ -292,6 +401,17 @@ export default function BusinessDetailsPage({ params }: { params: Promise<{ id: 
                   <div>
                     <p className="text-sm text-zinc-600">Invoices</p>
                     <p className="text-2xl font-bold text-zinc-900">{business._count.invoices}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center justify-between rounded-lg bg-amber-50 p-3">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-500">
+                    <UserCog className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-zinc-600">Staff</p>
+                    <p className="text-2xl font-bold text-zinc-900">{business._count.cleaners}</p>
                   </div>
                 </div>
               </div>
@@ -362,6 +482,26 @@ export default function BusinessDetailsPage({ params }: { params: Promise<{ id: 
                     </p>
                   </div>
                 )}
+                {business.subscription.paymentMethod && (
+                  <div>
+                    <label className="text-sm font-medium text-zinc-600">Payment Method</label>
+                    <p className="mt-1 text-zinc-900">{business.subscription.paymentMethod}</p>
+                  </div>
+                )}
+                {business.subscription.payoneerEmail && (
+                  <div>
+                    <label className="text-sm font-medium text-zinc-600">Payoneer Email</label>
+                    <p className="mt-1 text-zinc-900">{business.subscription.payoneerEmail}</p>
+                  </div>
+                )}
+                {business.subscription.adminNotes && (
+                  <div className="border-t border-zinc-200 pt-3">
+                    <label className="text-sm font-medium text-zinc-600">Admin Notes</label>
+                    <p className="mt-1 whitespace-pre-wrap rounded bg-amber-50 p-2 text-sm text-zinc-900">
+                      {business.subscription.adminNotes}
+                    </p>
+                  </div>
+                )}
               </div>
             </Card>
           )}
@@ -369,6 +509,10 @@ export default function BusinessDetailsPage({ params }: { params: Promise<{ id: 
           <Card className="p-6">
             <h2 className="mb-4 text-xl font-bold text-zinc-900">Account</h2>
             <div className="space-y-3">
+              <div>
+                <label className="text-sm font-medium text-zinc-600">Business ID</label>
+                <p className="mt-1 font-mono text-sm text-zinc-900">{business.id}</p>
+              </div>
               <div>
                 <label className="text-sm font-medium text-zinc-600">User ID</label>
                 <p className="mt-1 font-mono text-sm text-zinc-900">{business.user.id}</p>
@@ -383,6 +527,12 @@ export default function BusinessDetailsPage({ params }: { params: Promise<{ id: 
                   {new Date(business.user.createdAt).toLocaleDateString('en-GB')}
                 </p>
               </div>
+              {business.invoiceTemplate && (
+                <div>
+                  <label className="text-sm font-medium text-zinc-600">Invoice Template</label>
+                  <p className="mt-1 text-zinc-900">{business.invoiceTemplate}</p>
+                </div>
+              )}
             </div>
           </Card>
         </div>
