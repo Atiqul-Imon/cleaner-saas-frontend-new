@@ -48,6 +48,7 @@ export async function middleware(request: NextRequest) {
 
   const isPublicRoute =
     isAuthRoute ||
+    request.nextUrl.pathname === '/auth/callback' ||
     request.nextUrl.pathname === '/privacy' ||
     request.nextUrl.pathname === '/terms';
 
