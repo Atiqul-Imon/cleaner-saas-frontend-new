@@ -319,10 +319,9 @@ export default function JobDetailPage() {
                       {job.photos.some((p) => p.photoType === 'BEFORE') && (
                         <Button
                           size="sm"
-                          variant="outline"
                           onClick={() => handleSendPhotosViaWhatsApp('BEFORE')}
                           disabled={!!sendingPhotos}
-                          className="border-[#25D366] text-[#25D366] hover:bg-[#25D366]/10"
+                          className="bg-[#25D366] hover:bg-[#20BA5A] text-white border-0"
                         >
                           <MessageCircle className="size-4" />
                           Send before
@@ -331,10 +330,9 @@ export default function JobDetailPage() {
                       {job.photos.some((p) => p.photoType === 'AFTER') && (
                         <Button
                           size="sm"
-                          variant="outline"
                           onClick={() => handleSendPhotosViaWhatsApp('AFTER')}
                           disabled={!!sendingPhotos}
-                          className="border-[#25D366] text-[#25D366] hover:bg-[#25D366]/10"
+                          className="bg-[#25D366] hover:bg-[#20BA5A] text-white border-0"
                         >
                           <MessageCircle className="size-4" />
                           Send after
@@ -457,7 +455,7 @@ export default function JobDetailPage() {
               </CardHeader>
               <CardContent>
                 {job.invoice ? (
-                  <Button asChild variant="default" className="w-full">
+                  <Button asChild className="w-full bg-zinc-900 hover:bg-zinc-800 text-white border-0">
                     <Link href={`/invoices/${job.invoice.id}`}>
                       View invoice #{job.invoice.invoiceNumber}
                     </Link>
@@ -479,7 +477,11 @@ export default function JobDetailPage() {
                         className="w-full"
                       />
                     </div>
-                    <Button type="submit" className="w-full" disabled={creatingInvoice}>
+                    <Button
+                      type="submit"
+                      className="w-full bg-emerald-600 hover:bg-emerald-700 text-white border-0"
+                      disabled={creatingInvoice}
+                    >
                       {creatingInvoice ? 'Creating…' : 'Create invoice'}
                     </Button>
                   </form>

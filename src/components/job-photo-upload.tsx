@@ -48,10 +48,14 @@ export function JobPhotoUpload({ jobId, photoType, onSuccess, onError }: JobPhot
       />
       <Button
         type="button"
-        variant="outline"
         size="sm"
         onClick={() => inputRef.current?.click()}
         disabled={uploading}
+        className={
+          photoType === 'BEFORE'
+            ? 'bg-sky-600 hover:bg-sky-700 text-white border-0'
+            : 'bg-emerald-600 hover:bg-emerald-700 text-white border-0'
+        }
       >
         {uploading ? (
           <Loader2 className="size-4 animate-spin" />
