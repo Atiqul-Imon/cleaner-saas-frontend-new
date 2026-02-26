@@ -147,6 +147,22 @@ function SubscriptionContent() {
     }
   };
 
+  const handleCancelSubscription = async () => {
+    if (!confirm('Are you sure you want to cancel your subscription? You will lose access to premium features at the end of your current billing period.')) {
+      return;
+    }
+
+    try {
+      await api.post('/subscriptions/cancel');
+      refetchSubscription();
+      refetchUsage();
+      alert('Subscription cancelled successfully. You will retain access until the end of your current billing period.');
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Failed to cancel subscription';
+      alert(message);
+    }
+  };
+
   return (
     <div className="mx-auto max-w-5xl space-y-6">
       {/* Header */}
@@ -428,6 +444,57 @@ function SubscriptionContent() {
               <span className="font-medium text-zinc-700">Payoneer: </span>
               <span className="text-zinc-900">{subscription.payoneerEmail}</span>
             </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Cancel Subscription */}
+      {subscription && subscription.status !== 'CANCELLED' && subscription.planType !== 'SOLO' && (
+        <Card className="border-red-200 bg-red-50">
+          <CardHeader>
+            <CardTitle className="text-lg text-red-900">Cancel Subscription</CardTitle>
+            <CardDescription className="text-red-700">
+              Permanently cancel your subscription
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="rounded-lg bg-white p-4">
+              <p className="text-sm text-zinc-700">
+                Cancelling your subscription will:
+              </p>
+              <ul className="mt-2 space-y-1 text-sm text-zinc-600">
+                <li>• Stop future billing</li>
+                <li>• Keep access until end of current period ({subscription.currentPeriodEnd ? new Date(subscription.currentPeriodEnd).toLocaleDateString('en-GB') : 'N/A'})</li>
+                <li>• Downgrade to SOLO plan after current period ends</li>
+                <li>• Limit you to 1 staff and 20 jobs/month</li>
+              </ul>
+            </div>
+            <Button
+              variant="destructive"
+              onClick={handleCancelSubscription}
+              className="w-full"
+            >
+              Cancel Subscription
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Already Cancelled */}
+      {subscription?.status === 'CANCELLED' && (
+        <Card className="border-amber-200 bg-amber-50">
+          <CardHeader>
+            <CardTitle className="text-lg text-amber-900">Subscription Cancelled</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-amber-700">
+              Your subscription has been cancelled. You will retain access to your current plan until{' '}
+              {subscription.currentPeriodEnd && new Date(subscription.currentPeriodEnd).toLocaleDateString('en-GB', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+              })}. After that, you'll be downgraded to the SOLO (FREE) plan.
+            </p>
           </CardContent>
         </Card>
       )}
