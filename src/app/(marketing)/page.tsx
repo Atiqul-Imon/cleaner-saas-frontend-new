@@ -26,13 +26,13 @@ export default function HomePage() {
         <div className="relative mx-auto max-w-7xl">
           <div className="max-w-2xl">
             <div className="mb-4 inline-block rounded-full bg-white/20 px-4 py-1.5 text-sm font-medium text-white backdrop-blur-sm">
-              Forever Free Plan Available
+              Free to start
             </div>
             <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
-              Job Management for UK Cleaning Businesses
+              Keep Track of Your Cleaning Work
             </h1>
             <p className="mt-4 text-lg leading-relaxed text-white/95 sm:text-xl">
-              Stop juggling WhatsApp, spreadsheets, and paper invoices. Manage your team, schedule jobs, and get paid faster—all in one place.
+              Remember your jobs. Know who paid you. Simple as a notebook, but on your phone.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button
@@ -40,7 +40,7 @@ export default function HomePage() {
                 size="lg"
                 className="h-12 bg-white font-semibold text-emerald-700 shadow-lg hover:bg-emerald-50 hover:text-emerald-800"
               >
-                <Link href="/register">Start free forever</Link>
+                <Link href="/register">Try it free</Link>
               </Button>
               <Button
                 asChild
@@ -53,13 +53,13 @@ export default function HomePage() {
             </div>
             <p className="mt-5 flex flex-wrap gap-x-4 gap-y-1 text-sm text-white/90">
               <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="size-4" /> Free forever
+                <CheckCircle2 className="size-4" /> Free to start
               </span>
               <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="size-4" /> No credit card needed
+                <CheckCircle2 className="size-4" /> Works on your phone
               </span>
               <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="size-4" /> 1 minute setup
+                <CheckCircle2 className="size-4" /> Easy to use
               </span>
             </p>
           </div>
@@ -71,21 +71,20 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
             <h2 className="text-2xl font-bold tracking-tight text-zinc-900 sm:text-3xl">
-              Built for UK Cleaners, By Cleaners
+              Everything in One Place
             </h2>
             <p className="mx-auto mt-3 max-w-2xl text-base leading-relaxed text-zinc-600">
-              Sick of chasing payments on WhatsApp? Losing invoices in your car? We get it. 
-              That's why we built this—simple tools that actually work for cleaning businesses.
+              No more lost papers or forgotten jobs
             </p>
           </div>
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {[
-              { icon: Users, title: 'Client Management', desc: 'All your clients in one place. Track addresses, preferences, and job history.', color: 'bg-emerald-600' },
-              { icon: Calendar, title: 'Smart Scheduling', desc: "Set up recurring jobs once. We'll create them automatically every week or fortnight.", color: 'bg-blue-600' },
-              { icon: Camera, title: 'Proof of Work', desc: "Take before/after photos on the job. Works offline, syncs when you're back online.", color: 'bg-amber-600' },
-              { icon: FileText, title: 'Instant Invoicing', desc: 'Mark a job complete, invoice is ready. No more typing up invoices at home.', color: 'bg-violet-600' },
-              { icon: Wallet, title: 'Payment Tracking', desc: "See who's paid, who owes you. Send payment reminders in one tap.", color: 'bg-teal-600' },
-              { icon: Smartphone, title: 'Works Anywhere', desc: 'Phone, tablet, laptop—it all syncs. Install as an app on your home screen.', color: 'bg-rose-600' },
+              { icon: Users, title: 'Your Clients', desc: "Save names and addresses so you don't have to remember", color: 'bg-emerald-600' },
+              { icon: Calendar, title: 'Weekly Jobs', desc: "Set it once, we'll remind you every week", color: 'bg-blue-600' },
+              { icon: Camera, title: 'Take Photos', desc: "Show before and after - works without internet", color: 'bg-amber-600' },
+              { icon: FileText, title: 'Quick Invoices', desc: "Job done? Invoice ready. No typing needed", color: 'bg-violet-600' },
+              { icon: Wallet, title: 'Track Payments', desc: "See who paid and who still owes you", color: 'bg-teal-600' },
+              { icon: Smartphone, title: 'On Your Phone', desc: "Works anywhere. Save to your home screen", color: 'bg-rose-600' },
             ].map((item) => (
               <div
                 key={item.title}
@@ -107,18 +106,18 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
             <h2 className="text-2xl font-bold tracking-tight text-zinc-900 sm:text-3xl">
-              Simple Workflow
+              How It Works
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-zinc-600">
-              Schedule → Complete → Invoice → Get paid.
+              Four simple steps. That's it.
             </p>
           </div>
           <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              { step: '1', title: 'Schedule', desc: 'Add your jobs—one-off or recurring' },
-              { step: '2', title: 'Complete', desc: 'Mark done, snap before/after photos' },
-              { step: '3', title: 'Invoice', desc: 'Invoice generated automatically' },
-              { step: '4', title: 'Get Paid', desc: 'Track payments, send reminders' },
+              { step: '1', title: 'Add Job', desc: 'Write down your cleaning jobs' },
+              { step: '2', title: 'Finish Job', desc: 'Tap "Done" when finished' },
+              { step: '3', title: 'Send Invoice', desc: 'Already made for you' },
+              { step: '4', title: 'Mark Paid', desc: 'Tick off when they pay' },
             ].map((item) => (
               <div key={item.step} className="text-center">
                 <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-emerald-600 text-lg font-bold text-white">
@@ -274,10 +273,10 @@ export default function HomePage() {
       <section className="bg-gradient-to-br from-emerald-600 to-teal-600 px-4 py-16 sm:py-20">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl lg:text-4xl">
-            Join UK Cleaners Already Saving Hours Every Week
+            Ready to Get Started?
           </h2>
           <p className="mt-4 text-base leading-relaxed text-white/95 sm:text-lg">
-            No credit card. No commitment. Start managing your cleaning business properly in under 2 minutes.
+            Free to start. No complicated setup. Works on your phone.
           </p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <Button
@@ -285,7 +284,7 @@ export default function HomePage() {
               size="lg"
               className="h-12 bg-white font-semibold text-emerald-700 shadow-lg hover:bg-emerald-50 hover:text-emerald-800"
             >
-              <Link href="/register">Start free forever</Link>
+              <Link href="/register">Try it free</Link>
             </Button>
             <Button
               asChild
@@ -296,9 +295,6 @@ export default function HomePage() {
               <Link href="/login">Sign in</Link>
             </Button>
           </div>
-          <p className="mt-6 text-sm text-white/80">
-            Free plan includes 1 staff member and 20 jobs/month. Need more? Upgrade to Team for just £14.99/month.
-          </p>
         </div>
       </section>
     </>
