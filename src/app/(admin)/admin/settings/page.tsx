@@ -52,22 +52,37 @@ export default function AdminSettingsPage() {
 
         <Card className="p-6">
           <h2 className="mb-4 text-xl font-bold text-zinc-900">Subscription Plans</h2>
+          <p className="mb-4 text-sm text-zinc-600">
+            Manual Payoneer collection. Admin updates status in Subscriptions after payment.
+          </p>
           <div className="space-y-3">
             {[
-              { plan: 'FREE', desc: 'Basic features for new users' },
-              { plan: 'SOLO', desc: 'For individual cleaners' },
-              { plan: 'SMALL_TEAM', desc: 'For small cleaning teams' },
-            ].map(({ plan, desc }) => (
+              { plan: 'SOLO', price: '£4.99/mo', desc: '0 staff allowed', cleaners: 0 },
+              { plan: 'TEAM', price: '£12.99/mo', desc: 'Up to 12 cleaners', cleaners: 12 },
+              { plan: 'BUSINESS', price: '£25.99/mo', desc: 'Up to 100 cleaners', cleaners: 100 },
+            ].map(({ plan, price, desc, cleaners }) => (
               <div key={plan} className="flex items-center justify-between rounded-lg bg-zinc-50 p-4">
                 <div>
                   <p className="font-medium text-zinc-900">{plan} Plan</p>
-                  <p className="mt-1 text-sm text-zinc-600">{desc}</p>
+                  <p className="mt-1 text-sm text-zinc-600">
+                    {price} — {desc}
+                  </p>
                 </div>
-                <Button variant="outline" size="sm">
-                  Configure
-                </Button>
+                <span className="text-sm font-semibold text-emerald-600">{cleaners} staff</span>
               </div>
             ))}
+          </div>
+        </Card>
+
+        <Card className="p-6">
+          <h2 className="mb-4 text-xl font-bold text-zinc-900">Payoneer</h2>
+          <p className="mb-4 text-sm text-zinc-600">
+            Subscribers pay manually via Payoneer. Admin records payments in Subscriptions and updates status.
+          </p>
+          <div className="rounded-lg bg-zinc-50 p-4">
+            <p className="text-sm text-zinc-600">
+              Configure your Payoneer email and payment instructions. Admin uses Record Payment to mark subscriptions as paid after receiving Payoneer transfers.
+            </p>
           </div>
         </Card>
 

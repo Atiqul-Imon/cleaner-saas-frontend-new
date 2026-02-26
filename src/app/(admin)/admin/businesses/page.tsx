@@ -128,7 +128,9 @@ export default function AdminBusinessesPage() {
                           className={`rounded-full px-3 py-1 text-xs font-semibold ${
                             business.subscription.status === 'ACTIVE'
                               ? 'bg-emerald-100 text-emerald-700'
-                              : business.subscription.status === 'CANCELLED'
+                              : business.subscription.status === 'TRIALING'
+                                ? 'bg-blue-100 text-blue-700'
+                                : business.subscription.status === 'CANCELLED'
                                 ? 'bg-red-100 text-red-700'
                                 : 'bg-zinc-200 text-zinc-700'
                           }`}

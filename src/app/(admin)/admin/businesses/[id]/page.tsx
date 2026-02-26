@@ -29,6 +29,8 @@ interface BusinessDetails {
     planType: string;
     status: string;
     currentPeriodEnd: string;
+    trialStartedAt?: string;
+    trialEndsAt?: string;
     createdAt: string;
   };
   clients: Array<{
@@ -298,12 +300,24 @@ export default function BusinessDetailsPage({ params }: { params: Promise<{ id: 
 
           {business.subscription && (
             <Card className="p-6">
-              <h2 className="mb-4 text-xl font-bold text-zinc-900">Subscription</h2>
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="text-xl font-bold text-zinc-900">Subscription</h2>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => router.push('/admin/subscriptions')}
+                >
+                  Manage
+                </Button>
+              </div>
               <div className="space-y-3">
                 <div>
                   <label className="text-sm font-medium text-zinc-600">Plan</label>
                   <p className="mt-1 text-lg font-semibold text-zinc-900">
-                    {business.subscription.planType}
+                    {business.subscription.planType === 'SOLO' && 'Solo (£4.99/mo, 0 staff)'}
+                    {business.subscription.planType === 'TEAM' && 'Team (£12.99/mo, up to 12 staff)'}
+                    {business.subscription.planType === 'BUSINESS' && 'Business (£25.99/mo, up to 100 staff)'}
+                    {!['SOLO','TEAM','BUSINESS'].includes(business.subscription.planType) && business.subscription.planType}
                   </p>
                 </div>
                 <div>
@@ -313,9 +327,13 @@ export default function BusinessDetailsPage({ params }: { params: Promise<{ id: 
                       className={`rounded-full px-3 py-1 text-sm font-semibold ${
                         business.subscription.status === 'ACTIVE'
                           ? 'bg-emerald-100 text-emerald-700'
-                          : business.subscription.status === 'CANCELLED'
-                            ? 'bg-red-100 text-red-700'
-                            : 'bg-zinc-100 text-zinc-700'
+                          : business.subscription.status === 'TRIALING'
+                            ? 'bg-blue-100 text-blue-700'
+                            : business.subscription.status === 'CANCELLED'
+                              ? 'bg-red-100 text-red-700'
+                              : business.subscription.status === 'PAST_DUE'
+                                ? 'bg-amber-100 text-amber-700'
+                                : 'bg-zinc-100 text-zinc-700'
                       }`}
                     >
                       {business.subscription.status}
@@ -332,6 +350,18 @@ export default function BusinessDetailsPage({ params }: { params: Promise<{ id: 
                     })}
                   </p>
                 </div>
+                {business.subscription.trialEndsAt && (
+                  <div>
+                    <label className="text-sm font-medium text-zinc-600">Trial Ends</label>
+                    <p className="mt-1 text-zinc-900">
+                      {new Date(business.subscription.trialEndsAt).toLocaleDateString('en-GB', {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric',
+                      })}
+                    </p>
+                  </div>
+                )}
               </div>
             </Card>
           )}
