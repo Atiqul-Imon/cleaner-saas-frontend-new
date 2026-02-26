@@ -26,13 +26,13 @@ export default function HomePage() {
         <div className="relative mx-auto max-w-7xl">
           <div className="max-w-2xl">
             <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
-              Simple Job & Invoice Management for UK Cleaning Businesses
+              WhatsApp-First Job & Invoice Management for UK Cleaners
             </h1>
             <p className="mt-4 text-lg leading-relaxed text-white/95 sm:text-xl">
-              Manage weekly jobs, send invoices in seconds, and track who has paid — all from your phone.
+              Send invoices and photos directly to your clients on WhatsApp. Track jobs and payments — all from your phone.
             </p>
             <p className="mt-3 text-base font-medium text-white/90 sm:text-lg">
-              No paperwork. No missed jobs. No payment confusion.
+              No paperwork. No emails. Just WhatsApp and simple clicks.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button
@@ -76,20 +76,20 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
             <h2 className="text-2xl font-bold tracking-tight text-zinc-900 sm:text-3xl">
-              Everything in One Place
+              Built for WhatsApp Users
             </h2>
             <p className="mx-auto mt-3 max-w-2xl text-base leading-relaxed text-zinc-600">
-              No more lost papers or forgotten jobs
+              Send everything to clients via WhatsApp — invoices, photos, and updates
             </p>
           </div>
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {[
-              { icon: Users, title: 'Your Clients', desc: "Save names and addresses so you don't have to remember", color: 'bg-emerald-600' },
-              { icon: Calendar, title: 'Weekly Jobs', desc: "Set it once, we'll remind you every week", color: 'bg-blue-600' },
-              { icon: Camera, title: 'Take Photos', desc: "Show before and after - works without internet", color: 'bg-amber-600' },
-              { icon: FileText, title: 'Quick Invoices', desc: "Job done? Invoice ready. No typing needed", color: 'bg-violet-600' },
-              { icon: Wallet, title: 'Track Payments', desc: "See who paid and who still owes you", color: 'bg-teal-600' },
-              { icon: Smartphone, title: 'On Your Phone', desc: "Works anywhere. Save to your home screen", color: 'bg-rose-600' },
+              { icon: Users, title: 'Save Clients', desc: "Store names, addresses, and WhatsApp numbers in one place", color: 'bg-emerald-600' },
+              { icon: Calendar, title: 'Track Jobs', desc: "Weekly jobs, reminders, and completion tracking", color: 'bg-blue-600' },
+              { icon: Camera, title: 'Take Photos', desc: 'Snap before & after photos and share via WhatsApp instantly', color: 'bg-amber-600' },
+              { icon: FileText, title: 'WhatsApp Invoices', desc: "Tap once to send invoice to client's WhatsApp — no typing", color: 'bg-violet-600' },
+              { icon: Wallet, title: 'Payment Tracking', desc: "Mark who paid and who hasn't — simple ticks", color: 'bg-teal-600' },
+              { icon: Smartphone, title: 'Phone-First', desc: "Everything works on your phone. No computer needed", color: 'bg-rose-600' },
             ].map((item) => (
               <div
                 key={item.title}
@@ -114,15 +114,15 @@ export default function HomePage() {
               How It Works
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-zinc-600">
-              Four simple steps. That's it.
+              From job to payment — all through WhatsApp
             </p>
           </div>
           <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              { step: '1', title: 'Add Job', desc: 'Write down your cleaning jobs' },
-              { step: '2', title: 'Finish Job', desc: 'Tap "Done" when finished' },
-              { step: '3', title: 'Send Invoice', desc: 'Already made for you' },
-              { step: '4', title: 'Mark Paid', desc: 'Tick off when they pay' },
+              { step: '1', title: 'Add Job', desc: 'Create job with client details' },
+              { step: '2', title: 'Take Photos', desc: 'Snap before & after photos' },
+              { step: '3', title: 'Send to WhatsApp', desc: 'Invoice & photos sent instantly' },
+              { step: '4', title: 'Mark Paid', desc: 'Track who paid you' },
             ].map((item) => (
               <div key={item.step} className="text-center">
                 <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-emerald-600 text-lg font-bold text-white">
@@ -141,10 +141,10 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
             <h2 className="text-2xl font-bold tracking-tight text-zinc-900 sm:text-3xl">
-              Simple, Honest Pricing
+              Free to Start. Grow at Your Pace.
             </h2>
             <p className="mx-auto mt-3 max-w-2xl text-base leading-relaxed text-zinc-600">
-              Start free. Upgrade when you're ready to grow your team.
+              WhatsApp invoicing included in all plans. Upgrade when you need more staff.
             </p>
           </div>
           <div className="mt-12 grid gap-6 lg:grid-cols-3">
@@ -152,7 +152,7 @@ export default function HomePage() {
             <div className="rounded-2xl border-2 border-zinc-200 bg-white p-8 shadow-sm">
               <div className="text-center">
                 <h3 className="text-xl font-bold text-zinc-900">Solo</h3>
-                <p className="mt-2 text-sm text-zinc-600">Perfect for self-employed cleaners</p>
+                <p className="mt-2 text-sm text-zinc-600">For solo cleaners using WhatsApp</p>
                 <div className="mt-4">
                   <span className="text-4xl font-bold text-zinc-900">FREE</span>
                   <span className="ml-2 text-sm font-medium text-emerald-600">Forever</span>
@@ -169,15 +169,15 @@ export default function HomePage() {
                 </li>
                 <li className="flex items-start gap-3 text-sm text-zinc-700">
                   <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
-                  <span>Client management</span>
+                  <span>WhatsApp invoicing</span>
                 </li>
                 <li className="flex items-start gap-3 text-sm text-zinc-700">
                   <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
-                  <span>Invoicing & payments</span>
+                  <span>WhatsApp photo sharing</span>
                 </li>
                 <li className="flex items-start gap-3 text-sm text-zinc-700">
                   <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
-                  <span>Photo uploads</span>
+                  <span>Payment tracking</span>
                 </li>
               </ul>
               <Button asChild className="mt-8 w-full" variant="outline">
@@ -194,7 +194,7 @@ export default function HomePage() {
               </div>
               <div className="text-center">
                 <h3 className="text-xl font-bold text-zinc-900">Team</h3>
-                <p className="mt-2 text-sm text-zinc-600">For growing cleaning businesses</p>
+                <p className="mt-2 text-sm text-zinc-600">For small teams managing clients via WhatsApp</p>
                 <div className="mt-4">
                   <span className="text-4xl font-bold text-zinc-900">£14.99</span>
                   <span className="ml-2 text-sm text-zinc-600">/month</span>
@@ -211,15 +211,15 @@ export default function HomePage() {
                 </li>
                 <li className="flex items-start gap-3 text-sm text-zinc-700">
                   <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
-                  <span>Everything in Solo</span>
+                  <span>WhatsApp invoicing & photos</span>
                 </li>
                 <li className="flex items-start gap-3 text-sm text-zinc-700">
                   <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
-                  <span>Team management</span>
+                  <span>Team job assignment</span>
                 </li>
                 <li className="flex items-start gap-3 text-sm text-zinc-700">
                   <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
-                  <span>Priority support</span>
+                  <span>Email support</span>
                 </li>
               </ul>
               <Button asChild className="mt-8 w-full bg-emerald-600 hover:bg-emerald-700">
@@ -248,15 +248,15 @@ export default function HomePage() {
                 </li>
                 <li className="flex items-start gap-3 text-sm text-zinc-700">
                   <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
-                  <span>Everything in Team</span>
+                  <span>WhatsApp invoicing & photos</span>
                 </li>
                 <li className="flex items-start gap-3 text-sm text-zinc-700">
                   <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
-                  <span>API access</span>
+                  <span>Custom invoice branding</span>
                 </li>
                 <li className="flex items-start gap-3 text-sm text-zinc-700">
                   <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
-                  <span>Dedicated support</span>
+                  <span>Priority email support</span>
                 </li>
               </ul>
               <Button asChild className="mt-8 w-full" variant="outline">
@@ -268,7 +268,7 @@ export default function HomePage() {
           {/* Trust builder */}
           <div className="mt-12 text-center">
             <p className="text-sm text-zinc-500">
-              All plans include 1 month free trial • Cancel anytime • No hidden fees
+              Team & Business plans include 1 month free trial • Cancel anytime • No hidden fees
             </p>
           </div>
         </div>
@@ -278,10 +278,10 @@ export default function HomePage() {
       <section className="bg-gradient-to-br from-emerald-600 to-teal-600 px-4 py-16 sm:py-20">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl lg:text-4xl">
-            Ready to Get Started?
+            Start Sending Invoices via WhatsApp Today
           </h2>
           <p className="mt-4 text-base leading-relaxed text-white/95 sm:text-lg">
-            Free to start. No complicated setup. Works on your phone.
+            Free to start. No complicated setup. Send your first WhatsApp invoice in minutes.
           </p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <Button
