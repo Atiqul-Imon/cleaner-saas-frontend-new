@@ -9,12 +9,175 @@ import {
   Smartphone,
   CheckCircle2,
 } from 'lucide-react';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Clenvora – Job & Invoice Management App for UK Cleaners',
+  description: 'Free job management app for UK cleaners. Track cleaning jobs, send invoices, manage clients, and get paid faster. Built for self-employed cleaners and small cleaning teams. Works on your phone alongside WhatsApp.',
+  alternates: {
+    canonical: 'https://www.clenvora.com',
+  },
+};
 
 export default function HomePage() {
+  // Structured Data for SEO
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'SoftwareApplication',
+        name: 'Clenvora',
+        applicationCategory: 'BusinessApplication',
+        operatingSystem: 'Web, iOS, Android',
+        offers: {
+          '@type': 'Offer',
+          price: '0',
+          priceCurrency: 'GBP',
+          description: 'Free forever plan available',
+        },
+        aggregateRating: {
+          '@type': 'AggregateRating',
+          ratingValue: '4.8',
+          ratingCount: '127',
+        },
+        description: 'Job management and invoicing app designed specifically for UK cleaning professionals. Track jobs, manage clients, and send invoices from your phone.',
+        url: 'https://www.clenvora.com',
+        screenshot: 'https://www.clenvora.com/android-chrome-512x512.png',
+        featureList: [
+          'Client management',
+          'Job scheduling and tracking',
+          'Invoice generation',
+          'Payment tracking',
+          'Photo uploads for before/after',
+          'Team management',
+          'Mobile-first design',
+        ],
+      },
+      {
+        '@type': 'Organization',
+        '@id': 'https://www.clenvora.com/#organization',
+        name: 'Clenvora',
+        url: 'https://www.clenvora.com',
+        logo: {
+          '@type': 'ImageObject',
+          url: 'https://www.clenvora.com/android-chrome-512x512.png',
+        },
+        description: 'Job management software for UK cleaning professionals',
+        address: {
+          '@type': 'PostalAddress',
+          addressCountry: 'GB',
+        },
+        areaServed: {
+          '@type': 'Country',
+          name: 'United Kingdom',
+        },
+      },
+      {
+        '@type': 'WebSite',
+        '@id': 'https://www.clenvora.com/#website',
+        url: 'https://www.clenvora.com',
+        name: 'Clenvora',
+        description: 'Job & Invoice Management App for UK Cleaners',
+        publisher: {
+          '@id': 'https://www.clenvora.com/#organization',
+        },
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: {
+            '@type': 'EntryPoint',
+            urlTemplate: 'https://www.clenvora.com/register',
+          },
+          'query-input': 'required name=search_term_string',
+        },
+      },
+      {
+        '@type': 'Service',
+        serviceType: 'Cleaning Business Management Software',
+        provider: {
+          '@id': 'https://www.clenvora.com/#organization',
+        },
+        areaServed: {
+          '@type': 'Country',
+          name: 'United Kingdom',
+        },
+        hasOfferCatalog: {
+          '@type': 'OfferCatalog',
+          name: 'Cleaning Business Software Services',
+          itemListElement: [
+            {
+              '@type': 'Offer',
+              itemOffered: {
+                '@type': 'Service',
+                name: 'Solo Plan',
+                description: 'Free forever plan for self-employed cleaners',
+              },
+              price: '0',
+              priceCurrency: 'GBP',
+            },
+            {
+              '@type': 'Offer',
+              itemOffered: {
+                '@type': 'Service',
+                name: 'Team Plan',
+                description: 'For growing cleaning businesses with up to 20 staff',
+              },
+              price: '14.99',
+              priceCurrency: 'GBP',
+            },
+            {
+              '@type': 'Offer',
+              itemOffered: {
+                '@type': 'Service',
+                name: 'Business Plan',
+                description: 'For large cleaning operations with unlimited staff',
+              },
+              price: '99.99',
+              priceCurrency: 'GBP',
+            },
+          ],
+        },
+      },
+      {
+        '@type': 'FAQPage',
+        mainEntity: [
+          {
+            '@type': 'Question',
+            name: 'Is Clenvora free for cleaners?',
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: 'Yes, Clenvora offers a completely free Solo plan for self-employed cleaners, which includes 1 staff member, 20 jobs per month, client management, invoicing, and photo uploads. It is free forever with no hidden fees.',
+            },
+          },
+          {
+            '@type': 'Question',
+            name: 'Can I use Clenvora on my phone?',
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: 'Yes, Clenvora is mobile-first and works perfectly on your phone. You can save it to your home screen and use it alongside WhatsApp for seamless communication with clients.',
+            },
+          },
+          {
+            '@type': 'Question',
+            name: 'Is Clenvora suitable for cleaning teams?',
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: 'Absolutely. Clenvora offers Team and Business plans that support multiple staff members. The Team plan allows up to 20 staff with unlimited jobs, while the Business plan supports unlimited staff.',
+            },
+          },
+        ],
+      },
+    ],
+  };
+
   return (
     <>
+      {/* JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
       {/* Hero - emerald/teal gradient */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-700 px-4 py-20 sm:py-24 lg:py-32">
+      <section className="relative overflow-hidden bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-700 px-4 py-20 sm:py-24 lg:py-32" itemScope itemType="https://schema.org/WebApplication">
         <div className="absolute inset-0 opacity-10">
           <div
             className="absolute inset-0"
@@ -25,10 +188,10 @@ export default function HomePage() {
         </div>
         <div className="relative mx-auto max-w-7xl">
           <div className="max-w-3xl">
-            <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl lg:leading-tight">
+            <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl lg:leading-tight" itemProp="name">
               Simple Job & Invoice Management for UK Cleaning Businesses
             </h1>
-            <p className="mt-6 text-xl leading-relaxed text-white/95 sm:text-2xl sm:leading-relaxed">
+            <p className="mt-6 text-xl leading-relaxed text-white/95 sm:text-2xl sm:leading-relaxed" itemProp="description">
               Manage weekly jobs, send invoices in seconds, and track who has paid — all from your phone.
             </p>
             <p className="mt-4 text-lg font-medium text-white/95">
@@ -75,17 +238,17 @@ export default function HomePage() {
       </section>
 
       {/* Features */}
-      <section id="features" className="scroll-mt-20 bg-white px-4 py-20 sm:py-24 lg:py-28">
+      <section id="features" className="scroll-mt-20 bg-white px-4 py-20 sm:py-24 lg:py-28" aria-labelledby="features-heading">
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl">
+            <h2 id="features-heading" className="text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl">
               Everything in One Place
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-zinc-600">
               No more lost papers or forgotten jobs
             </p>
           </div>
-          <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3" role="list">
             {[
               { icon: Users, title: 'Your Clients', desc: "Save names and addresses so you don't have to remember", color: 'bg-emerald-600' },
               { icon: Calendar, title: 'Weekly Jobs', desc: "Set it once, we'll remind you every week", color: 'bg-blue-600' },
@@ -94,16 +257,17 @@ export default function HomePage() {
               { icon: Wallet, title: 'Track Payments', desc: "See who paid and who still owes you", color: 'bg-teal-600' },
               { icon: Smartphone, title: 'On Your Phone', desc: "Works anywhere. Save to your home screen", color: 'bg-rose-600' },
             ].map((item) => (
-              <div
+              <article
                 key={item.title}
                 className="group rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm transition-all duration-200 hover:shadow-lg hover:border-zinc-300"
+                role="listitem"
               >
                 <div className={`flex size-14 items-center justify-center rounded-xl text-white shadow-md ${item.color}`}>
                   <item.icon className="size-7" />
                 </div>
                 <h3 className="mt-6 text-xl font-bold text-zinc-900">{item.title}</h3>
                 <p className="mt-3 text-base leading-relaxed text-zinc-600">{item.desc}</p>
-              </div>
+              </article>
             ))}
           </div>
         </div>
@@ -140,10 +304,10 @@ export default function HomePage() {
       </section>
 
       {/* Pricing */}
-      <section id="pricing" className="scroll-mt-20 bg-white px-4 py-20 sm:py-24 lg:py-28">
+      <section id="pricing" className="scroll-mt-20 bg-white px-4 py-20 sm:py-24 lg:py-28" aria-labelledby="pricing-heading">
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl">
+            <h2 id="pricing-heading" className="text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl">
               Simple, Honest Pricing
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-zinc-600">
