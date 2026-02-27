@@ -60,7 +60,7 @@ function CreateJobContent() {
   useEffect(() => {
     if (clientIdParam) setClientId(clientIdParam);
   }, [clientIdParam]);
-  const [cleanerId, setCleanerId] = useState('');
+  const [cleanerId, setCleanerId] = useState('self');
   const [scheduledDate, setScheduledDate] = useState(getTodayDateInput());
   const [scheduledTime, setScheduledTime] = useState('');
   const [type, setType] = useState<'ONE_OFF' | 'RECURRING'>('ONE_OFF');
@@ -109,7 +109,7 @@ function CreateJobContent() {
 
       const job = await api.post<{ id: string }>('/jobs', {
         clientId,
-        cleanerId: cleanerId || undefined,
+        cleanerId: cleanerId === 'self' ? undefined : cleanerId,
         type,
         frequency: type === 'RECURRING' ? frequency : undefined,
         scheduledDate,
@@ -197,7 +197,7 @@ function CreateJobContent() {
                     <SelectValue placeholder="I'll do it myself" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="" className="text-base">
+                    <SelectItem value="self" className="text-base">
                       <div className="flex items-center gap-2">
                         <UserCircle className="size-4 text-emerald-600" />
                         <span className="font-medium">I&apos;ll do it myself</span>
