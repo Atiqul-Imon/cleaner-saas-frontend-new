@@ -1,20 +1,14 @@
 import type { Metadata } from 'next';
-import { Roboto, Inter } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import './globals.css';
 import { QueryProvider } from '@/providers/query-provider';
 import { CookieConsentBanner } from '@/components/cookie-consent-banner';
 import { AlertDialogProvider } from '@/components/alert-dialog-provider';
 
-const roboto = Roboto({
-  variable: '--font-roboto',
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-});
-
 const inter = Inter({
   variable: '--font-inter',
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
+  weight: ['400', '500', '600', '700', '800'],
 });
 
 export const metadata: Metadata = {
@@ -119,7 +113,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en-GB" className="scroll-smooth">
-      <body className={`${roboto.variable} ${inter.variable} font-sans antialiased`}>
+      <body className={`${inter.variable} font-sans antialiased`}>
         <QueryProvider>
           <AlertDialogProvider>
             {children}
