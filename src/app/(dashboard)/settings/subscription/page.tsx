@@ -135,20 +135,83 @@ function SubscriptionContent() {
   const isNearStaffLimit = activeStaffCount >= staffLimit * 0.8;
 
   const handleUpgradeRequest = async (planType: 'TEAM' | 'BUSINESS') => {
-    try {
-      await api.post('/upgrade-requests', { toPlan: planType });
-      // Refetch subscription data
-      refetchSubscription();
-      refetchUsage();
-      refetchBusiness();
-      alertDialog.success(
-        'Plan Upgraded!',
-        'Your plan has been upgraded successfully. You will be charged for the new plan next billing cycle.',
+    const targetPlan = PLANS.find(p => p.type === planType);
+    if (!targetPlan) return;
+
+    alertDialog.confirm(
+      `Upgrade to ${targetPlan.name}?`,
+      `Your plan will be upgraded to ${targetPlan.name} (${targetPlan.price}${targetPlan.priceDetail}) immediately. You'll be charged on your next billing cycle.`,
+      async () => {
+        try {
+          await api.post('/upgrade-requests', { toPlan: planType });
+          refetchSubscription();
+          refetchUsage();
+          refetchBusiness();
+          alertDialog.success(
+            'Plan Upgraded!',
+            'Your plan has been upgraded successfully. You will be charged for the new plan next billing cycle.',
+          );
+        } catch (error: unknown) {
+          const message = error instanceof Error ? error.message : 'Failed to upgrade plan';
+          alertDialog.error('Upgrade Failed', message);
+        }
+      },
+      undefined,
+      'Yes, Upgrade',
+      'Cancel',
+    );
+  };
+
+  const handleDowngradeRequest = async (planType: 'SOLO' | 'TEAM') => {
+    const targetPlan = PLANS.find(p => p.type === planType);
+    if (!targetPlan || !business || !usageStats) return;
+
+    // Check if downgrade is possible
+    const currentStaffCount = business._count.cleaners;
+    const targetStaffLimit = typeof targetPlan.staff === 'number' ? targetPlan.staff : 1000;
+    const targetJobLimit = typeof targetPlan.jobs === 'number' ? targetPlan.jobs : 9999;
+
+    // Check staff limit
+    if (currentStaffCount > targetStaffLimit) {
+      alertDialog.error(
+        'Cannot Downgrade',
+        `You currently have ${currentStaffCount} staff members, but ${targetPlan.name} only allows ${targetStaffLimit}. Please remove ${currentStaffCount - targetStaffLimit} staff member${currentStaffCount - targetStaffLimit > 1 ? 's' : ''} first.`,
       );
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'Failed to upgrade plan';
-      alertDialog.error('Upgrade Failed', message);
+      return;
     }
+
+    // Check job usage for this month
+    if (usageStats.currentMonthUsage > targetJobLimit) {
+      alertDialog.error(
+        'Cannot Downgrade',
+        `You've used ${usageStats.currentMonthUsage} jobs this month, but ${targetPlan.name} only allows ${targetJobLimit}. Please wait until next month to downgrade.`,
+      );
+      return;
+    }
+
+    // Confirm downgrade
+    alertDialog.confirm(
+      `Downgrade to ${targetPlan.name}?`,
+      `Your plan will be downgraded to ${targetPlan.name}. You'll have ${targetStaffLimit} staff and ${typeof targetPlan.jobs === 'number' ? `${targetPlan.jobs} jobs/month` : 'unlimited jobs'}. Changes apply immediately.`,
+      async () => {
+        try {
+          await api.post('/upgrade-requests', { toPlan: planType });
+          refetchSubscription();
+          refetchUsage();
+          refetchBusiness();
+          alertDialog.success(
+            'Plan Downgraded',
+            'Your plan has been downgraded successfully.',
+          );
+        } catch (error: unknown) {
+          const message = error instanceof Error ? error.message : 'Failed to downgrade plan';
+          alertDialog.error('Downgrade Failed', message);
+        }
+      },
+      undefined,
+      'Yes, Downgrade',
+      'Cancel',
+    );
   };
 
   const handleCancelSubscription = async () => {
@@ -412,22 +475,44 @@ function SubscriptionContent() {
                       <Button variant="outline" disabled className="w-full">
                         Current Plan
                       </Button>
-                    ) : plan.type === 'SOLO' ? (
-                      <Button variant="outline" disabled className="w-full">
-                        Downgrade unavailable
-                      </Button>
                     ) : (
-                      <Button
-                        onClick={() => handleUpgradeRequest(plan.type)}
-                        className={
-                          isMostPopular
-                            ? 'w-full bg-emerald-600 hover:bg-emerald-700'
-                            : 'w-full'
-                        }
-                        variant={isMostPopular ? 'default' : 'outline'}
-                      >
-                        Request Upgrade
-                      </Button>
+                      <>
+                        {/* Determine if upgrade or downgrade */}
+                        {(() => {
+                          const planOrder = { SOLO: 0, TEAM: 1, BUSINESS: 2 };
+                          const currentOrder = planOrder[subscription?.planType || 'SOLO'];
+                          const targetOrder = planOrder[plan.type];
+                          const isUpgrade = targetOrder > currentOrder;
+                          const isDowngrade = targetOrder < currentOrder;
+
+                          if (isUpgrade) {
+                            return (
+                              <Button
+                                onClick={() => handleUpgradeRequest(plan.type as 'TEAM' | 'BUSINESS')}
+                                className={
+                                  isMostPopular
+                                    ? 'w-full bg-emerald-600 hover:bg-emerald-700'
+                                    : 'w-full'
+                                }
+                                variant={isMostPopular ? 'default' : 'outline'}
+                              >
+                                Upgrade to {plan.name}
+                              </Button>
+                            );
+                          } else if (isDowngrade) {
+                            return (
+                              <Button
+                                onClick={() => handleDowngradeRequest(plan.type as 'SOLO' | 'TEAM')}
+                                variant="outline"
+                                className="w-full"
+                              >
+                                Downgrade to {plan.name}
+                              </Button>
+                            );
+                          }
+                          return null;
+                        })()}
+                      </>
                     )}
                   </div>
                 </div>
