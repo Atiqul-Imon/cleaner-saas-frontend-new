@@ -187,17 +187,17 @@ export default function HomePage() {
           />
         </div>
         <div className="relative mx-auto max-w-7xl">
-          <div className="max-w-3xl">
+          <div className="mx-auto max-w-4xl text-center">
             <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl lg:leading-tight" itemProp="name">
-              Simple Job & Invoice Management for UK Cleaning Businesses
+              Simple Job & Invoice Management for <span className="text-cyan-200">UK Cleaning Businesses</span>
             </h1>
-            <p className="mt-6 text-xl leading-relaxed text-white/95 sm:text-2xl sm:leading-relaxed" itemProp="description">
-              Manage weekly jobs, send invoices in seconds, and track who has paid — all from your phone.
+            <p className="mx-auto mt-6 max-w-3xl text-xl leading-relaxed text-white/95 sm:text-2xl sm:leading-relaxed" itemProp="description">
+              Manage weekly jobs, send invoices in seconds, and track <span className="font-semibold text-yellow-200">who has paid</span> — all from your phone.
             </p>
             <p className="mt-4 text-lg font-medium text-white/95">
-              No paperwork. No missed jobs. No payment confusion.
+              No paperwork. No missed jobs. <span className="text-yellow-200">No payment confusion.</span>
             </p>
-            <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:gap-4">
+            <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-4">
               <Button
                 asChild
                 size="lg"
@@ -215,7 +215,7 @@ export default function HomePage() {
               </Button>
             </div>
             <div className="mt-8 space-y-2">
-              <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/95">
+              <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-white/95">
                 <span className="flex items-center gap-2">
                   <CheckCircle2 className="size-4.5 shrink-0" /> Free to start
                 </span>
