@@ -46,10 +46,18 @@ export async function middleware(request: NextRequest) {
     request.nextUrl.pathname.startsWith('/reset-password') ||
     request.nextUrl.pathname === '/';
 
+  // SEO and public routes
+  const isSEORoute =
+    request.nextUrl.pathname === '/sitemap.xml' ||
+    request.nextUrl.pathname === '/robots.txt';
+
   const isPublicRoute =
     isAuthRoute ||
+    isSEORoute ||
     request.nextUrl.pathname === '/auth/callback' ||
     request.nextUrl.pathname.startsWith('/accept-invite') ||
+    request.nextUrl.pathname.startsWith('/blog') ||
+    request.nextUrl.pathname === '/about' ||
     request.nextUrl.pathname === '/privacy' ||
     request.nextUrl.pathname === '/terms';
 
@@ -115,5 +123,7 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'],
+  matcher: [
+    '/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'
+  ],
 };
