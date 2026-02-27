@@ -6,14 +6,15 @@ const footerLinks = {
   product: [
     { label: 'Features', href: '/#features' },
     { label: 'How it works', href: '/#how-it-works' },
+    { label: 'Pricing', href: '/#pricing' },
   ],
   company: [
-    { label: 'About', href: '#' },
-    { label: 'Contact', href: '#' },
+    { label: 'About', href: '/about' },
+    { label: 'Blog', href: '/blog/manage-cleaning-jobs-uk' },
   ],
   legal: [
-    { label: 'Privacy', href: '#' },
-    { label: 'Terms', href: '#' },
+    { label: 'Privacy Policy', href: '/privacy' },
+    { label: 'Terms of Service', href: '/terms' },
   ],
 };
 
