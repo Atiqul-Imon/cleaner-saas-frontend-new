@@ -1,14 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 import { AdminSidebarToggle } from './AdminSidebar';
 
 export default function AdminHeader() {
-  const router = useRouter();
+  const queryClient = useQueryClient();
   const [user, setUser] = useState<{ email?: string; user_metadata?: { full_name?: string; name?: string } } | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
   const supabase = createSupabaseBrowserClient();
 
   useEffect(() => {
@@ -22,9 +23,23 @@ export default function AdminHeader() {
   }, [supabase.auth]);
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    router.push('/login');
-    router.refresh();
+    if (signingOut) return;
+    
+    setSigningOut(true);
+    setMenuOpen(false);
+    
+    try {
+      await supabase.auth.signOut();
+      
+      // Clear all cached data
+      queryClient.clear();
+      
+      // Force navigation to login
+      window.location.href = '/login';
+    } catch (error) {
+      console.error('Sign out error:', error);
+      window.location.href = '/login';
+    }
   };
 
   const displayName =
@@ -82,12 +97,13 @@ export default function AdminHeader() {
                   </div>
                   <button
                     onClick={handleSignOut}
-                    className="flex w-full items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                    disabled={signingOut}
+                    className="flex w-full items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 disabled:opacity-50"
                   >
                     <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                     </svg>
-                    Sign Out
+                    {signingOut ? 'Signing out...' : 'Sign Out'}
                   </button>
                 </div>
               </>

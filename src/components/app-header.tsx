@@ -2,7 +2,8 @@
 
 import { useState, useCallback } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   LayoutDashboard,
   Briefcase,
@@ -37,15 +38,32 @@ const cleanerNavItems = [
 
 export function AppHeader() {
   const pathname = usePathname();
+  const router = useRouter();
+  const queryClient = useQueryClient();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
   const handleCloseSidebar = useCallback(() => setSidebarOpen(false), []);
   const { user, isLoading } = useUser();
   const navItems = isLoading ? ownerNavItems : user?.role === 'OWNER' ? ownerNavItems : cleanerNavItems;
 
   async function handleSignOut() {
-    const supabase = createSupabaseBrowserClient();
-    await supabase.auth.signOut();
-    window.location.href = '/login';
+    if (signingOut) return; // Prevent double-click
+    
+    setSigningOut(true);
+    try {
+      const supabase = createSupabaseBrowserClient();
+      await supabase.auth.signOut();
+      
+      // Clear all cached data
+      queryClient.clear();
+      
+      // Force navigation to login
+      window.location.href = '/login';
+    } catch (error) {
+      console.error('Sign out error:', error);
+      // Force navigation even on error
+      window.location.href = '/login';
+    }
   }
 
   return (
@@ -94,10 +112,11 @@ export function AppHeader() {
             variant="ghost"
             size="sm"
             onClick={handleSignOut}
+            disabled={signingOut}
             className="group text-zinc-700 transition-all duration-200 hover:text-zinc-900"
           >
             <LogOut className="size-4 transition-transform duration-200 group-hover:-translate-x-0.5 md:mr-2" />
-            <span className="hidden md:inline">Sign out</span>
+            <span className="hidden md:inline">{signingOut ? 'Signing out...' : 'Sign out'}</span>
           </Button>
         </div>
       </header>

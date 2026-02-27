@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   LayoutDashboard,
   Briefcase,
@@ -40,7 +41,9 @@ interface MobileSidebarProps {
 
 export function MobileSidebar({ open, onClose }: MobileSidebarProps) {
   const pathname = usePathname();
+  const queryClient = useQueryClient();
   const { user, isLoading } = useUser();
+  const [signingOut, setSigningOut] = useState(false);
 
   // Close sidebar on route change
   useEffect(() => {
@@ -61,9 +64,25 @@ export function MobileSidebar({ open, onClose }: MobileSidebarProps) {
   const navItems = isLoading ? ownerNavItems : user?.role === 'OWNER' ? ownerNavItems : cleanerNavItems;
 
   async function handleSignOut() {
-    const supabase = createSupabaseBrowserClient();
-    await supabase.auth.signOut();
-    window.location.href = '/login';
+    if (signingOut) return; // Prevent double-click
+    
+    setSigningOut(true);
+    onClose(); // Close sidebar immediately
+    
+    try {
+      const supabase = createSupabaseBrowserClient();
+      await supabase.auth.signOut();
+      
+      // Clear all cached data
+      queryClient.clear();
+      
+      // Force navigation to login
+      window.location.href = '/login';
+    } catch (error) {
+      console.error('Sign out error:', error);
+      // Force navigation even on error
+      window.location.href = '/login';
+    }
   }
 
   return (
@@ -129,14 +148,12 @@ export function MobileSidebar({ open, onClose }: MobileSidebarProps) {
           })}
           <div className="mt-4 border-t border-zinc-200 pt-4">
             <button
-              onClick={() => {
-                onClose();
-                handleSignOut();
-              }}
-              className="group flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-zinc-600 transition-all duration-200 hover:bg-red-50 hover:text-red-600"
+              onClick={handleSignOut}
+              disabled={signingOut}
+              className="group flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-zinc-600 transition-all duration-200 hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
             >
               <LogOut className="size-5 shrink-0 transition-transform duration-200 group-hover:-translate-x-1" />
-              Sign out
+              {signingOut ? 'Signing out...' : 'Sign out'}
             </button>
           </div>
         </nav>

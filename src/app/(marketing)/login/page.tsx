@@ -41,18 +41,18 @@ function LoginForm() {
       try {
         const userData = await api.get<{ role?: string }>('/auth/me', { silent: true });
         const target = next || (userData?.role === 'ADMIN' ? '/admin' : '/dashboard');
-        router.push(target.startsWith('/') ? target : `/${target}`);
+        // Use window.location for reliable navigation after login
+        window.location.href = target.startsWith('/') ? target : `/${target}`;
       } catch (apiError) {
-        // If API call fails, default to dashboard and let middleware handle redirect
+        // If API call fails, default to dashboard
         console.error('Failed to fetch user role:', apiError);
-        router.push(next || '/dashboard');
+        window.location.href = next || '/dashboard';
       }
-      router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Sign in failed');
-    } finally {
       setLoading(false);
     }
+    // Don't set loading false on success - page is navigating away
   }
 
   async function handleGoogleSignIn() {
