@@ -17,6 +17,13 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { format } from 'date-fns';
 
 function EditJobContent() {
@@ -110,15 +117,31 @@ function EditJobContent() {
             </div>
             <div>
               <label className="mb-1.5 block text-sm font-medium">Status</label>
-              <select
-                value={status}
-                onChange={(e) => setStatus(e.target.value as typeof status)}
-                className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm"
-              >
-                <option value="SCHEDULED">Scheduled</option>
-                <option value="IN_PROGRESS">In progress</option>
-                <option value="COMPLETED">Completed</option>
-              </select>
+              <Select value={status} onValueChange={(v) => setStatus(v as typeof status)}>
+                <SelectTrigger className="h-11 rounded-lg border-2 border-zinc-300 text-base font-medium focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="SCHEDULED" className="text-base">
+                    <div className="flex items-center gap-2">
+                      <span className="size-2 rounded-full bg-blue-500" />
+                      <span>Scheduled</span>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="IN_PROGRESS" className="text-base">
+                    <div className="flex items-center gap-2">
+                      <span className="size-2 rounded-full bg-amber-500" />
+                      <span>In progress</span>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="COMPLETED" className="text-base">
+                    <div className="flex items-center gap-2">
+                      <span className="size-2 rounded-full bg-emerald-500" />
+                      <span>Completed</span>
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div className="flex gap-3">
               <Button type="submit" disabled={mutation.isPending}>

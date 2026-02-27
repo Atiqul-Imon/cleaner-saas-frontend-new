@@ -24,7 +24,15 @@ import {
 } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { cn } from '@/lib/utils';
+import { User, Users, UserCircle } from 'lucide-react';
 
 interface Cleaner {
   cleanerId: string;
@@ -159,36 +167,59 @@ function CreateJobContent() {
             </CardHeader>
             <CardContent className="space-y-5">
               <div>
-                <Label className="mb-2 block text-base font-semibold text-zinc-900">Client *</Label>
-                <select
-                  value={clientId}
-                  onChange={(e) => setClientId(e.target.value)}
-                  required
-                  className="w-full rounded-xl border-2 border-zinc-300 px-4 py-3 text-base font-medium focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 transition-all"
-                >
-                  <option value="">Select a client</option>
-                  {clientList.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
+                <Label className="mb-2 block text-base font-semibold text-zinc-900">
+                  <User className="mr-2 inline-block size-5 text-emerald-600" />
+                  Client *
+                </Label>
+                <Select value={clientId} onValueChange={setClientId} required>
+                  <SelectTrigger className="h-12 rounded-xl border-2 border-zinc-300 text-base font-medium focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20">
+                    <SelectValue placeholder="Select a client" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {clientList.map((c) => (
+                      <SelectItem key={c.id} value={c.id} className="text-base">
+                        <div className="flex items-center gap-2">
+                          <UserCircle className="size-4 text-zinc-500" />
+                          <span className="font-medium">{c.name}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div>
-                <Label className="mb-2 block text-base font-semibold text-zinc-900">Assign To</Label>
-                <select
-                  value={cleanerId}
-                  onChange={(e) => setCleanerId(e.target.value)}
-                  className="w-full rounded-xl border-2 border-zinc-300 px-4 py-3 text-base font-medium focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 transition-all"
-                >
-                  <option value="">I&apos;ll do it myself</option>
-                  {cleanerList.map((c) => (
-                    <option key={c.cleanerId} value={c.cleanerId}>
-                      {c.name || c.email}
-                      {c.todayJobs > 0 ? ` (${c.todayJobs} today)` : ''}
-                    </option>
-                  ))}
-                </select>
+                <Label className="mb-2 block text-base font-semibold text-zinc-900">
+                  <Users className="mr-2 inline-block size-5 text-emerald-600" />
+                  Assign To
+                </Label>
+                <Select value={cleanerId} onValueChange={setCleanerId}>
+                  <SelectTrigger className="h-12 rounded-xl border-2 border-zinc-300 text-base font-medium focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20">
+                    <SelectValue placeholder="I'll do it myself" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="" className="text-base">
+                      <div className="flex items-center gap-2">
+                        <UserCircle className="size-4 text-emerald-600" />
+                        <span className="font-medium">I&apos;ll do it myself</span>
+                      </div>
+                    </SelectItem>
+                    {cleanerList.map((c) => (
+                      <SelectItem key={c.cleanerId} value={c.cleanerId} className="text-base">
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="flex items-center gap-2">
+                            <UserCircle className="size-4 text-zinc-500" />
+                            <span className="font-medium">{c.name || c.email}</span>
+                          </div>
+                          {c.todayJobs > 0 && (
+                            <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-700">
+                              {c.todayJobs} today
+                            </span>
+                          )}
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 {cleanerList.length === 0 && (
                   <p className="mt-2 text-sm text-zinc-500">No staff yet. You can assign later from job details.</p>
                 )}
@@ -382,17 +413,18 @@ function CreateJobContent() {
               {reminderEnabled && (
                 <div>
                   <Label className="mb-2 block text-base font-semibold text-zinc-900">When to remind</Label>
-                  <select
-                    value={reminderTime}
-                    onChange={(e) => setReminderTime(e.target.value)}
-                    className="w-full rounded-xl border-2 border-zinc-300 px-4 py-3 text-base font-medium focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 transition-all sm:max-w-[240px]"
-                  >
-                    {REMINDER_OPTIONS.map((o) => (
-                      <option key={o.value} value={o.value}>
-                        {o.label}
-                      </option>
-                    ))}
-                  </select>
+                  <Select value={reminderTime} onValueChange={setReminderTime}>
+                    <SelectTrigger className="h-12 rounded-xl border-2 border-zinc-300 text-base font-medium focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 sm:max-w-[260px]">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {REMINDER_OPTIONS.map((o) => (
+                        <SelectItem key={o.value} value={o.value} className="text-base">
+                          {o.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               )}
             </CardContent>
