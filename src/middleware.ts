@@ -54,11 +54,61 @@ export async function middleware(request: NextRequest) {
     request.nextUrl.pathname === '/terms';
 
   if (user && isAuthRoute) {
+    // Fetch user role to redirect appropriately
+    try {
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (session?.access_token) {
+        const userResponse = await fetch(`${backendUrl}/auth/me`, {
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`,
+          },
+        });
+        
+        if (userResponse.ok) {
+          const userData = await userResponse.json();
+          const redirectPath = userData.role === 'ADMIN' ? '/admin' : '/dashboard';
+          return NextResponse.redirect(new URL(redirectPath, request.url));
+        }
+      }
+    } catch (error) {
+      // If role fetch fails, default to dashboard
+      console.error('Failed to fetch user role in middleware:', error);
+    }
+    
+    // Fallback to dashboard if role fetch fails
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
   if (!user && !isPublicRoute) {
     return NextResponse.redirect(new URL('/login', request.url));
+  }
+
+  // Check if admin is trying to access non-admin routes
+  if (user && request.nextUrl.pathname.startsWith('/dashboard')) {
+    try {
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (session?.access_token) {
+        const userResponse = await fetch(`${backendUrl}/auth/me`, {
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`,
+          },
+        });
+        
+        if (userResponse.ok) {
+          const userData = await userResponse.json();
+          if (userData.role === 'ADMIN') {
+            return NextResponse.redirect(new URL('/admin', request.url));
+          }
+        }
+      }
+    } catch (error) {
+      // If role fetch fails, allow access
+      console.error('Failed to fetch user role for dashboard access:', error);
+    }
   }
 
   return response;

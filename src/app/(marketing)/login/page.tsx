@@ -37,9 +37,15 @@ function LoginForm() {
       if (err) throw err;
       
       // Fetch user role after successful auth
-      const userData = await api.get<{ role?: string }>('/auth/me', { silent: true }).catch(() => null);
-      const target = next || (userData?.role === 'ADMIN' ? '/admin' : '/dashboard');
-      router.push(target.startsWith('/') ? target : `/${target}`);
+      try {
+        const userData = await api.get<{ role?: string }>('/auth/me', { silent: true });
+        const target = next || (userData?.role === 'ADMIN' ? '/admin' : '/dashboard');
+        router.push(target.startsWith('/') ? target : `/${target}`);
+      } catch (apiError) {
+        // If API call fails, default to dashboard and let middleware handle redirect
+        console.error('Failed to fetch user role:', apiError);
+        router.push(next || '/dashboard');
+      }
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Sign in failed');
