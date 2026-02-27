@@ -13,9 +13,9 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
             gcTime: 10 * 60 * 1000, // 10 minutes - keep in cache longer
             refetchOnWindowFocus: false,
             retry: 1,
-            // Enable request deduplication
-            refetchOnMount: 'always',
-            refetchOnReconnect: 'always',
+            // Only refetch if data is stale (respects staleTime)
+            refetchOnMount: false,
+            refetchOnReconnect: false,
           },
         },
       })
