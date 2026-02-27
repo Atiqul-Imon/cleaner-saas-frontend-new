@@ -3,7 +3,7 @@
 import { Suspense } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { RequireOwner } from '@/components/require-owner';
 import { Plus } from 'lucide-react';
 import { api, normalizeList } from '@/lib/api';
@@ -14,9 +14,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { VirtualGrid } from '@/components/ui/virtual-grid';
 import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
+
+const STATUS_FILTERS = [
+  { label: 'All Jobs', value: undefined },
+  { label: 'Scheduled', value: 'SCHEDULED' },
+  { label: 'In Progress', value: 'IN_PROGRESS' },
+  { label: 'Completed', value: 'COMPLETED' },
+] as const;
 
 function JobsContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const status = searchParams.get('status') ?? undefined;
   const { user } = useUser();
   const queryClient = useQueryClient();
@@ -29,6 +38,14 @@ function JobsContent() {
   });
 
   const list = normalizeList<Job>(jobs);
+
+  const handleFilterChange = (newStatus: string | undefined) => {
+    if (newStatus) {
+      router.push(`/jobs?status=${newStatus}`);
+    } else {
+      router.push('/jobs');
+    }
+  };
 
   return (
     <div className="space-y-5 sm:space-y-8">
@@ -47,9 +64,29 @@ function JobsContent() {
         )}
       </div>
 
+      {/* Status Filter Tabs */}
+      <div className="flex flex-wrap gap-2">
+        {STATUS_FILTERS.map((filter) => (
+          <button
+            key={filter.label}
+            onClick={() => handleFilterChange(filter.value)}
+            className={cn(
+              'rounded-lg px-4 py-2 text-sm font-medium transition-all',
+              status === filter.value
+                ? 'bg-emerald-600 text-white shadow-md'
+                : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200',
+            )}
+          >
+            {filter.label}
+          </button>
+        ))}
+      </div>
+
       <Card className="border-zinc-200 bg-white shadow-sm">
         <CardHeader>
-          <CardTitle className="text-lg font-semibold text-zinc-900">All jobs</CardTitle>
+          <CardTitle className="text-lg font-semibold text-zinc-900">
+            {status ? `${status.replace('_', ' ')} Jobs` : 'All Jobs'}
+          </CardTitle>
           <CardDescription className="text-zinc-700">{list.length} job(s)</CardDescription>
         </CardHeader>
         <CardContent>
