@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { useUser } from '@/hooks/use-user';
+import { Logo } from '@/components/logo';
 
 export function MarketingHeader() {
   const { user, isLoading } = useUser();
@@ -10,9 +11,7 @@ export function MarketingHeader() {
   return (
     <header className="sticky top-0 z-30 border-b border-zinc-200 bg-white/95 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-6 lg:px-8">
-        <Link href="/" className="font-semibold text-zinc-900">
-          Clenvora
-        </Link>
+        <Logo size="lg" />
         <nav className="hidden items-center gap-8 md:flex">
           <Link href="/#features" className="text-sm font-medium text-zinc-600 hover:text-zinc-900">
             Features

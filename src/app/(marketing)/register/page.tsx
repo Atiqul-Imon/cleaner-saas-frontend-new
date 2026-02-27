@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { PasswordInput } from '@/components/ui/password-input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent } from '@/components/ui/card';
+import { Logo } from '@/components/logo';
 
 function RegisterForm() {
   const router = useRouter();
@@ -71,9 +72,9 @@ function RegisterForm() {
     <div className="flex min-h-[calc(100vh-8rem)] flex-1 items-center justify-center px-4 py-12 sm:py-16">
       <div className="w-full max-w-[420px]">
         <div className="mb-10 text-center">
-          <Link href="/" className="inline-block font-semibold text-zinc-900">
-            Clenvora
-          </Link>
+          <div className="mb-6 flex justify-center">
+            <Logo href="/" size="lg" />
+          </div>
           <h1 className="mt-6 text-2xl font-bold tracking-tight text-zinc-900">
             Create your account
           </h1>

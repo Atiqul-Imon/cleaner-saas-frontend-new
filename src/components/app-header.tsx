@@ -19,6 +19,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { MobileSidebar } from '@/components/mobile-sidebar';
 import { useUser } from '@/hooks/use-user';
+import { Logo } from '@/components/logo';
 
 const ownerNavItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -61,9 +62,7 @@ export function AppHeader() {
             >
               <Menu className="size-5" />
             </Button>
-            <Link href="/dashboard" className="font-semibold text-zinc-900">
-              Clenvora
-            </Link>
+            <Logo href="/dashboard" size="md" />
             <nav className="hidden items-center gap-1 md:flex">
               {navItems.map(({ href, label, icon: Icon }) => {
                 const active = pathname === href || pathname.startsWith(href + '/');
