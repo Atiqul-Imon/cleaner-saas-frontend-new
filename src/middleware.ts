@@ -12,7 +12,16 @@ export async function middleware(request: NextRequest) {
       request.nextUrl.pathname.startsWith('/login') ||
       request.nextUrl.pathname.startsWith('/register') ||
       request.nextUrl.pathname === '/';
-    if (!isAuthRoute) {
+    
+    const isPublicContent =
+      request.nextUrl.pathname.startsWith('/blog') ||
+      request.nextUrl.pathname === '/about' ||
+      request.nextUrl.pathname === '/privacy' ||
+      request.nextUrl.pathname === '/terms' ||
+      request.nextUrl.pathname === '/sitemap.xml' ||
+      request.nextUrl.pathname === '/robots.txt';
+    
+    if (!isAuthRoute && !isPublicContent) {
       return NextResponse.redirect(new URL('/login', request.url));
     }
     return response;
