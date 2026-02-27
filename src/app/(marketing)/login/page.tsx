@@ -1,11 +1,10 @@
 'use client';
 
-import { Suspense, useState, useEffect } from 'react';
+import { Suspense, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 import { api } from '@/lib/api';
-import { useUser } from '@/hooks/use-user';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,7 +14,6 @@ import { Card, CardContent } from '@/components/ui/card';
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user, isLoading: userLoading } = useUser();
   const registered = searchParams.get('registered') === '1';
   const sessionExpired = searchParams.get('error') === 'session_expired';
   const next = searchParams.get('next') || undefined;
@@ -25,12 +23,6 @@ function LoginForm() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
-
-  useEffect(() => {
-    if (!userLoading && user) {
-      router.replace(user.role === 'ADMIN' ? '/admin' : '/dashboard');
-    }
-  }, [user, userLoading, router]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -43,6 +35,8 @@ function LoginForm() {
         password,
       });
       if (err) throw err;
+      
+      // Fetch user role after successful auth
       const userData = await api.get<{ role?: string }>('/auth/me', { silent: true }).catch(() => null);
       const target = next || (userData?.role === 'ADMIN' ? '/admin' : '/dashboard');
       router.push(target.startsWith('/') ? target : `/${target}`);
@@ -71,14 +65,6 @@ function LoginForm() {
       setError(err instanceof Error ? err.message : 'Could not sign in with Google');
       setGoogleLoading(false);
     }
-  }
-
-  if (userLoading || user) {
-    return (
-      <div className="flex min-h-[50vh] flex-1 items-center justify-center">
-        <p className="text-zinc-500">Redirecting…</p>
-      </div>
-    );
   }
 
   return (
