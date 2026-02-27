@@ -38,6 +38,7 @@ export default function DashboardPage() {
     queryKey: ['dashboard-stats'],
     queryFn: () => api.get<DashboardStats>('/dashboard/stats'),
     retry: 1,
+    staleTime: 2 * 60 * 1000, // 2 minutes - dashboard data doesn't change that often
   });
 
   const isOwner = stats?.role === 'OWNER';
