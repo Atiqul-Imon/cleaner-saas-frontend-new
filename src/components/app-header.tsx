@@ -71,21 +71,32 @@ export function AppHeader() {
                     key={href}
                     href={href}
                     className={cn(
-                      'flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                      'group relative flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 ease-in-out',
                       active
-                        ? 'bg-zinc-900 text-white'
+                        ? 'bg-zinc-900 text-white shadow-sm'
                         : 'text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900'
                     )}
                   >
-                    <Icon className="size-4" />
+                    <Icon className={cn(
+                      'size-4 transition-transform duration-200 ease-in-out',
+                      active ? 'scale-110' : 'group-hover:scale-105'
+                    )} />
                     {label}
+                    {active && (
+                      <span className="absolute -bottom-1 left-1/2 h-0.5 w-3/4 -translate-x-1/2 rounded-full bg-emerald-500" />
+                    )}
                   </Link>
                 );
               })}
             </nav>
           </div>
-          <Button variant="ghost" size="sm" onClick={handleSignOut} className="text-zinc-700 hover:text-zinc-900">
-            <LogOut className="size-4 md:mr-2" />
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleSignOut}
+            className="group text-zinc-700 transition-all duration-200 hover:text-zinc-900"
+          >
+            <LogOut className="size-4 transition-transform duration-200 group-hover:-translate-x-0.5 md:mr-2" />
             <span className="hidden md:inline">Sign out</span>
           </Button>
         </div>

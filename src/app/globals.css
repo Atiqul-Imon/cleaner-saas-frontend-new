@@ -156,3 +156,31 @@
     }
   }
 }
+
+@layer utilities {
+  /* Smooth transitions for interactive elements */
+  a, button {
+    @apply transition-all duration-200 ease-in-out;
+  }
+  
+  /* Link hover states */
+  a:hover {
+    @apply opacity-90;
+  }
+  
+  /* Smooth focus states */
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    @apply outline-2 outline-offset-2 outline-emerald-500;
+  }
+  
+  /* Smooth page transitions */
+  @media (prefers-reduced-motion: no-preference) {
+    * {
+      scroll-behavior: smooth;
+    }
+  }
+}

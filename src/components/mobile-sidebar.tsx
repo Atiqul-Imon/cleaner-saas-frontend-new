@@ -76,19 +76,19 @@ export function MobileSidebar({ open, onClose }: MobileSidebarProps) {
         onClick={onClose}
         onKeyDown={(e) => e.key === 'Escape' && onClose()}
         className={cn(
-          'fixed inset-0 z-40 bg-black/50 transition-opacity md:hidden',
+          'fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-200 md:hidden',
           open ? 'opacity-100' : 'pointer-events-none opacity-0'
         )}
       />
       {/* Sidebar */}
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-50 w-72 transform border-r border-zinc-200 bg-white shadow-xl transition-transform duration-200 ease-out md:hidden',
+          'fixed inset-y-0 left-0 z-50 w-72 transform border-r border-zinc-200 bg-white shadow-2xl transition-transform duration-300 ease-out md:hidden',
           open ? 'translate-x-0' : '-translate-x-full'
         )}
       >
-        <div className="flex h-14 items-center justify-between border-b border-zinc-200 px-4">
-          <Link href="/dashboard" className="font-semibold text-zinc-900" onClick={onClose}>
+        <div className="flex h-14 items-center justify-between border-b border-zinc-200 bg-gradient-to-r from-emerald-50 to-teal-50 px-4">
+          <Link href="/dashboard" className="text-lg font-bold text-zinc-900 transition-colors hover:text-emerald-700" onClick={onClose}>
             Clenvora
           </Link>
           <Button
@@ -96,6 +96,7 @@ export function MobileSidebar({ open, onClose }: MobileSidebarProps) {
             size="icon"
             onClick={onClose}
             aria-label="Close menu"
+            className="transition-transform hover:rotate-90 hover:scale-110"
           >
             <X className="size-5" />
           </Button>
@@ -109,14 +110,20 @@ export function MobileSidebar({ open, onClose }: MobileSidebarProps) {
                 href={href}
                 onClick={onClose}
                 className={cn(
-                  'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
+                  'group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ease-in-out',
                   active
-                    ? 'bg-zinc-900 text-white'
-                    : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900'
+                    ? 'bg-zinc-900 text-white shadow-md'
+                    : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 hover:shadow-sm'
                 )}
               >
-                <Icon className="size-5 shrink-0" />
+                <Icon className={cn(
+                  'size-5 shrink-0 transition-transform duration-200',
+                  active ? 'scale-110' : 'group-hover:scale-105'
+                )} />
                 {label}
+                {active && (
+                  <span className="absolute right-2 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-emerald-500" />
+                )}
               </Link>
             );
           })}
@@ -126,9 +133,9 @@ export function MobileSidebar({ open, onClose }: MobileSidebarProps) {
                 onClose();
                 handleSignOut();
               }}
-              className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900"
+              className="group flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-zinc-600 transition-all duration-200 hover:bg-red-50 hover:text-red-600"
             >
-              <LogOut className="size-5 shrink-0" />
+              <LogOut className="size-5 shrink-0 transition-transform duration-200 group-hover:-translate-x-1" />
               Sign out
             </button>
           </div>
