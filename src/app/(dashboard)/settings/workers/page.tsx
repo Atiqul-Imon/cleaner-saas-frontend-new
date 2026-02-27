@@ -7,6 +7,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { useUser } from '@/hooks/use-user';
 import { InlineMessage } from '@/components/ui/inline-message';
+import { alertDialog } from '@/components/alert-dialog-provider';
 import { cn } from '@/lib/utils';
 import {
   Dialog,
@@ -101,6 +102,7 @@ function WorkersContent() {
       setMessage({ type: 'success', text: 'Staff member added.' });
     },
     onError: (err) => {
+      // Keep error in mutation state to show in modal
       const msg = err instanceof Error ? err.message : 'Failed to add staff member';
       setMessage({ type: 'error', text: msg });
     },
@@ -291,11 +293,17 @@ function WorkersContent() {
       </Card>
 
       {/* Add Staff Modal */}
-      <Dialog open={showAddModal} onOpenChange={setShowAddModal}>
-        <DialogContent
-          onPointerDownOutside={() => setFormData({ email: '', name: '', method: 'invite' })}
-          onEscapeKeyDown={() => setFormData({ email: '', name: '', method: 'invite' })}
-        >
+      <Dialog 
+        open={showAddModal} 
+        onOpenChange={(open) => {
+          setShowAddModal(open);
+          if (!open) {
+            setFormData({ email: '', name: '', method: 'invite' });
+            createMutation.reset();
+          }
+        }}
+      >
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>Add New Staff Member</DialogTitle>
             <DialogDescription>
@@ -303,6 +311,14 @@ function WorkersContent() {
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
+            {createMutation.isError && (
+              <div className="rounded-lg border-2 border-red-200 bg-red-50 p-4">
+                <p className="font-semibold text-red-900">Unable to add staff member</p>
+                <p className="mt-1 text-sm text-red-700">
+                  {createMutation.error instanceof Error ? createMutation.error.message : 'An error occurred'}
+                </p>
+              </div>
+            )}
             <div className="space-y-2">
               <Label htmlFor="email">Email address</Label>
               <Input
@@ -310,7 +326,10 @@ function WorkersContent() {
                 type="email"
                 required
                 value={formData.email}
-                onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
+                onChange={(e) => {
+                  setFormData((prev) => ({ ...prev, email: e.target.value }));
+                  if (createMutation.isError) createMutation.reset();
+                }}
                 placeholder="staff@example.com"
               />
             </div>
@@ -320,7 +339,10 @@ function WorkersContent() {
                 id="name"
                 type="text"
                 value={formData.name}
-                onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
+                onChange={(e) => {
+                  setFormData((prev) => ({ ...prev, name: e.target.value }));
+                  if (createMutation.isError) createMutation.reset();
+                }}
                 placeholder="John Doe"
               />
             </div>
