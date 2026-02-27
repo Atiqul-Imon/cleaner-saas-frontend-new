@@ -27,8 +27,8 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 const PLAN_LABELS: Record<string, string> = {
   SOLO: 'Solo (FREE - 1 staff, 20 jobs/mo)',
-  TEAM: 'Team (£14.99/mo, 15 staff)',
-  BUSINESS: 'Business (£99.99/mo, 100 staff)',
+  TEAM: 'Team (£14.99/mo, 20 staff)',
+  BUSINESS: 'Business (£99.99/mo, unlimited staff)',
 };
 
 const STATUS_COLORS: Record<string, string> = {

@@ -140,33 +140,33 @@ function CreateJobContent() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl space-y-8">
+    <div className="mx-auto max-w-3xl space-y-8 pb-12">
       <div>
-        <Link href="/jobs" className="text-sm text-zinc-600 hover:underline">
+        <Link href="/jobs" className="inline-flex items-center text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors">
           ← Back to jobs
         </Link>
-        <h1 className="mt-2 text-2xl font-bold tracking-tight">New job</h1>
-        <p className="text-zinc-600">Schedule a cleaning job with date and time</p>
+        <h1 className="mt-4 text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl">Create New Job</h1>
+        <p className="mt-2 text-lg text-zinc-600">Schedule a cleaning job with date and time</p>
       </div>
 
       <form onSubmit={handleSubmit}>
-        <div className="space-y-8">
+        <div className="space-y-6">
           {/* 1. Basic info */}
-          <Card>
-            <CardHeader>
-              <CardTitle>1. Basic information</CardTitle>
-              <CardDescription>Client and assignee</CardDescription>
+          <Card className="border-2 border-zinc-200 shadow-sm">
+            <CardHeader className="pb-5">
+              <CardTitle className="text-xl font-bold text-zinc-900">1. Basic Information</CardTitle>
+              <CardDescription className="text-base text-zinc-600">Select client and assign staff</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-5">
               <div>
-                <Label className="mb-1.5 block">Client *</Label>
+                <Label className="mb-2 block text-base font-semibold text-zinc-900">Client *</Label>
                 <select
                   value={clientId}
                   onChange={(e) => setClientId(e.target.value)}
                   required
-                  className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                  className="w-full rounded-xl border-2 border-zinc-300 px-4 py-3 text-base font-medium focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 transition-all"
                 >
-                  <option value="">Select client</option>
+                  <option value="">Select a client</option>
                   {clientList.map((c) => (
                     <option key={c.id} value={c.id}>
                       {c.name}
@@ -175,11 +175,11 @@ function CreateJobContent() {
                 </select>
               </div>
               <div>
-                <Label className="mb-1.5 block">Who will do this job?</Label>
+                <Label className="mb-2 block text-base font-semibold text-zinc-900">Assign To</Label>
                 <select
                   value={cleanerId}
                   onChange={(e) => setCleanerId(e.target.value)}
-                  className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                  className="w-full rounded-xl border-2 border-zinc-300 px-4 py-3 text-base font-medium focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 transition-all"
                 >
                   <option value="">I&apos;ll do it myself</option>
                   {cleanerList.map((c) => (
@@ -190,77 +190,79 @@ function CreateJobContent() {
                   ))}
                 </select>
                 {cleanerList.length === 0 && (
-                  <p className="mt-1 text-xs text-zinc-500">No staff yet. You can assign later.</p>
+                  <p className="mt-2 text-sm text-zinc-500">No staff yet. You can assign later from job details.</p>
                 )}
               </div>
             </CardContent>
           </Card>
 
           {/* 2. Job type */}
-          <Card>
-            <CardHeader>
-              <CardTitle>2. Job type</CardTitle>
-              <CardDescription>One-time or repeating</CardDescription>
+          <Card className="border-2 border-zinc-200 shadow-sm">
+            <CardHeader className="pb-5">
+              <CardTitle className="text-xl font-bold text-zinc-900">2. Job Type</CardTitle>
+              <CardDescription className="text-base text-zinc-600">One-time or recurring schedule</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div>
-                <Label className="mb-3 block">How often? *</Label>
+                <Label className="mb-3 block text-base font-semibold text-zinc-900">How often? *</Label>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <button
                     type="button"
                     onClick={() => setType('ONE_OFF')}
                     className={cn(
-                      'rounded-xl border-2 p-4 text-left transition-all',
+                      'group rounded-2xl border-2 p-5 text-left transition-all',
                       type === 'ONE_OFF'
-                        ? 'border-primary bg-primary/10 ring-2 ring-primary/30'
-                        : 'border-zinc-200 hover:border-primary/50'
+                        ? 'border-emerald-600 bg-emerald-50 ring-2 ring-emerald-600/30 shadow-md'
+                        : 'border-zinc-200 hover:border-emerald-300 hover:bg-zinc-50'
                     )}
                   >
-                    <p className="font-semibold">One-time job</p>
-                    <p className="text-sm text-zinc-600">Just this once</p>
+                    <p className="text-lg font-bold text-zinc-900">One-time job</p>
+                    <p className="mt-1 text-sm text-zinc-600">Just this once</p>
                   </button>
                   <button
                     type="button"
                     onClick={() => setType('RECURRING')}
                     className={cn(
-                      'rounded-xl border-2 p-4 text-left transition-all',
+                      'group rounded-2xl border-2 p-5 text-left transition-all',
                       type === 'RECURRING'
-                        ? 'border-primary bg-primary/10 ring-2 ring-primary/30'
-                        : 'border-zinc-200 hover:border-primary/50'
+                        ? 'border-emerald-600 bg-emerald-50 ring-2 ring-emerald-600/30 shadow-md'
+                        : 'border-zinc-200 hover:border-emerald-300 hover:bg-zinc-50'
                     )}
                   >
-                    <p className="font-semibold">Repeating job</p>
-                    <p className="text-sm text-zinc-600">Regular schedule</p>
+                    <p className="text-lg font-bold text-zinc-900">Recurring job</p>
+                    <p className="mt-1 text-sm text-zinc-600">Regular schedule</p>
                   </button>
                 </div>
               </div>
               {type === 'RECURRING' && (
                 <div>
-                  <Label className="mb-3 block">Frequency *</Label>
+                  <Label className="mb-3 block text-base font-semibold text-zinc-900">Frequency *</Label>
                   <div className="grid gap-4 sm:grid-cols-2">
                     <button
                       type="button"
                       onClick={() => setFrequency('WEEKLY')}
                       className={cn(
-                        'rounded-xl border-2 p-4 text-left transition-all',
+                        'rounded-2xl border-2 p-5 text-left transition-all',
                         frequency === 'WEEKLY'
-                          ? 'border-primary bg-primary/10 ring-2 ring-primary/30'
-                          : 'border-zinc-200 hover:border-primary/50'
+                          ? 'border-emerald-600 bg-emerald-50 ring-2 ring-emerald-600/30 shadow-md'
+                          : 'border-zinc-200 hover:border-emerald-300 hover:bg-zinc-50'
                       )}
                     >
-                      <p className="font-semibold">Every week</p>
+                      <p className="text-lg font-bold text-zinc-900">Every week</p>
+                      <p className="mt-1 text-sm text-zinc-600">Repeats weekly</p>
                     </button>
                     <button
                       type="button"
                       onClick={() => setFrequency('BI_WEEKLY')}
                       className={cn(
-                        'rounded-xl border-2 p-4 text-left transition-all',
+                        'rounded-2xl border-2 p-5 text-left transition-all',
                         frequency === 'BI_WEEKLY'
-                          ? 'border-primary bg-primary/10 ring-2 ring-primary/30'
-                          : 'border-zinc-200 hover:border-primary/50'
+                          ? 'border-emerald-600 bg-emerald-50 ring-2 ring-emerald-600/30 shadow-md'
+                          : 'border-zinc-200 hover:border-emerald-300 hover:bg-zinc-50'
                       )}
                     >
-                      <p className="font-semibold">Every 2 weeks</p>
+                      <p className="text-lg font-bold text-zinc-900">Every 2 weeks</p>
+                      <p className="mt-1 text-sm text-zinc-600">Bi-weekly schedule</p>
                     </button>
                   </div>
                 </div>
@@ -269,23 +271,23 @@ function CreateJobContent() {
           </Card>
 
           {/* 3. When */}
-          <Card>
-            <CardHeader>
-              <CardTitle>3. When?</CardTitle>
-              <CardDescription>Date and time</CardDescription>
+          <Card className="border-2 border-zinc-200 shadow-sm">
+            <CardHeader className="pb-5">
+              <CardTitle className="text-xl font-bold text-zinc-900">3. Schedule</CardTitle>
+              <CardDescription className="text-base text-zinc-600">Pick date and time</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div>
-                <Label className="mb-3 block">Pick a date *</Label>
+                <Label className="mb-3 block text-base font-semibold text-zinc-900">Pick a date *</Label>
                 <div className="mb-4 flex flex-wrap gap-2">
                   <button
                     type="button"
                     onClick={() => setScheduledDate(getTodayDateInput())}
                     className={cn(
-                      'rounded-lg border-2 px-4 py-2.5 text-sm font-medium transition-all',
+                      'rounded-xl border-2 px-5 py-3 text-sm font-semibold transition-all',
                       scheduledDate === getTodayDateInput()
-                        ? 'border-zinc-900 bg-zinc-900 text-white'
-                        : 'border-zinc-300 hover:border-zinc-400 hover:bg-zinc-100'
+                        ? 'border-emerald-600 bg-emerald-600 text-white shadow-md'
+                        : 'border-zinc-300 text-zinc-700 hover:border-emerald-300 hover:bg-emerald-50'
                     )}
                   >
                     Today
@@ -294,10 +296,10 @@ function CreateJobContent() {
                     type="button"
                     onClick={() => setScheduledDate(getTomorrowDateInput())}
                     className={cn(
-                      'rounded-lg border-2 px-4 py-2.5 text-sm font-medium transition-all',
+                      'rounded-xl border-2 px-5 py-3 text-sm font-semibold transition-all',
                       scheduledDate === getTomorrowDateInput()
-                        ? 'border-zinc-900 bg-zinc-900 text-white'
-                        : 'border-zinc-300 hover:border-zinc-400 hover:bg-zinc-100'
+                        ? 'border-emerald-600 bg-emerald-600 text-white shadow-md'
+                        : 'border-zinc-300 text-zinc-700 hover:border-emerald-300 hover:bg-emerald-50'
                     )}
                   >
                     Tomorrow
@@ -306,17 +308,17 @@ function CreateJobContent() {
                     type="button"
                     onClick={() => setScheduledDate(getNextWeekDateInput())}
                     className={cn(
-                      'rounded-lg border-2 px-4 py-2.5 text-sm font-medium transition-all',
+                      'rounded-xl border-2 px-5 py-3 text-sm font-semibold transition-all',
                       scheduledDate === getNextWeekDateInput()
-                        ? 'border-zinc-900 bg-zinc-900 text-white'
-                        : 'border-zinc-300 hover:border-zinc-400 hover:bg-zinc-100'
+                        ? 'border-emerald-600 bg-emerald-600 text-white shadow-md'
+                        : 'border-zinc-300 text-zinc-700 hover:border-emerald-300 hover:bg-emerald-50'
                     )}
                   >
                     Next week
                   </button>
                 </div>
                 <div>
-                  <Label className="mb-1.5 block text-sm text-zinc-600">
+                  <Label className="mb-2 block text-sm font-medium text-zinc-600">
                     Or choose a specific date
                   </Label>
                   <Input
@@ -325,12 +327,13 @@ function CreateJobContent() {
                     onChange={(e) => setScheduledDate(e.target.value)}
                     required
                     min={getTodayDateInput()}
+                    className="text-base font-medium"
                   />
                 </div>
               </div>
 
               <div>
-                <Label className="mb-3 block">Time (optional)</Label>
+                <Label className="mb-3 block text-base font-semibold text-zinc-900">Time (optional)</Label>
                 <div className="mb-3 flex flex-wrap gap-2">
                   {COMMON_TIMES.map((time) => (
                     <button
@@ -338,10 +341,10 @@ function CreateJobContent() {
                       type="button"
                       onClick={() => setScheduledTime(time)}
                       className={cn(
-                        'rounded-lg border-2 px-4 py-2.5 text-sm font-medium transition-all',
+                        'rounded-xl border-2 px-5 py-3 text-sm font-semibold transition-all',
                         scheduledTime === time
-                          ? 'border-zinc-900 bg-zinc-900 text-white'
-                          : 'border-zinc-300 hover:border-zinc-400 hover:bg-zinc-100'
+                          ? 'border-emerald-600 bg-emerald-600 text-white shadow-md'
+                          : 'border-zinc-300 text-zinc-700 hover:border-emerald-300 hover:bg-emerald-50'
                       )}
                     >
                       {time}
@@ -352,36 +355,37 @@ function CreateJobContent() {
                   type="time"
                   value={scheduledTime}
                   onChange={(e) => setScheduledTime(e.target.value)}
-                  className="max-w-[140px]"
+                  className="max-w-[160px] text-base font-medium"
                 />
               </div>
             </CardContent>
           </Card>
 
           {/* 4. Reminder */}
-          <Card>
-            <CardHeader>
-              <CardTitle>4. Reminder</CardTitle>
-              <CardDescription>Get notified before the job</CardDescription>
+          <Card className="border-2 border-zinc-200 shadow-sm">
+            <CardHeader className="pb-5">
+              <CardTitle className="text-xl font-bold text-zinc-900">4. Reminder</CardTitle>
+              <CardDescription className="text-base text-zinc-600">Get notified before the job</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-5">
               <div className="flex items-center gap-3">
                 <Checkbox
                   id="reminderEnabled"
                   checked={reminderEnabled}
                   onCheckedChange={(v) => setReminderEnabled(!!v)}
+                  className="size-5"
                 />
-                <Label htmlFor="reminderEnabled" className="cursor-pointer">
+                <Label htmlFor="reminderEnabled" className="cursor-pointer text-base font-medium text-zinc-900">
                   Send reminder before job
                 </Label>
               </div>
               {reminderEnabled && (
                 <div>
-                  <Label className="mb-1.5 block text-sm">When to remind</Label>
+                  <Label className="mb-2 block text-base font-semibold text-zinc-900">When to remind</Label>
                   <select
                     value={reminderTime}
                     onChange={(e) => setReminderTime(e.target.value)}
-                    className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900 sm:max-w-[200px]"
+                    className="w-full rounded-xl border-2 border-zinc-300 px-4 py-3 text-base font-medium focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 transition-all sm:max-w-[240px]"
                   >
                     {REMINDER_OPTIONS.map((o) => (
                       <option key={o.value} value={o.value}>
@@ -395,16 +399,21 @@ function CreateJobContent() {
           </Card>
 
           {error && (
-            <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+            <div className="rounded-xl border-2 border-red-200 bg-red-50 p-5 text-base font-medium text-red-700">
               {error}
             </div>
           )}
 
-          <div className="flex gap-3">
-            <Button type="submit" disabled={loading}>
-              {loading ? 'Creating…' : 'Create job'}
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Button 
+              type="submit" 
+              disabled={loading}
+              size="lg"
+              className="h-12 bg-emerald-600 hover:bg-emerald-700 text-base font-semibold shadow-lg hover:shadow-xl transition-all"
+            >
+              {loading ? 'Creating…' : 'Create Job'}
             </Button>
-            <Button type="button" variant="outline" asChild>
+            <Button type="button" variant="outline" size="lg" className="h-12 text-base font-semibold" asChild>
               <Link href="/jobs">Cancel</Link>
             </Button>
           </div>

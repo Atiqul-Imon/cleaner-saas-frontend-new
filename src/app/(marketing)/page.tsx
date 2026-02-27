@@ -14,8 +14,8 @@ export default function HomePage() {
   return (
     <>
       {/* Hero - emerald/teal gradient */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-700 px-4 py-16 sm:py-20 lg:py-28">
-        <div className="absolute inset-0 opacity-20">
+      <section className="relative overflow-hidden bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-700 px-4 py-20 sm:py-24 lg:py-32">
+        <div className="absolute inset-0 opacity-10">
           <div
             className="absolute inset-0"
             style={{
@@ -24,21 +24,21 @@ export default function HomePage() {
           />
         </div>
         <div className="relative mx-auto max-w-7xl">
-          <div className="max-w-2xl">
-            <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
-              WhatsApp-First Job & Invoice Management for UK Cleaners
+          <div className="max-w-3xl">
+            <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl lg:leading-tight">
+              Simple Job & Invoice Management for UK Cleaning Businesses
             </h1>
-            <p className="mt-4 text-lg leading-relaxed text-white/95 sm:text-xl">
-              Send invoices and photos directly to your clients on WhatsApp. Track jobs and payments — all from your phone.
+            <p className="mt-6 text-xl leading-relaxed text-white/95 sm:text-2xl sm:leading-relaxed">
+              Manage weekly jobs, send invoices in seconds, and track who has paid — all from your phone.
             </p>
-            <p className="mt-3 text-base font-medium text-white/90 sm:text-lg">
-              No paperwork. No emails. Just WhatsApp and simple clicks.
+            <p className="mt-4 text-lg font-medium text-white/95">
+              No paperwork. No missed jobs. No payment confusion.
             </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:gap-4">
               <Button
                 asChild
                 size="lg"
-                className="h-12 bg-white font-semibold text-emerald-700 shadow-lg hover:bg-emerald-50 hover:text-emerald-800"
+                className="h-14 px-8 text-base font-semibold bg-white text-emerald-700 shadow-xl hover:bg-emerald-50 hover:text-emerald-800 hover:shadow-2xl transition-all"
               >
                 <Link href="/register">Start Free Beta</Link>
               </Button>
@@ -46,24 +46,27 @@ export default function HomePage() {
                 asChild
                 variant="outline"
                 size="lg"
-                className="h-12 border-2 border-white/80 bg-white/10 font-medium text-white backdrop-blur-sm hover:bg-white/20 hover:text-white"
+                className="h-14 px-8 text-base border-2 border-white/90 bg-white/15 font-semibold text-white backdrop-blur-sm hover:bg-white/25 hover:border-white transition-all"
               >
                 <Link href="/login">Sign In</Link>
               </Button>
             </div>
-            <div className="mt-5 space-y-1">
-              <p className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-white/90">
-                <span className="flex items-center gap-1.5">
-                  <CheckCircle2 className="size-4" /> Free to start
+            <div className="mt-8 space-y-2">
+              <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/95">
+                <span className="flex items-center gap-2">
+                  <CheckCircle2 className="size-4.5 shrink-0" /> Free to start
                 </span>
-                <span className="flex items-center gap-1.5">
-                  <CheckCircle2 className="size-4" /> Built for solo cleaners & small teams
+                <span className="flex items-center gap-2">
+                  <CheckCircle2 className="size-4.5 shrink-0" /> Built for solo cleaners & small teams
                 </span>
-                <span className="flex items-center gap-1.5">
-                  <CheckCircle2 className="size-4" /> Works on your phone
+                <span className="flex items-center gap-2">
+                  <CheckCircle2 className="size-4.5 shrink-0" /> Works on your phone
                 </span>
-              </p>
-              <p className="text-sm text-white/80">
+                <span className="flex items-center gap-2">
+                  <CheckCircle2 className="size-4.5 shrink-0" /> Works alongside WhatsApp
+                </span>
+              </div>
+              <p className="text-sm text-white/85 font-medium">
                 Takes less than 1 minute to get started.
               </p>
             </div>
@@ -72,34 +75,34 @@ export default function HomePage() {
       </section>
 
       {/* Features */}
-      <section id="features" className="scroll-mt-20 bg-white px-4 py-16 sm:py-20 lg:py-24">
+      <section id="features" className="scroll-mt-20 bg-white px-4 py-20 sm:py-24 lg:py-28">
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
-            <h2 className="text-2xl font-bold tracking-tight text-zinc-900 sm:text-3xl">
-              Built for WhatsApp Users
+            <h2 className="text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl">
+              Everything in One Place
             </h2>
-            <p className="mx-auto mt-3 max-w-2xl text-base leading-relaxed text-zinc-600">
-              Send everything to clients via WhatsApp — invoices, photos, and updates
+            <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-zinc-600">
+              No more lost papers or forgotten jobs
             </p>
           </div>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {[
-              { icon: Users, title: 'Save Clients', desc: "Store names, addresses, and WhatsApp numbers in one place", color: 'bg-emerald-600' },
-              { icon: Calendar, title: 'Track Jobs', desc: "Weekly jobs, reminders, and completion tracking", color: 'bg-blue-600' },
-              { icon: Camera, title: 'Take Photos', desc: 'Snap before & after photos and share via WhatsApp instantly', color: 'bg-amber-600' },
-              { icon: FileText, title: 'WhatsApp Invoices', desc: "Tap once to send invoice to client's WhatsApp — no typing", color: 'bg-violet-600' },
-              { icon: Wallet, title: 'Payment Tracking', desc: "Mark who paid and who hasn't — simple ticks", color: 'bg-teal-600' },
-              { icon: Smartphone, title: 'Phone-First', desc: "Everything works on your phone. No computer needed", color: 'bg-rose-600' },
+              { icon: Users, title: 'Your Clients', desc: "Save names and addresses so you don't have to remember", color: 'bg-emerald-600' },
+              { icon: Calendar, title: 'Weekly Jobs', desc: "Set it once, we'll remind you every week", color: 'bg-blue-600' },
+              { icon: Camera, title: 'Take Photos', desc: 'Show before and after with your phone camera', color: 'bg-amber-600' },
+              { icon: FileText, title: 'Quick Invoices', desc: "Job done? Invoice ready. No typing needed", color: 'bg-violet-600' },
+              { icon: Wallet, title: 'Track Payments', desc: "See who paid and who still owes you", color: 'bg-teal-600' },
+              { icon: Smartphone, title: 'On Your Phone', desc: "Works anywhere. Save to your home screen", color: 'bg-rose-600' },
             ].map((item) => (
               <div
                 key={item.title}
-                className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
+                className="group rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm transition-all duration-200 hover:shadow-lg hover:border-zinc-300"
               >
-                <div className={`flex size-11 items-center justify-center rounded-lg text-white ${item.color}`}>
-                  <item.icon className="size-5" />
+                <div className={`flex size-14 items-center justify-center rounded-xl text-white shadow-md ${item.color}`}>
+                  <item.icon className="size-7" />
                 </div>
-                <h3 className="mt-5 text-lg font-semibold text-zinc-900">{item.title}</h3>
-                <p className="mt-2 text-[15px] leading-relaxed text-zinc-600">{item.desc}</p>
+                <h3 className="mt-6 text-xl font-bold text-zinc-900">{item.title}</h3>
+                <p className="mt-3 text-base leading-relaxed text-zinc-600">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -107,29 +110,29 @@ export default function HomePage() {
       </section>
 
       {/* How it works */}
-      <section id="how-it-works" className="scroll-mt-20 bg-zinc-50 px-4 py-16 sm:py-20 lg:py-24">
+      <section id="how-it-works" className="scroll-mt-20 bg-gradient-to-b from-zinc-50 to-white px-4 py-20 sm:py-24 lg:py-28">
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
-            <h2 className="text-2xl font-bold tracking-tight text-zinc-900 sm:text-3xl">
+            <h2 className="text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl">
               How It Works
             </h2>
-            <p className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-zinc-600">
-              From job to payment — all through WhatsApp
+            <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-zinc-600">
+              Four simple steps. That's it.
             </p>
           </div>
-          <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-16 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              { step: '1', title: 'Add Job', desc: 'Create job with client details' },
-              { step: '2', title: 'Take Photos', desc: 'Snap before & after photos' },
-              { step: '3', title: 'Send to WhatsApp', desc: 'Invoice & photos sent instantly' },
-              { step: '4', title: 'Mark Paid', desc: 'Track who paid you' },
+              { step: '1', title: 'Add Job', desc: 'Write down your cleaning jobs' },
+              { step: '2', title: 'Finish Job', desc: 'Tap "Done" when finished' },
+              { step: '3', title: 'Send Invoice', desc: 'Already made for you' },
+              { step: '4', title: 'Mark Paid', desc: 'Tick off when they pay' },
             ].map((item) => (
               <div key={item.step} className="text-center">
-                <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-emerald-600 text-lg font-bold text-white">
+                <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-emerald-600 text-2xl font-bold text-white shadow-lg">
                   {item.step}
                 </div>
-                <h3 className="mt-3 font-semibold text-zinc-900">{item.title}</h3>
-                <p className="mt-1 text-[15px] leading-relaxed text-zinc-600">{item.desc}</p>
+                <h3 className="mt-5 text-xl font-bold text-zinc-900">{item.title}</h3>
+                <p className="mt-2 text-base leading-relaxed text-zinc-600">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -137,137 +140,137 @@ export default function HomePage() {
       </section>
 
       {/* Pricing */}
-      <section id="pricing" className="scroll-mt-20 bg-white px-4 py-16 sm:py-20 lg:py-24">
+      <section id="pricing" className="scroll-mt-20 bg-white px-4 py-20 sm:py-24 lg:py-28">
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
-            <h2 className="text-2xl font-bold tracking-tight text-zinc-900 sm:text-3xl">
-              Free to Start. Grow at Your Pace.
+            <h2 className="text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl">
+              Simple, Honest Pricing
             </h2>
-            <p className="mx-auto mt-3 max-w-2xl text-base leading-relaxed text-zinc-600">
-              WhatsApp invoicing included in all plans. Upgrade when you need more staff.
+            <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-zinc-600">
+              Start free. Upgrade when you're ready to grow your team.
             </p>
           </div>
-          <div className="mt-12 grid gap-6 lg:grid-cols-3">
+          <div className="mt-16 grid gap-8 lg:grid-cols-3">
             {/* SOLO - Free */}
-            <div className="rounded-2xl border-2 border-zinc-200 bg-white p-8 shadow-sm">
+            <div className="rounded-3xl border-2 border-zinc-200 bg-white p-10 shadow-sm transition-all duration-200 hover:shadow-xl hover:border-zinc-300">
               <div className="text-center">
-                <h3 className="text-xl font-bold text-zinc-900">Solo</h3>
-                <p className="mt-2 text-sm text-zinc-600">For solo cleaners using WhatsApp</p>
-                <div className="mt-4">
-                  <span className="text-4xl font-bold text-zinc-900">FREE</span>
-                  <span className="ml-2 text-sm font-medium text-emerald-600">Forever</span>
+                <h3 className="text-2xl font-bold text-zinc-900">Solo</h3>
+                <p className="mt-3 text-base text-zinc-600">Perfect for self-employed cleaners</p>
+                <div className="mt-6">
+                  <span className="text-5xl font-bold text-zinc-900">FREE</span>
+                  <span className="ml-3 text-base font-semibold text-emerald-600">Forever</span>
                 </div>
               </div>
-              <ul className="mt-8 space-y-3">
-                <li className="flex items-start gap-3 text-sm text-zinc-700">
-                  <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
-                  <span><strong>1 staff member</strong></span>
+              <ul className="mt-10 space-y-4">
+                <li className="flex items-start gap-3 text-base text-zinc-700">
+                  <CheckCircle2 className="size-6 shrink-0 text-emerald-600 mt-0.5" />
+                  <span><strong className="font-semibold">1 staff member</strong></span>
                 </li>
-                <li className="flex items-start gap-3 text-sm text-zinc-700">
-                  <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
-                  <span><strong>20 jobs per month</strong></span>
+                <li className="flex items-start gap-3 text-base text-zinc-700">
+                  <CheckCircle2 className="size-6 shrink-0 text-emerald-600 mt-0.5" />
+                  <span><strong className="font-semibold">20 jobs per month</strong></span>
                 </li>
-                <li className="flex items-start gap-3 text-sm text-zinc-700">
-                  <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
-                  <span>WhatsApp invoicing</span>
+                <li className="flex items-start gap-3 text-base text-zinc-700">
+                  <CheckCircle2 className="size-6 shrink-0 text-emerald-600 mt-0.5" />
+                  <span>Client management</span>
                 </li>
-                <li className="flex items-start gap-3 text-sm text-zinc-700">
-                  <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
-                  <span>WhatsApp photo sharing</span>
+                <li className="flex items-start gap-3 text-base text-zinc-700">
+                  <CheckCircle2 className="size-6 shrink-0 text-emerald-600 mt-0.5" />
+                  <span>Invoicing & payments</span>
                 </li>
-                <li className="flex items-start gap-3 text-sm text-zinc-700">
-                  <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
-                  <span>Payment tracking</span>
+                <li className="flex items-start gap-3 text-base text-zinc-700">
+                  <CheckCircle2 className="size-6 shrink-0 text-emerald-600 mt-0.5" />
+                  <span>Photo uploads</span>
                 </li>
               </ul>
-              <Button asChild className="mt-8 w-full" variant="outline">
+              <Button asChild className="mt-10 w-full h-12 text-base font-semibold" variant="outline">
                 <Link href="/register">Start free</Link>
               </Button>
             </div>
 
             {/* TEAM - Most Popular */}
-            <div className="relative rounded-2xl border-2 border-emerald-600 bg-white p-8 shadow-lg lg:scale-105">
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                <span className="rounded-full bg-emerald-600 px-4 py-1 text-xs font-semibold uppercase tracking-wide text-white">
+            <div className="relative rounded-3xl border-2 border-emerald-600 bg-white p-10 shadow-xl lg:scale-105 transition-all duration-200 hover:shadow-2xl">
+              <div className="absolute -top-5 left-1/2 -translate-x-1/2">
+                <span className="rounded-full bg-emerald-600 px-5 py-1.5 text-xs font-bold uppercase tracking-wider text-white shadow-lg">
                   Most Popular
                 </span>
               </div>
               <div className="text-center">
-                <h3 className="text-xl font-bold text-zinc-900">Team</h3>
-                <p className="mt-2 text-sm text-zinc-600">For small teams managing clients via WhatsApp</p>
-                <div className="mt-4">
-                  <span className="text-4xl font-bold text-zinc-900">£14.99</span>
-                  <span className="ml-2 text-sm text-zinc-600">/month</span>
+                <h3 className="text-2xl font-bold text-zinc-900">Team</h3>
+                <p className="mt-3 text-base text-zinc-600">For growing cleaning businesses</p>
+                <div className="mt-6">
+                  <span className="text-5xl font-bold text-zinc-900">£14.99</span>
+                  <span className="ml-2 text-base text-zinc-600">/month</span>
                 </div>
               </div>
-              <ul className="mt-8 space-y-3">
-                <li className="flex items-start gap-3 text-sm text-zinc-700">
-                  <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
-                  <span><strong>Up to 15 staff</strong></span>
+              <ul className="mt-10 space-y-4">
+                <li className="flex items-start gap-3 text-base text-zinc-700">
+                  <CheckCircle2 className="size-6 shrink-0 text-emerald-600 mt-0.5" />
+                  <span><strong className="font-semibold">Up to 20 staff</strong></span>
                 </li>
-                <li className="flex items-start gap-3 text-sm text-zinc-700">
-                  <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
-                  <span><strong>Unlimited jobs</strong></span>
+                <li className="flex items-start gap-3 text-base text-zinc-700">
+                  <CheckCircle2 className="size-6 shrink-0 text-emerald-600 mt-0.5" />
+                  <span><strong className="font-semibold">Unlimited jobs</strong></span>
                 </li>
-                <li className="flex items-start gap-3 text-sm text-zinc-700">
-                  <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
-                  <span>WhatsApp invoicing & photos</span>
+                <li className="flex items-start gap-3 text-base text-zinc-700">
+                  <CheckCircle2 className="size-6 shrink-0 text-emerald-600 mt-0.5" />
+                  <span>Everything in Solo</span>
                 </li>
-                <li className="flex items-start gap-3 text-sm text-zinc-700">
-                  <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
-                  <span>Team job assignment</span>
+                <li className="flex items-start gap-3 text-base text-zinc-700">
+                  <CheckCircle2 className="size-6 shrink-0 text-emerald-600 mt-0.5" />
+                  <span>Team management</span>
                 </li>
-                <li className="flex items-start gap-3 text-sm text-zinc-700">
-                  <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
+                <li className="flex items-start gap-3 text-base text-zinc-700">
+                  <CheckCircle2 className="size-6 shrink-0 text-emerald-600 mt-0.5" />
                   <span>Email support</span>
                 </li>
               </ul>
-              <Button asChild className="mt-8 w-full bg-emerald-600 hover:bg-emerald-700">
+              <Button asChild className="mt-10 w-full h-12 text-base font-semibold bg-emerald-600 hover:bg-emerald-700 shadow-lg hover:shadow-xl transition-all">
                 <Link href="/register">Start 1-month free trial</Link>
               </Button>
             </div>
 
             {/* BUSINESS */}
-            <div className="rounded-2xl border-2 border-zinc-200 bg-white p-8 shadow-sm">
+            <div className="rounded-3xl border-2 border-zinc-200 bg-white p-10 shadow-sm transition-all duration-200 hover:shadow-xl hover:border-zinc-300">
               <div className="text-center">
-                <h3 className="text-xl font-bold text-zinc-900">Business</h3>
-                <p className="mt-2 text-sm text-zinc-600">For large cleaning operations</p>
-                <div className="mt-4">
-                  <span className="text-4xl font-bold text-zinc-900">£99.99</span>
-                  <span className="ml-2 text-sm text-zinc-600">/month</span>
+                <h3 className="text-2xl font-bold text-zinc-900">Business</h3>
+                <p className="mt-3 text-base text-zinc-600">For large cleaning operations</p>
+                <div className="mt-6">
+                  <span className="text-5xl font-bold text-zinc-900">£99.99</span>
+                  <span className="ml-2 text-base text-zinc-600">/month</span>
                 </div>
               </div>
-              <ul className="mt-8 space-y-3">
-                <li className="flex items-start gap-3 text-sm text-zinc-700">
-                  <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
-                  <span><strong>Up to 100 staff</strong></span>
+              <ul className="mt-10 space-y-4">
+                <li className="flex items-start gap-3 text-base text-zinc-700">
+                  <CheckCircle2 className="size-6 shrink-0 text-emerald-600 mt-0.5" />
+                  <span><strong className="font-semibold">Unlimited staff</strong></span>
                 </li>
-                <li className="flex items-start gap-3 text-sm text-zinc-700">
-                  <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
-                  <span><strong>Unlimited jobs</strong></span>
+                <li className="flex items-start gap-3 text-base text-zinc-700">
+                  <CheckCircle2 className="size-6 shrink-0 text-emerald-600 mt-0.5" />
+                  <span><strong className="font-semibold">Unlimited jobs</strong></span>
                 </li>
-                <li className="flex items-start gap-3 text-sm text-zinc-700">
-                  <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
-                  <span>WhatsApp invoicing & photos</span>
+                <li className="flex items-start gap-3 text-base text-zinc-700">
+                  <CheckCircle2 className="size-6 shrink-0 text-emerald-600 mt-0.5" />
+                  <span>Everything in Team</span>
                 </li>
-                <li className="flex items-start gap-3 text-sm text-zinc-700">
-                  <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
+                <li className="flex items-start gap-3 text-base text-zinc-700">
+                  <CheckCircle2 className="size-6 shrink-0 text-emerald-600 mt-0.5" />
                   <span>Custom invoice branding</span>
                 </li>
-                <li className="flex items-start gap-3 text-sm text-zinc-700">
-                  <CheckCircle2 className="size-5 shrink-0 text-emerald-600" />
-                  <span>Priority email support</span>
+                <li className="flex items-start gap-3 text-base text-zinc-700">
+                  <CheckCircle2 className="size-6 shrink-0 text-emerald-600 mt-0.5" />
+                  <span>Email support</span>
                 </li>
               </ul>
-              <Button asChild className="mt-8 w-full" variant="outline">
+              <Button asChild className="mt-10 w-full h-12 text-base font-semibold" variant="outline">
                 <Link href="/register">Start 1-month free trial</Link>
               </Button>
             </div>
           </div>
 
           {/* Trust builder */}
-          <div className="mt-12 text-center">
-            <p className="text-sm text-zinc-500">
+          <div className="mt-16 text-center">
+            <p className="text-base text-zinc-500 font-medium">
               Team & Business plans include 1 month free trial • Cancel anytime • No hidden fees
             </p>
           </div>
@@ -275,19 +278,19 @@ export default function HomePage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-gradient-to-br from-emerald-600 to-teal-600 px-4 py-16 sm:py-20">
-        <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl lg:text-4xl">
-            Start Sending Invoices via WhatsApp Today
+      <section className="bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-700 px-4 py-20 sm:py-24">
+        <div className="mx-auto max-w-4xl text-center">
+          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
+            Ready to Get Started?
           </h2>
-          <p className="mt-4 text-base leading-relaxed text-white/95 sm:text-lg">
-            Free to start. No complicated setup. Send your first WhatsApp invoice in minutes.
+          <p className="mt-6 text-xl leading-relaxed text-white/95">
+            Free to start. No complicated setup. Works on your phone.
           </p>
-          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+          <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
             <Button
               asChild
               size="lg"
-              className="h-12 bg-white font-semibold text-emerald-700 shadow-lg hover:bg-emerald-50 hover:text-emerald-800"
+              className="h-14 px-8 text-base font-semibold bg-white text-emerald-700 shadow-xl hover:bg-emerald-50 hover:text-emerald-800 hover:shadow-2xl transition-all"
             >
               <Link href="/register">Try it free</Link>
             </Button>
@@ -295,7 +298,7 @@ export default function HomePage() {
               asChild
               variant="outline"
               size="lg"
-              className="h-12 border-2 border-white/80 bg-white/10 font-medium text-white hover:bg-white/20"
+              className="h-14 px-8 text-base border-2 border-white/90 bg-white/15 font-semibold text-white hover:bg-white/25 hover:border-white transition-all"
             >
               <Link href="/login">Sign in</Link>
             </Button>

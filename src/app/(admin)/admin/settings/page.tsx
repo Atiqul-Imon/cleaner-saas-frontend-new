@@ -58,8 +58,8 @@ export default function AdminSettingsPage() {
           <div className="space-y-3">
             {[
               { plan: 'SOLO', price: 'FREE', desc: '1 staff, 20 jobs/month', cleaners: 1 },
-              { plan: 'TEAM', price: '£14.99/mo', desc: 'Up to 15 staff, unlimited jobs', cleaners: 15 },
-              { plan: 'BUSINESS', price: '£99.99/mo', desc: 'Up to 100 staff, unlimited jobs', cleaners: 100 },
+              { plan: 'TEAM', price: '£14.99/mo', desc: 'Up to 20 staff, unlimited jobs', cleaners: 20 },
+              { plan: 'BUSINESS', price: '£99.99/mo', desc: 'Unlimited staff, unlimited jobs', cleaners: 1000 },
             ].map(({ plan, price, desc, cleaners }) => (
               <div key={plan} className="flex items-center justify-between rounded-lg bg-zinc-50 p-4">
                 <div>
