@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { RequireOwner } from '@/components/require-owner';
 import { CheckCircle2, ArrowLeft, Sparkles, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
+import { alertDialog } from '@/components/alert-dialog-provider';
 
 interface Subscription {
   id: string;
@@ -140,27 +141,38 @@ function SubscriptionContent() {
       refetchSubscription();
       refetchUsage();
       refetchBusiness();
-      alert('Plan upgraded successfully! You will be charged for the new plan next billing cycle.');
+      alertDialog.success(
+        'Plan Upgraded!',
+        'Your plan has been upgraded successfully. You will be charged for the new plan next billing cycle.',
+      );
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Failed to upgrade plan';
-      alert(message);
+      alertDialog.error('Upgrade Failed', message);
     }
   };
 
   const handleCancelSubscription = async () => {
-    if (!confirm('Are you sure you want to cancel your subscription? You will lose access to premium features at the end of your current billing period.')) {
-      return;
-    }
-
-    try {
-      await api.post('/subscriptions/cancel');
-      refetchSubscription();
-      refetchUsage();
-      alert('Subscription cancelled successfully. You will retain access until the end of your current billing period.');
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'Failed to cancel subscription';
-      alert(message);
-    }
+    alertDialog.confirm(
+      'Cancel Subscription?',
+      'Are you sure you want to cancel your subscription? You will lose access to premium features at the end of your current billing period.',
+      async () => {
+        try {
+          await api.post('/subscriptions/cancel');
+          refetchSubscription();
+          refetchUsage();
+          alertDialog.success(
+            'Subscription Cancelled',
+            'Your subscription has been cancelled. You will retain access until the end of your current billing period.',
+          );
+        } catch (error: unknown) {
+          const message = error instanceof Error ? error.message : 'Failed to cancel subscription';
+          alertDialog.error('Cancellation Failed', message);
+        }
+      },
+      undefined,
+      'Yes, Cancel',
+      'Keep Subscription',
+    );
   };
 
   return (

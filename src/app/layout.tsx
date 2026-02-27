@@ -3,6 +3,7 @@ import { Roboto, Inter } from 'next/font/google';
 import './globals.css';
 import { QueryProvider } from '@/providers/query-provider';
 import { CookieConsentBanner } from '@/components/cookie-consent-banner';
+import { AlertDialogProvider } from '@/components/alert-dialog-provider';
 
 const roboto = Roboto({
   variable: '--font-roboto',
@@ -42,8 +43,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${roboto.variable} ${inter.variable} font-sans antialiased`}>
         <QueryProvider>
-          {children}
-          <CookieConsentBanner />
+          <AlertDialogProvider>
+            {children}
+            <CookieConsentBanner />
+          </AlertDialogProvider>
         </QueryProvider>
       </body>
     </html>
