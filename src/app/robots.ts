@@ -5,17 +5,10 @@ export default function robots(): MetadataRoute.Robots {
 
   return {
     rules: [
+      // Public pages - allow all search engines
       {
         userAgent: '*',
-        allow: [
-          '/',
-          '/register',
-          '/login',
-          '/about',
-          '/terms',
-          '/privacy',
-          '/blog',
-        ],
+        allow: '/',
         disallow: [
           '/dashboard',
           '/jobs',
@@ -27,6 +20,11 @@ export default function robots(): MetadataRoute.Robots {
           '/onboarding',
           '/api',
         ],
+      },
+      // Block AI training bots (keep AI crawlers from training on your content)
+      {
+        userAgent: ['GPTBot', 'ChatGPT-User', 'Google-Extended', 'CCBot', 'anthropic-ai', 'ClaudeBot', 'Bytespider'],
+        disallow: '/',
       },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,
