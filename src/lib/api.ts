@@ -1,4 +1,5 @@
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
+import { getAccessToken, clearTokenCache } from '@/lib/token-cache';
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_URL ||
@@ -26,11 +27,8 @@ export function normalizeList<T>(res: T[] | { data?: T[] } | undefined): T[] {
 }
 
 async function getAuthHeaders(): Promise<HeadersInit> {
-  const supabase = createSupabaseBrowserClient();
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-  const token = session?.access_token;
+  // OPTIMIZED: Use cached token instead of calling getSession() every time
+  const token = await getAccessToken();
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
@@ -63,6 +61,8 @@ async function handleResponse<T>(res: Response, options?: { silent?: boolean }):
     if (res.status === 401 && typeof window !== 'undefined') {
       const supabase = createSupabaseBrowserClient();
       await supabase.auth.signOut();
+      // Clear token cache on 401 (invalid/expired token)
+      clearTokenCache();
       const path = window.location.pathname;
       const isPublicRoute =
         path === '/' ||
@@ -139,12 +139,9 @@ export const api = {
 
   /** Upload an image file via backend (uses backend ImageKit credentials). Returns { url, fileId, name }. */
   async uploadImage(file: File): Promise<{ url: string; fileId: string; name: string }> {
+    // OPTIMIZED: Use cached token
+    const token = await getAccessToken();
     const headers: Record<string, string> = {};
-    const supabase = createSupabaseBrowserClient();
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    const token = session?.access_token;
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     }

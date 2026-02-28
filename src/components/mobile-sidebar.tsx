@@ -16,6 +16,7 @@ import {
   UserCog,
 } from 'lucide-react';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
+import { clearTokenCache } from '@/lib/token-cache';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useUser } from '@/hooks/use-user';
@@ -68,6 +69,9 @@ export function MobileSidebar({ open, onClose }: MobileSidebarProps) {
     
     setSigningOut(true);
     onClose(); // Close sidebar immediately
+    
+    // Clear token cache immediately
+    clearTokenCache();
     
     // Immediate feedback: Navigate first for instant response
     window.location.href = '/login';

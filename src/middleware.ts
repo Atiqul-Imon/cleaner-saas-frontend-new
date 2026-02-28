@@ -70,62 +70,58 @@ export async function middleware(request: NextRequest) {
     request.nextUrl.pathname === '/privacy' ||
     request.nextUrl.pathname === '/terms';
 
-  if (user && isAuthRoute) {
-    // Fetch user role to redirect appropriately
-    try {
-      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (session?.access_token) {
-        const userResponse = await fetch(`${backendUrl}/auth/me`, {
-          headers: {
-            'Authorization': `Bearer ${session.access_token}`,
-          },
-        });
+  // OPTIMIZED: Single API call for user role with cookie caching
+  if (user) {
+    let userRole: string | null = request.cookies.get('user_role')?.value || null;
+    
+    // Fetch role if not cached or for auth routes (to ensure fresh data on login)
+    if (!userRole || isAuthRoute) {
+      try {
+        const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+        const { data: { session } } = await supabase.auth.getSession();
         
-        if (userResponse.ok) {
-          const userData = await userResponse.json();
-          const redirectPath = userData.role === 'ADMIN' ? '/admin' : '/dashboard';
-          return NextResponse.redirect(new URL(redirectPath, request.url));
+        if (session?.access_token) {
+          const userResponse = await fetch(`${backendUrl}/auth/me`, {
+            headers: {
+              'Authorization': `Bearer ${session.access_token}`,
+            },
+          });
+          
+          if (userResponse.ok) {
+            const userData = await userResponse.json();
+            userRole = userData.role;
+            
+            // Cache role in cookie (1 hour expiry) - only if not null
+            if (userRole) {
+              response.cookies.set('user_role', userRole, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                maxAge: 60 * 60, // 1 hour
+                path: '/',
+              });
+            }
+          }
         }
+      } catch (error) {
+        console.error('Failed to fetch user role in middleware:', error);
       }
-    } catch (error) {
-      // If role fetch fails, default to dashboard
-      console.error('Failed to fetch user role in middleware:', error);
     }
     
-    // Fallback to dashboard if role fetch fails
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+    // Handle redirects based on cached or fetched role
+    if (isAuthRoute) {
+      const redirectPath = userRole === 'ADMIN' ? '/admin' : '/dashboard';
+      return NextResponse.redirect(new URL(redirectPath, request.url));
+    }
+    
+    // Redirect admins trying to access /dashboard to /admin
+    if (userRole === 'ADMIN' && request.nextUrl.pathname.startsWith('/dashboard')) {
+      return NextResponse.redirect(new URL('/admin', request.url));
+    }
   }
 
   if (!user && !isPublicRoute) {
     return NextResponse.redirect(new URL('/login', request.url));
-  }
-
-  // Check if admin is trying to access non-admin routes
-  if (user && request.nextUrl.pathname.startsWith('/dashboard')) {
-    try {
-      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (session?.access_token) {
-        const userResponse = await fetch(`${backendUrl}/auth/me`, {
-          headers: {
-            'Authorization': `Bearer ${session.access_token}`,
-          },
-        });
-        
-        if (userResponse.ok) {
-          const userData = await userResponse.json();
-          if (userData.role === 'ADMIN') {
-            return NextResponse.redirect(new URL('/admin', request.url));
-          }
-        }
-      }
-    } catch (error) {
-      // If role fetch fails, allow access
-      console.error('Failed to fetch user role for dashboard access:', error);
-    }
   }
 
   return response;

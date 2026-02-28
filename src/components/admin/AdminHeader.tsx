@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
+import { clearTokenCache } from '@/lib/token-cache';
 import { AdminSidebarToggle } from './AdminSidebar';
 
 export default function AdminHeader() {
@@ -27,6 +28,9 @@ export default function AdminHeader() {
     
     setSigningOut(true);
     setMenuOpen(false);
+    
+    // Clear token cache immediately
+    clearTokenCache();
     
     // Immediate feedback: Navigate first for instant response
     window.location.href = '/login';

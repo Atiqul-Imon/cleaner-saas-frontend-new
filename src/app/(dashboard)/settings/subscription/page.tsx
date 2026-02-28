@@ -100,16 +100,19 @@ function SubscriptionContent() {
   const { data: subscription, isLoading: subLoading, refetch: refetchSubscription } = useQuery({
     queryKey: ['subscription'],
     queryFn: () => api.get<Subscription>('/subscriptions'),
+    staleTime: 10 * 60 * 1000, // OPTIMIZED: 10 minutes (subscription changes rarely)
   });
 
   const { data: usageStats, isLoading: usageLoading, refetch: refetchUsage } = useQuery({
     queryKey: ['subscription-usage'],
     queryFn: () => api.get<UsageStats>('/subscriptions/usage'),
+    staleTime: 2 * 60 * 1000, // OPTIMIZED: 2 minutes (usage updates more frequently)
   });
 
   const { data: business, isLoading: businessLoading, refetch: refetchBusiness } = useQuery({
     queryKey: ['business', 'settings'],
     queryFn: () => api.get<Business>('/business'),
+    staleTime: 10 * 60 * 1000, // OPTIMIZED: 10 minutes (business info rarely changes)
   });
 
   const loading = subLoading || usageLoading || businessLoading;

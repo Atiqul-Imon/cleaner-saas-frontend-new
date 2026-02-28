@@ -15,7 +15,9 @@ export function useUser() {
     queryKey: ['user'],
     queryFn: () => api.get<User>('/auth/me', { silent: true }),
     retry: false,
-    staleTime: 5 * 60 * 1000,
+    // OPTIMIZED: User data rarely changes - cache for 30 minutes
+    staleTime: 30 * 60 * 1000, // 30 minutes
+    gcTime: 60 * 60 * 1000,     // Keep in memory for 1 hour
   });
 
   return {
