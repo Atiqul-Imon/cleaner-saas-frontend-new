@@ -32,7 +32,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
-import { User, Users, UserCircle } from 'lucide-react';
+import { User, Users, UserCircle, Calendar, Clock, Bell, Repeat, CheckCircle2 } from 'lucide-react';
 
 interface Cleaner {
   cleanerId: string;
@@ -148,38 +148,48 @@ function CreateJobContent() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl space-y-8 pb-12">
-      <div>
-        <Link href="/jobs" className="inline-flex items-center text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors">
+    <div className="mx-auto max-w-4xl space-y-6 pb-12">
+      {/* Header */}
+      <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-100">
+        <Link href="/jobs" className="inline-flex items-center text-sm font-medium text-emerald-700 hover:text-emerald-900 transition-colors mb-3">
           ← Back to jobs
         </Link>
-        <h1 className="mt-4 text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl">Create New Job</h1>
-        <p className="mt-2 text-lg text-zinc-600">Schedule a cleaning job with date and time</p>
+        <h1 className="text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl">Create New Job</h1>
+        <p className="mt-2 text-base text-zinc-700">Fill in the details to schedule a cleaning job</p>
       </div>
 
       <form onSubmit={handleSubmit}>
-        <div className="space-y-6">
-          {/* 1. Basic info */}
-          <Card className="border-2 border-zinc-200 shadow-sm">
-            <CardHeader className="pb-5">
-              <CardTitle className="text-xl font-bold text-zinc-900">1. Basic Information</CardTitle>
-              <CardDescription className="text-base text-zinc-600">Select client and assign staff</CardDescription>
+        <div className="space-y-5">
+          {/* 1. Client & Staff */}
+          <Card className="border-2 border-emerald-100 shadow-sm hover:shadow-md transition-shadow">
+            <CardHeader className="pb-4 bg-gradient-to-r from-emerald-50/50 to-transparent">
+              <div className="flex items-start gap-3">
+                <div className="rounded-lg bg-emerald-100 p-2">
+                  <User className="size-5 text-emerald-700" />
+                </div>
+                <div>
+                  <CardTitle className="text-lg font-bold text-zinc-900">Who is this job for?</CardTitle>
+                  <CardDescription className="text-sm text-zinc-600 mt-1">Select client and assign staff member</CardDescription>
+                </div>
+              </div>
             </CardHeader>
-            <CardContent className="space-y-5">
+            <CardContent className="space-y-5 pt-5">
               <div>
-                <Label className="mb-2 block text-base font-semibold text-zinc-900">
-                  <User className="mr-2 inline-block size-5 text-emerald-600" />
-                  Client *
+                <Label className="mb-2 flex items-center gap-2 text-sm font-semibold text-zinc-900">
+                  <span className="inline-flex items-center justify-center rounded-md bg-emerald-100 px-2 py-0.5 text-xs font-bold text-emerald-700">Required</span>
+                  Client
                 </Label>
                 <Select value={clientId} onValueChange={setClientId} required>
-                  <SelectTrigger className="h-12 rounded-xl border-2 border-zinc-300 text-base font-medium focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20">
-                    <SelectValue placeholder="Select a client" />
+                  <SelectTrigger className="h-12 rounded-lg border-2 border-zinc-200 text-base font-medium hover:border-emerald-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-colors">
+                    <SelectValue placeholder="Choose a client from your list" />
                   </SelectTrigger>
                   <SelectContent>
                     {clientList.map((c) => (
-                      <SelectItem key={c.id} value={c.id} className="text-base">
+                      <SelectItem key={c.id} value={c.id} className="text-base py-3">
                         <div className="flex items-center gap-2">
-                          <UserCircle className="size-4 text-zinc-500" />
+                          <div className="rounded-full bg-emerald-100 p-1">
+                            <UserCircle className="size-4 text-emerald-600" />
+                          </div>
                           <span className="font-medium">{c.name}</span>
                         </div>
                       </SelectItem>
@@ -187,31 +197,36 @@ function CreateJobContent() {
                   </SelectContent>
                 </Select>
               </div>
-              <div>
-                <Label className="mb-2 block text-base font-semibold text-zinc-900">
-                  <Users className="mr-2 inline-block size-5 text-emerald-600" />
-                  Assign To
+              
+              <div className="border-t border-zinc-100 pt-5">
+                <Label className="mb-2 flex items-center gap-2 text-sm font-semibold text-zinc-900">
+                  <span className="inline-flex items-center justify-center rounded-md bg-blue-100 px-2 py-0.5 text-xs font-bold text-blue-700">Optional</span>
+                  Assign to staff
                 </Label>
                 <Select value={cleanerId} onValueChange={setCleanerId}>
-                  <SelectTrigger className="h-12 rounded-xl border-2 border-zinc-300 text-base font-medium focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20">
+                  <SelectTrigger className="h-12 rounded-lg border-2 border-zinc-200 text-base font-medium hover:border-blue-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-colors">
                     <SelectValue placeholder="I'll do it myself" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="self" className="text-base">
+                    <SelectItem value="self" className="text-base py-3">
                       <div className="flex items-center gap-2">
-                        <UserCircle className="size-4 text-emerald-600" />
+                        <div className="rounded-full bg-blue-100 p-1">
+                          <UserCircle className="size-4 text-blue-600" />
+                        </div>
                         <span className="font-medium">I&apos;ll do it myself</span>
                       </div>
                     </SelectItem>
                     {cleanerList.map((c) => (
-                      <SelectItem key={c.cleanerId} value={c.cleanerId} className="text-base">
-                        <div className="flex items-center justify-between gap-3">
+                      <SelectItem key={c.cleanerId} value={c.cleanerId} className="text-base py-3">
+                        <div className="flex items-center justify-between gap-3 w-full">
                           <div className="flex items-center gap-2">
-                            <UserCircle className="size-4 text-zinc-500" />
+                            <div className="rounded-full bg-zinc-100 p-1">
+                              <UserCircle className="size-4 text-zinc-600" />
+                            </div>
                             <span className="font-medium">{c.name || c.email}</span>
                           </div>
                           {c.todayJobs > 0 && (
-                            <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-700">
+                            <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-bold text-amber-700">
                               {c.todayJobs} today
                             </span>
                           )}
@@ -221,79 +236,107 @@ function CreateJobContent() {
                   </SelectContent>
                 </Select>
                 {cleanerList.length === 0 && (
-                  <p className="mt-2 text-sm text-zinc-500">No staff yet. You can assign later from job details.</p>
+                  <p className="mt-2 text-sm text-zinc-500 flex items-center gap-1.5">
+                    <Users className="size-4" />
+                    No staff members yet. You can assign later from job details.
+                  </p>
                 )}
               </div>
             </CardContent>
           </Card>
 
-          {/* 2. Job type */}
-          <Card className="border-2 border-zinc-200 shadow-sm">
-            <CardHeader className="pb-5">
-              <CardTitle className="text-xl font-bold text-zinc-900">2. Job Type</CardTitle>
-              <CardDescription className="text-base text-zinc-600">One-time or recurring schedule</CardDescription>
+          {/* 2. Job Type */}
+          <Card className="border-2 border-purple-100 shadow-sm hover:shadow-md transition-shadow">
+            <CardHeader className="pb-4 bg-gradient-to-r from-purple-50/50 to-transparent">
+              <div className="flex items-start gap-3">
+                <div className="rounded-lg bg-purple-100 p-2">
+                  <Repeat className="size-5 text-purple-700" />
+                </div>
+                <div>
+                  <CardTitle className="text-lg font-bold text-zinc-900">Job Type</CardTitle>
+                  <CardDescription className="text-sm text-zinc-600 mt-1">One-time or recurring cleaning</CardDescription>
+                </div>
+              </div>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-5 pt-5">
               <div>
-                <Label className="mb-3 block text-base font-semibold text-zinc-900">How often? *</Label>
-                <div className="grid gap-4 sm:grid-cols-2">
+                <Label className="mb-3 flex items-center gap-2 text-sm font-semibold text-zinc-900">
+                  <span className="inline-flex items-center justify-center rounded-md bg-purple-100 px-2 py-0.5 text-xs font-bold text-purple-700">Required</span>
+                  How often?
+                </Label>
+                <div className="grid gap-3 sm:grid-cols-2">
                   <button
                     type="button"
                     onClick={() => setType('ONE_OFF')}
                     className={cn(
-                      'group rounded-2xl border-2 p-5 text-left transition-all',
+                      'group rounded-xl border-2 p-5 text-left transition-all',
                       type === 'ONE_OFF'
-                        ? 'border-emerald-600 bg-emerald-50 ring-2 ring-emerald-600/30 shadow-md'
-                        : 'border-zinc-200 hover:border-emerald-300 hover:bg-zinc-50'
+                        ? 'border-purple-500 bg-purple-50 ring-2 ring-purple-500/30 shadow-md'
+                        : 'border-zinc-200 hover:border-purple-300 hover:bg-purple-50/50'
                     )}
                   >
-                    <p className="text-lg font-bold text-zinc-900">One-time job</p>
-                    <p className="mt-1 text-sm text-zinc-600">Just this once</p>
+                    <div className="flex items-center gap-2 mb-1">
+                      <CheckCircle2 className={cn(
+                        "size-5 transition-colors",
+                        type === 'ONE_OFF' ? 'text-purple-600' : 'text-zinc-400'
+                      )} />
+                      <p className="text-base font-bold text-zinc-900">One-time job</p>
+                    </div>
+                    <p className="ml-7 text-sm text-zinc-600">For a single cleaning session</p>
                   </button>
                   <button
                     type="button"
                     onClick={() => setType('RECURRING')}
                     className={cn(
-                      'group rounded-2xl border-2 p-5 text-left transition-all',
+                      'group rounded-xl border-2 p-5 text-left transition-all',
                       type === 'RECURRING'
-                        ? 'border-emerald-600 bg-emerald-50 ring-2 ring-emerald-600/30 shadow-md'
-                        : 'border-zinc-200 hover:border-emerald-300 hover:bg-zinc-50'
+                        ? 'border-purple-500 bg-purple-50 ring-2 ring-purple-500/30 shadow-md'
+                        : 'border-zinc-200 hover:border-purple-300 hover:bg-purple-50/50'
                     )}
                   >
-                    <p className="text-lg font-bold text-zinc-900">Recurring job</p>
-                    <p className="mt-1 text-sm text-zinc-600">Regular schedule</p>
+                    <div className="flex items-center gap-2 mb-1">
+                      <Repeat className={cn(
+                        "size-5 transition-colors",
+                        type === 'RECURRING' ? 'text-purple-600' : 'text-zinc-400'
+                      )} />
+                      <p className="text-base font-bold text-zinc-900">Recurring job</p>
+                    </div>
+                    <p className="ml-7 text-sm text-zinc-600">Regular cleaning schedule</p>
                   </button>
                 </div>
               </div>
               {type === 'RECURRING' && (
-                <div>
-                  <Label className="mb-3 block text-base font-semibold text-zinc-900">Frequency *</Label>
-                  <div className="grid gap-4 sm:grid-cols-2">
+                <div className="border-t border-zinc-100 pt-5 animate-in fade-in duration-300">
+                  <Label className="mb-3 flex items-center gap-2 text-sm font-semibold text-zinc-900">
+                    <span className="inline-flex items-center justify-center rounded-md bg-purple-100 px-2 py-0.5 text-xs font-bold text-purple-700">Required</span>
+                    Frequency
+                  </Label>
+                  <div className="grid gap-3 sm:grid-cols-2">
                     <button
                       type="button"
                       onClick={() => setFrequency('WEEKLY')}
                       className={cn(
-                        'rounded-2xl border-2 p-5 text-left transition-all',
+                        'rounded-xl border-2 p-4 text-left transition-all',
                         frequency === 'WEEKLY'
-                          ? 'border-emerald-600 bg-emerald-50 ring-2 ring-emerald-600/30 shadow-md'
-                          : 'border-zinc-200 hover:border-emerald-300 hover:bg-zinc-50'
+                          ? 'border-purple-500 bg-purple-50 ring-2 ring-purple-500/30 shadow-md'
+                          : 'border-zinc-200 hover:border-purple-300 hover:bg-purple-50/50'
                       )}
                     >
-                      <p className="text-lg font-bold text-zinc-900">Every week</p>
-                      <p className="mt-1 text-sm text-zinc-600">Repeats weekly</p>
+                      <p className="text-base font-bold text-zinc-900">Every week</p>
+                      <p className="mt-0.5 text-sm text-zinc-600">Weekly cleaning</p>
                     </button>
                     <button
                       type="button"
                       onClick={() => setFrequency('BI_WEEKLY')}
                       className={cn(
-                        'rounded-2xl border-2 p-5 text-left transition-all',
+                        'rounded-xl border-2 p-4 text-left transition-all',
                         frequency === 'BI_WEEKLY'
-                          ? 'border-emerald-600 bg-emerald-50 ring-2 ring-emerald-600/30 shadow-md'
-                          : 'border-zinc-200 hover:border-emerald-300 hover:bg-zinc-50'
+                          ? 'border-purple-500 bg-purple-50 ring-2 ring-purple-500/30 shadow-md'
+                          : 'border-zinc-200 hover:border-purple-300 hover:bg-purple-50/50'
                       )}
                     >
-                      <p className="text-lg font-bold text-zinc-900">Every 2 weeks</p>
-                      <p className="mt-1 text-sm text-zinc-600">Bi-weekly schedule</p>
+                      <p className="text-base font-bold text-zinc-900">Every 2 weeks</p>
+                      <p className="mt-0.5 text-sm text-zinc-600">Fortnightly cleaning</p>
                     </button>
                   </div>
                 </div>
@@ -301,24 +344,34 @@ function CreateJobContent() {
             </CardContent>
           </Card>
 
-          {/* 3. When */}
-          <Card className="border-2 border-zinc-200 shadow-sm">
-            <CardHeader className="pb-5">
-              <CardTitle className="text-xl font-bold text-zinc-900">3. Schedule</CardTitle>
-              <CardDescription className="text-base text-zinc-600">Pick date and time</CardDescription>
+          {/* 3. Date & Time */}
+          <Card className="border-2 border-blue-100 shadow-sm hover:shadow-md transition-shadow">
+            <CardHeader className="pb-4 bg-gradient-to-r from-blue-50/50 to-transparent">
+              <div className="flex items-start gap-3">
+                <div className="rounded-lg bg-blue-100 p-2">
+                  <Calendar className="size-5 text-blue-700" />
+                </div>
+                <div>
+                  <CardTitle className="text-lg font-bold text-zinc-900">When?</CardTitle>
+                  <CardDescription className="text-sm text-zinc-600 mt-1">Schedule date and time</CardDescription>
+                </div>
+              </div>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 pt-5">
               <div>
-                <Label className="mb-3 block text-base font-semibold text-zinc-900">Pick a date *</Label>
+                <Label className="mb-3 flex items-center gap-2 text-sm font-semibold text-zinc-900">
+                  <span className="inline-flex items-center justify-center rounded-md bg-blue-100 px-2 py-0.5 text-xs font-bold text-blue-700">Required</span>
+                  Date
+                </Label>
                 <div className="mb-4 flex flex-wrap gap-2">
                   <button
                     type="button"
                     onClick={() => setScheduledDate(getTodayDateInput())}
                     className={cn(
-                      'rounded-xl border-2 px-5 py-3 text-sm font-semibold transition-all',
+                      'rounded-lg border-2 px-4 py-2.5 text-sm font-semibold transition-all',
                       scheduledDate === getTodayDateInput()
-                        ? 'border-emerald-600 bg-emerald-600 text-white shadow-md'
-                        : 'border-zinc-300 text-zinc-700 hover:border-emerald-300 hover:bg-emerald-50'
+                        ? 'border-blue-500 bg-blue-500 text-white shadow-md'
+                        : 'border-zinc-300 text-zinc-700 hover:border-blue-300 hover:bg-blue-50'
                     )}
                   >
                     Today
@@ -327,10 +380,10 @@ function CreateJobContent() {
                     type="button"
                     onClick={() => setScheduledDate(getTomorrowDateInput())}
                     className={cn(
-                      'rounded-xl border-2 px-5 py-3 text-sm font-semibold transition-all',
+                      'rounded-lg border-2 px-4 py-2.5 text-sm font-semibold transition-all',
                       scheduledDate === getTomorrowDateInput()
-                        ? 'border-emerald-600 bg-emerald-600 text-white shadow-md'
-                        : 'border-zinc-300 text-zinc-700 hover:border-emerald-300 hover:bg-emerald-50'
+                        ? 'border-blue-500 bg-blue-500 text-white shadow-md'
+                        : 'border-zinc-300 text-zinc-700 hover:border-blue-300 hover:bg-blue-50'
                     )}
                   >
                     Tomorrow
@@ -339,10 +392,10 @@ function CreateJobContent() {
                     type="button"
                     onClick={() => setScheduledDate(getNextWeekDateInput())}
                     className={cn(
-                      'rounded-xl border-2 px-5 py-3 text-sm font-semibold transition-all',
+                      'rounded-lg border-2 px-4 py-2.5 text-sm font-semibold transition-all',
                       scheduledDate === getNextWeekDateInput()
-                        ? 'border-emerald-600 bg-emerald-600 text-white shadow-md'
-                        : 'border-zinc-300 text-zinc-700 hover:border-emerald-300 hover:bg-emerald-50'
+                        ? 'border-blue-500 bg-blue-500 text-white shadow-md'
+                        : 'border-zinc-300 text-zinc-700 hover:border-blue-300 hover:bg-blue-50'
                     )}
                   >
                     Next week
@@ -350,7 +403,7 @@ function CreateJobContent() {
                 </div>
                 <div>
                   <Label className="mb-2 block text-sm font-medium text-zinc-600">
-                    Or choose a specific date
+                    Or pick a specific date
                   </Label>
                   <Input
                     type="date"
@@ -358,13 +411,17 @@ function CreateJobContent() {
                     onChange={(e) => setScheduledDate(e.target.value)}
                     required
                     min={getTodayDateInput()}
-                    className="text-base font-medium"
+                    className="h-11 text-base font-medium border-2 rounded-lg hover:border-blue-300 focus:border-blue-500"
                   />
                 </div>
               </div>
 
-              <div>
-                <Label className="mb-3 block text-base font-semibold text-zinc-900">Time (optional)</Label>
+              <div className="border-t border-zinc-100 pt-6">
+                <Label className="mb-3 flex items-center gap-2 text-sm font-semibold text-zinc-900">
+                  <Clock className="size-4 text-blue-600" />
+                  <span className="inline-flex items-center justify-center rounded-md bg-blue-100 px-2 py-0.5 text-xs font-bold text-blue-700">Optional</span>
+                  Time
+                </Label>
                 <div className="mb-3 flex flex-wrap gap-2">
                   {COMMON_TIMES.map((time) => (
                     <button
@@ -372,54 +429,71 @@ function CreateJobContent() {
                       type="button"
                       onClick={() => setScheduledTime(time)}
                       className={cn(
-                        'rounded-xl border-2 px-5 py-3 text-sm font-semibold transition-all',
+                        'rounded-lg border-2 px-4 py-2.5 text-sm font-semibold transition-all',
                         scheduledTime === time
-                          ? 'border-emerald-600 bg-emerald-600 text-white shadow-md'
-                          : 'border-zinc-300 text-zinc-700 hover:border-emerald-300 hover:bg-emerald-50'
+                          ? 'border-blue-500 bg-blue-500 text-white shadow-md'
+                          : 'border-zinc-300 text-zinc-700 hover:border-blue-300 hover:bg-blue-50'
                       )}
                     >
                       {time}
                     </button>
                   ))}
                 </div>
-                <Input
-                  type="time"
-                  value={scheduledTime}
-                  onChange={(e) => setScheduledTime(e.target.value)}
-                  className="max-w-[160px] text-base font-medium"
-                />
+                <div>
+                  <Label className="mb-2 block text-sm font-medium text-zinc-600">
+                    Or enter a custom time
+                  </Label>
+                  <Input
+                    type="time"
+                    value={scheduledTime}
+                    onChange={(e) => setScheduledTime(e.target.value)}
+                    className="h-11 max-w-[180px] text-base font-medium border-2 rounded-lg hover:border-blue-300 focus:border-blue-500"
+                  />
+                </div>
               </div>
             </CardContent>
           </Card>
 
           {/* 4. Reminder */}
-          <Card className="border-2 border-zinc-200 shadow-sm">
-            <CardHeader className="pb-5">
-              <CardTitle className="text-xl font-bold text-zinc-900">4. Reminder</CardTitle>
-              <CardDescription className="text-base text-zinc-600">Get notified before the job</CardDescription>
+          <Card className="border-2 border-amber-100 shadow-sm hover:shadow-md transition-shadow">
+            <CardHeader className="pb-4 bg-gradient-to-r from-amber-50/50 to-transparent">
+              <div className="flex items-start gap-3">
+                <div className="rounded-lg bg-amber-100 p-2">
+                  <Bell className="size-5 text-amber-700" />
+                </div>
+                <div>
+                  <CardTitle className="text-lg font-bold text-zinc-900">Reminder</CardTitle>
+                  <CardDescription className="text-sm text-zinc-600 mt-1">Get notified before the job starts</CardDescription>
+                </div>
+              </div>
             </CardHeader>
-            <CardContent className="space-y-5">
-              <div className="flex items-center gap-3">
+            <CardContent className="space-y-4 pt-5">
+              <div className="flex items-start gap-3 rounded-lg bg-amber-50 p-4 border border-amber-200">
                 <Checkbox
                   id="reminderEnabled"
                   checked={reminderEnabled}
                   onCheckedChange={(v) => setReminderEnabled(!!v)}
-                  className="size-5"
+                  className="mt-0.5 size-5 border-amber-400 data-[state=checked]:bg-amber-500 data-[state=checked]:border-amber-500"
                 />
-                <Label htmlFor="reminderEnabled" className="cursor-pointer text-base font-medium text-zinc-900">
-                  Send reminder before job
-                </Label>
+                <div className="flex-1">
+                  <Label htmlFor="reminderEnabled" className="cursor-pointer text-base font-semibold text-zinc-900">
+                    Send me a reminder
+                  </Label>
+                  <p className="text-sm text-zinc-600 mt-0.5">We'll notify you before the job is due</p>
+                </div>
               </div>
               {reminderEnabled && (
-                <div>
-                  <Label className="mb-2 block text-base font-semibold text-zinc-900">When to remind</Label>
+                <div className="animate-in fade-in duration-300 pl-4">
+                  <Label className="mb-2 flex items-center gap-2 text-sm font-semibold text-zinc-900">
+                    When should we remind you?
+                  </Label>
                   <Select value={reminderTime} onValueChange={setReminderTime}>
-                    <SelectTrigger className="h-12 rounded-xl border-2 border-zinc-300 text-base font-medium focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 sm:max-w-[260px]">
+                    <SelectTrigger className="h-11 rounded-lg border-2 border-zinc-200 text-base font-medium hover:border-amber-300 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 sm:max-w-[280px]">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
                       {REMINDER_OPTIONS.map((o) => (
-                        <SelectItem key={o.value} value={o.value} className="text-base">
+                        <SelectItem key={o.value} value={o.value} className="text-base py-2">
                           {o.label}
                         </SelectItem>
                       ))}
@@ -431,21 +505,43 @@ function CreateJobContent() {
           </Card>
 
           {error && (
-            <div className="rounded-xl border-2 border-red-200 bg-red-50 p-5 text-base font-medium text-red-700">
-              {error}
+            <div className="rounded-lg border-2 border-red-300 bg-red-50 p-4 flex items-start gap-3">
+              <div className="rounded-full bg-red-100 p-1 mt-0.5">
+                <svg className="size-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-base font-semibold text-red-900">Error</p>
+                <p className="text-sm text-red-700 mt-0.5">{error}</p>
+              </div>
             </div>
           )}
 
-          <div className="flex flex-col gap-3 sm:flex-row">
+          {/* Action Buttons */}
+          <div className="flex flex-col gap-3 sm:flex-row pt-2">
             <Button 
               type="submit" 
               disabled={loading}
               size="lg"
-              className="h-12 bg-emerald-600 hover:bg-emerald-700 text-base font-semibold shadow-lg hover:shadow-xl transition-all"
+              className="h-13 px-8 bg-emerald-600 hover:bg-emerald-700 text-base font-bold shadow-lg hover:shadow-xl transition-all rounded-lg"
             >
-              {loading ? 'Creating…' : 'Create Job'}
+              {loading ? (
+                <span className="flex items-center gap-2">
+                  <svg className="animate-spin size-5" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Creating job...
+                </span>
+              ) : (
+                <span className="flex items-center gap-2">
+                  <CheckCircle2 className="size-5" />
+                  Create Job
+                </span>
+              )}
             </Button>
-            <Button type="button" variant="outline" size="lg" className="h-12 text-base font-semibold" asChild>
+            <Button type="button" variant="outline" size="lg" className="h-13 px-8 text-base font-semibold border-2 rounded-lg hover:bg-zinc-50" asChild>
               <Link href="/jobs">Cancel</Link>
             </Button>
           </div>
