@@ -50,19 +50,23 @@ export function AppHeader() {
     if (signingOut) return; // Prevent double-click
     
     setSigningOut(true);
+    
+    // Immediate feedback: Navigate first for instant response
+    router.push('/login');
+    
+    // Then cleanup in background (non-blocking)
     try {
       const supabase = createSupabaseBrowserClient();
-      await supabase.auth.signOut();
       
-      // Clear all cached data
+      // Clear cache first (faster than waiting for API)
       queryClient.clear();
       
-      // Force navigation to login
-      window.location.href = '/login';
+      // Sign out from Supabase in background
+      supabase.auth.signOut().catch(err => {
+        console.error('Sign out error:', err);
+      });
     } catch (error) {
       console.error('Sign out error:', error);
-      // Force navigation even on error
-      window.location.href = '/login';
     }
   }
 

@@ -28,17 +28,18 @@ export default function AdminHeader() {
     setSigningOut(true);
     setMenuOpen(false);
     
+    // Immediate feedback: Navigate first for instant response
+    window.location.href = '/login';
+    
+    // Cleanup in background (non-blocking)
     try {
-      await supabase.auth.signOut();
-      
-      // Clear all cached data
+      // Clear cache
       queryClient.clear();
       
-      // Force navigation to login
-      window.location.href = '/login';
+      // Sign out from Supabase
+      await supabase.auth.signOut();
     } catch (error) {
       console.error('Sign out error:', error);
-      window.location.href = '/login';
     }
   };
 

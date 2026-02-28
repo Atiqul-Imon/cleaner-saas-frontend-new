@@ -69,19 +69,22 @@ export function MobileSidebar({ open, onClose }: MobileSidebarProps) {
     setSigningOut(true);
     onClose(); // Close sidebar immediately
     
+    // Immediate feedback: Navigate first for instant response
+    window.location.href = '/login';
+    
+    // Cleanup in background (non-blocking)
     try {
       const supabase = createSupabaseBrowserClient();
-      await supabase.auth.signOut();
       
-      // Clear all cached data
+      // Clear cache
       queryClient.clear();
       
-      // Force navigation to login
-      window.location.href = '/login';
+      // Sign out from Supabase
+      supabase.auth.signOut().catch(err => {
+        console.error('Sign out error:', err);
+      });
     } catch (error) {
       console.error('Sign out error:', error);
-      // Force navigation even on error
-      window.location.href = '/login';
     }
   }
 
