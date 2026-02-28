@@ -82,13 +82,26 @@ export default function JobDetailPage() {
   async function updateStatus(newStatus: 'SCHEDULED' | 'IN_PROGRESS' | 'COMPLETED') {
     if (!job) return;
     setActionMessage(null);
+    
+    // PHASE 3 OPTIMIZATION: Optimistic update - update UI immediately
+    const previousJob = queryClient.getQueryData<Job>(['job', id]);
+    queryClient.setQueryData<Job>(['job', id], (old) => {
+      if (!old) return old;
+      return { ...old, status: newStatus };
+    });
+
     try {
       await api.put<Job>(`/jobs/${id}`, { status: newStatus });
       setActionMessage({ type: 'success', text: `Status updated to ${newStatus.replace('_', ' ')}.` });
+      // Refresh to get any server-side changes
       queryClient.invalidateQueries({ queryKey: ['job', id] });
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
       queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
-    } catch {
+    } catch (error) {
+      // Rollback on error
+      if (previousJob) {
+        queryClient.setQueryData(['job', id], previousJob);
+      }
       setActionMessage({ type: 'error', text: 'Failed to update status.' });
     }
   }

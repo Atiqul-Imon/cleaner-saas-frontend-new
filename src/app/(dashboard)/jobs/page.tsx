@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { VirtualGrid } from '@/components/ui/virtual-grid';
+import { JobsListSkeleton } from '@/components/ui/skeleton-loaders';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 
@@ -110,7 +111,7 @@ function JobsContent() {
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <p className="text-sm text-zinc-500">Loading…</p>
+            <JobsListSkeleton />
           ) : list.length ? (
             <>
               <VirtualGrid

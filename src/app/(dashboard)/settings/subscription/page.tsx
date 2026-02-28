@@ -115,17 +115,7 @@ function SubscriptionContent() {
     staleTime: 10 * 60 * 1000, // OPTIMIZED: 10 minutes (business info rarely changes)
   });
 
-  const loading = subLoading || usageLoading || businessLoading;
-
-  if (loading) {
-    return (
-      <div className="mx-auto max-w-5xl space-y-6">
-        <div className="h-8 w-48 animate-pulse rounded bg-zinc-200" />
-        <div className="h-32 animate-pulse rounded-lg bg-zinc-200" />
-      </div>
-    );
-  }
-
+  // PHASE 3 OPTIMIZATION: Progressive loading - show content as it loads instead of blocking
   const currentPlan = PLANS.find((p) => p.type === subscription?.planType);
   const usagePercentage = usageStats
     ? Math.min((usageStats.currentMonthUsage / usageStats.monthlyLimit) * 100, 100)
@@ -263,91 +253,115 @@ function SubscriptionContent() {
               <CardTitle className="text-lg">Current Plan</CardTitle>
               <CardDescription>Your active subscription</CardDescription>
             </div>
-            <span
-              className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                subscription?.status === 'ACTIVE'
-                  ? 'bg-emerald-100 text-emerald-700'
-                  : subscription?.status === 'TRIALING'
-                    ? 'bg-blue-100 text-blue-700'
-                    : subscription?.status === 'PAST_DUE'
-                      ? 'bg-amber-100 text-amber-700'
-                      : 'bg-zinc-100 text-zinc-700'
-              }`}
-            >
-              {subscription?.status || 'ACTIVE'}
-            </span>
+            {subLoading ? (
+              <div className="h-6 w-20 animate-pulse rounded-full bg-zinc-200" />
+            ) : (
+              <span
+                className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                  subscription?.status === 'ACTIVE'
+                    ? 'bg-emerald-100 text-emerald-700'
+                    : subscription?.status === 'TRIALING'
+                      ? 'bg-blue-100 text-blue-700'
+                      : subscription?.status === 'PAST_DUE'
+                        ? 'bg-amber-100 text-amber-700'
+                        : 'bg-zinc-100 text-zinc-700'
+                }`}
+              >
+                {subscription?.status || 'ACTIVE'}
+              </span>
+            )}
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Plan Info */}
-          <div className="flex items-center justify-between rounded-lg bg-zinc-50 p-4">
-            <div>
-              <h3 className="text-xl font-bold text-zinc-900">{currentPlan?.name || 'Solo'}</h3>
-              <p className="mt-0.5 text-sm text-zinc-600">
-                {currentPlan?.staff} staff • {currentPlan?.jobs} jobs
-              </p>
+          {subLoading ? (
+            <div className="space-y-3">
+              <div className="h-16 w-full animate-pulse rounded-lg bg-zinc-100" />
             </div>
-            <div className="text-right">
-              <div className="text-2xl font-bold text-zinc-900">{currentPlan?.price}</div>
-              <div className="text-xs text-zinc-600">{currentPlan?.priceDetail}</div>
+          ) : (
+            <div className="flex items-center justify-between rounded-lg bg-zinc-50 p-4">
+              <div>
+                <h3 className="text-xl font-bold text-zinc-900">{currentPlan?.name || 'Solo'}</h3>
+                <p className="mt-0.5 text-sm text-zinc-600">
+                  {currentPlan?.staff} staff • {currentPlan?.jobs} jobs
+                </p>
+              </div>
+              <div className="text-right">
+                <div className="text-2xl font-bold text-zinc-900">{currentPlan?.price}</div>
+                <div className="text-xs text-zinc-600">{currentPlan?.priceDetail}</div>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Usage Stats */}
           <div className="space-y-4">
             {/* Job Usage */}
-            <div>
-              <div className="mb-2 flex items-center justify-between text-sm">
-                <span className="font-medium text-zinc-700">Jobs this month</span>
-                <span className={`font-semibold ${isOverLimit ? 'text-red-600' : 'text-zinc-900'}`}>
-                  {usageStats?.currentMonthUsage || 0} / {usageStats?.monthlyLimit || 20}
-                </span>
+            {usageLoading ? (
+              <div className="space-y-2">
+                <div className="h-5 w-48 animate-pulse rounded bg-zinc-100" />
+                <div className="h-2 w-full animate-pulse rounded-full bg-zinc-100" />
               </div>
-              <div className="h-2 w-full overflow-hidden rounded-full bg-zinc-200">
-                <div
-                  className={`h-full transition-all ${
-                    isOverLimit
-                      ? 'bg-red-500'
-                      : isNearLimit
-                        ? 'bg-amber-500'
-                        : 'bg-emerald-500'
-                  }`}
-                  style={{ width: `${usagePercentage}%` }}
-                />
+            ) : (
+              <div>
+                <div className="mb-2 flex items-center justify-between text-sm">
+                  <span className="font-medium text-zinc-700">Jobs this month</span>
+                  <span className={`font-semibold ${isOverLimit ? 'text-red-600' : 'text-zinc-900'}`}>
+                    {usageStats?.currentMonthUsage || 0} / {usageStats?.monthlyLimit || 20}
+                  </span>
+                </div>
+                <div className="h-2 w-full overflow-hidden rounded-full bg-zinc-200">
+                  <div
+                    className={`h-full transition-all ${
+                      isOverLimit
+                        ? 'bg-red-500'
+                        : isNearLimit
+                          ? 'bg-amber-500'
+                          : 'bg-emerald-500'
+                    }`}
+                    style={{ width: `${usagePercentage}%` }}
+                  />
+                </div>
+                {isOverLimit && (
+                  <p className="mt-2 text-sm font-medium text-red-600">
+                    You've reached your monthly limit. Upgrade to continue creating jobs.
+                  </p>
+                )}
+                {isNearLimit && !isOverLimit && (
+                  <p className="mt-2 text-sm font-medium text-amber-600">
+                    You're close to your monthly limit. Consider upgrading.
+                  </p>
+                )}
               </div>
-              {isOverLimit && (
-                <p className="mt-2 text-sm font-medium text-red-600">
-                  You've reached your monthly limit. Upgrade to continue creating jobs.
-                </p>
-              )}
-              {isNearLimit && !isOverLimit && (
-                <p className="mt-2 text-sm font-medium text-amber-600">
-                  You're close to your monthly limit. Consider upgrading.
-                </p>
-              )}
-            </div>
+            )}
 
             {/* Staff Count */}
-            <div>
-              <div className="mb-2 flex items-center justify-between text-sm">
-                <span className="font-medium text-zinc-700">Active staff</span>
-                <span className={`font-semibold ${isNearStaffLimit ? 'text-amber-600' : 'text-zinc-900'}`}>
-                  {activeStaffCount} / {staffLimit}
-                </span>
+            {usageLoading || businessLoading ? (
+              <div className="space-y-2">
+                <div className="h-5 w-32 animate-pulse rounded bg-zinc-100" />
+                <div className="h-2 w-full animate-pulse rounded-full bg-zinc-100" />
               </div>
-              <div className="h-2 w-full overflow-hidden rounded-full bg-zinc-200">
-                <div
-                  className={`h-full transition-all ${
-                    activeStaffCount >= staffLimit
-                      ? 'bg-red-500'
-                      : isNearStaffLimit
-                        ? 'bg-amber-500'
-                        : 'bg-emerald-500'
-                  }`}
-                  style={{ width: `${Math.min((activeStaffCount / staffLimit) * 100, 100)}%` }}
-                />
+            ) : (
+              <div>
+                <div className="mb-2 flex items-center justify-between text-sm">
+                  <span className="font-medium text-zinc-700">Active staff</span>
+                  <span className={`font-semibold ${isNearStaffLimit ? 'text-amber-600' : 'text-zinc-900'}`}>
+                    {activeStaffCount} / {staffLimit}
+                  </span>
+                </div>
+                <div className="h-2 w-full overflow-hidden rounded-full bg-zinc-200">
+                  <div
+                    className={`h-full transition-all ${
+                      activeStaffCount >= staffLimit
+                        ? 'bg-red-500'
+                        : isNearStaffLimit
+                          ? 'bg-amber-500'
+                          : 'bg-emerald-500'
+                    }`}
+                    style={{ width: `${Math.min((activeStaffCount / staffLimit) * 100, 100)}%` }}
+                  />
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* Trial Info */}

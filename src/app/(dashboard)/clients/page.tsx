@@ -11,6 +11,7 @@ import type { Client } from '@/types/api';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { VirtualGrid } from '@/components/ui/virtual-grid';
+import { ClientsListSkeleton } from '@/components/ui/skeleton-loaders';
 
 function ClientsContent() {
   const searchParams = useSearchParams();
@@ -63,7 +64,7 @@ function ClientsContent() {
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <p className="text-sm text-zinc-500">Loading…</p>
+            <ClientsListSkeleton />
           ) : list.length ? (
             <>
               <VirtualGrid

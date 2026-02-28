@@ -2,6 +2,7 @@ import dynamic from 'next/dynamic';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { OnboardingGuard } from '@/components/onboarding-guard';
 import { AdminRedirectGuard } from '@/components/admin-redirect-guard';
+import { DashboardPrefetch } from '@/components/dashboard-prefetch';
 
 const AppHeader = dynamic(
   () => import('@/components/app-header').then((m) => ({ default: m.AppHeader })),
@@ -32,6 +33,7 @@ export default function DashboardLayout({
   return (
     <ErrorBoundary>
       <AdminRedirectGuard>
+        <DashboardPrefetch />
         <div className="min-h-screen bg-zinc-50">
           <AppHeader />
           <main className="min-h-screen pb-28 pt-14 md:pb-10 md:pt-8">
