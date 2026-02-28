@@ -61,7 +61,7 @@ const PLANS = [
   {
     type: 'TEAM' as const,
     name: 'Team',
-    price: '£14.99',
+    price: '£14',
     priceDetail: '/month',
     staff: 20,
     jobs: 'Unlimited',
@@ -78,7 +78,7 @@ const PLANS = [
   {
     type: 'BUSINESS' as const,
     name: 'Business',
-    price: '£99.99',
+    price: '£49',
     priceDetail: '/month',
     staff: 1000,
     jobs: 'Unlimited',
