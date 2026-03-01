@@ -121,7 +121,7 @@ export default function HomePage() {
                 name: 'Team Plan',
                 description: 'For growing cleaning businesses with up to 20 staff',
               },
-              price: '14.99',
+              price: '14',
               priceCurrency: 'GBP',
             },
             {
@@ -131,7 +131,7 @@ export default function HomePage() {
                 name: 'Business Plan',
                 description: 'For large cleaning operations with unlimited staff',
               },
-              price: '99.99',
+              price: '49',
               priceCurrency: 'GBP',
             },
           ],
@@ -363,7 +363,7 @@ export default function HomePage() {
                 <h3 className="text-2xl font-bold text-zinc-900">Team</h3>
                 <p className="mt-3 text-base text-zinc-600">For growing cleaning businesses</p>
                 <div className="mt-6">
-                  <span className="text-5xl font-bold text-zinc-900">£14.99</span>
+                  <span className="text-5xl font-bold text-zinc-900">£14</span>
                   <span className="ml-2 text-base text-zinc-600">/month</span>
                 </div>
               </div>
@@ -400,7 +400,7 @@ export default function HomePage() {
                 <h3 className="text-2xl font-bold text-zinc-900">Business</h3>
                 <p className="mt-3 text-base text-zinc-600">For large cleaning operations</p>
                 <div className="mt-6">
-                  <span className="text-5xl font-bold text-zinc-900">£99.99</span>
+                  <span className="text-5xl font-bold text-zinc-900">£49</span>
                   <span className="ml-2 text-base text-zinc-600">/month</span>
                 </div>
               </div>
