@@ -1,13 +1,16 @@
 'use client';
 
-import { use } from 'react';
+import { use, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { useUser } from '@/hooks/use-user';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, ArrowLeft, Users, Calendar, FileText, UserCog, Briefcase } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Loader2, ArrowLeft, Users, Calendar, FileText, UserCog, Briefcase, Edit, Trash2, AlertTriangle } from 'lucide-react';
+import { alertDialog } from '@/components/alert-dialog-provider';
 
 interface BusinessDetails {
   id: string;
@@ -80,12 +83,81 @@ export default function BusinessDetailsPage({ params }: { params: Promise<{ id: 
   const router = useRouter();
   const { id } = use(params);
   const { isAdmin, isLoading: roleLoading } = useUser();
+  const queryClient = useQueryClient();
+  
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm, setEditForm] = useState({
+    name: '',
+    phone: '',
+    address: '',
+    vatEnabled: false,
+    vatNumber: '',
+  });
 
   const businessQuery = useQuery({
     queryKey: ['admin', 'business', id],
     queryFn: () => api.get<BusinessDetails>(`/admin/businesses/${id}`),
     enabled: isAdmin && !!id,
   });
+
+  // Initialize form when business data loads
+  const business = businessQuery.data;
+  if (business && !editForm.name && !isEditing) {
+    setEditForm({
+      name: business.name,
+      phone: business.phone || '',
+      address: business.address || '',
+      vatEnabled: business.vatEnabled,
+      vatNumber: business.vatNumber || '',
+    });
+  }
+
+  const updateMutation = useMutation({
+    mutationFn: (data: typeof editForm) => api.put(`/admin/businesses/${id}`, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'business', id] });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'businesses'] });
+      setIsEditing(false);
+      alertDialog.success('Success', 'Business updated successfully');
+    },
+    onError: (error: any) => {
+      alertDialog.error('Update Failed', error.message || 'Failed to update business');
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: () => api.delete(`/admin/businesses/${id}`),
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'businesses'] });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'stats'] });
+      alertDialog.success(
+        'Business Deleted',
+        `Successfully deleted ${data.deletedBusiness.name} and all associated data (${data.deletedCounts.clients} clients, ${data.deletedCounts.jobs} jobs, ${data.deletedCounts.invoices} invoices, ${data.deletedCounts.cleaners} staff)`,
+        () => router.push('/admin/businesses')
+      );
+    },
+    onError: (error: any) => {
+      alertDialog.error('Delete Failed', error.message || 'Failed to delete business');
+    },
+  });
+
+  const handleDelete = () => {
+    if (!business) return;
+    
+    alertDialog.confirm(
+      'Delete Business?',
+      `Are you sure you want to delete "${business.name}"?\n\nThis will PERMANENTLY delete:\n• The business and owner account\n• ${business._count.clients} clients\n• ${business._count.jobs} jobs\n• ${business._count.invoices} invoices\n• ${business._count.cleaners} staff members\n• All associated data\n\nThis action CANNOT be undone!`,
+      () => deleteMutation.mutate(),
+      undefined,
+      'Delete Permanently',
+      'Cancel'
+    );
+  };
+
+  const handleUpdate = (e: React.FormEvent) => {
+    e.preventDefault();
+    updateMutation.mutate(editForm);
+  };
 
   if (roleLoading || businessQuery.isLoading) {
     return (
@@ -96,8 +168,6 @@ export default function BusinessDetailsPage({ params }: { params: Promise<{ id: 
   }
 
   if (!isAdmin) return null;
-
-  const business = businessQuery.data;
 
   if (!business) {
     return (
@@ -123,13 +193,125 @@ export default function BusinessDetailsPage({ params }: { params: Promise<{ id: 
             <p className="mt-1 text-sm text-zinc-600">Business Details</p>
           </div>
         </div>
+        <div className="flex gap-2">
+          {!isEditing && (
+            <>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsEditing(true)}
+              >
+                <Edit className="mr-2 h-4 w-4" />
+                Edit
+              </Button>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={handleDelete}
+                disabled={deleteMutation.isPending}
+              >
+                {deleteMutation.isPending ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Trash2 className="mr-2 h-4 w-4" />
+                )}
+                Delete
+              </Button>
+            </>
+          )}
+          {isEditing && (
+            <>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setIsEditing(false);
+                  setEditForm({
+                    name: business.name,
+                    phone: business.phone || '',
+                    address: business.address || '',
+                    vatEnabled: business.vatEnabled,
+                    vatNumber: business.vatNumber || '',
+                  });
+                }}
+                disabled={updateMutation.isPending}
+              >
+                Cancel
+              </Button>
+              <Button
+                size="sm"
+                onClick={handleUpdate}
+                disabled={updateMutation.isPending}
+              >
+                {updateMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Save Changes
+              </Button>
+            </>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
           <Card className="p-6">
             <h2 className="mb-4 text-xl font-bold text-zinc-900">Business Information</h2>
-            <div className="space-y-4">
+            {isEditing ? (
+              <form onSubmit={handleUpdate} className="space-y-4">
+                <div>
+                  <Label htmlFor="name">Business Name</Label>
+                  <Input
+                    id="name"
+                    value={editForm.name}
+                    onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                    required
+                  />
+                </div>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <div>
+                    <Label htmlFor="phone">Business Phone</Label>
+                    <Input
+                      id="phone"
+                      value={editForm.phone}
+                      onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <Label htmlFor="address">Address</Label>
+                  <Input
+                    id="address"
+                    value={editForm.address}
+                    onChange={(e) => setEditForm({ ...editForm, address: e.target.value })}
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="vatEnabled"
+                    checked={editForm.vatEnabled}
+                    onChange={(e) => setEditForm({ ...editForm, vatEnabled: e.target.checked })}
+                    className="h-4 w-4"
+                  />
+                  <Label htmlFor="vatEnabled">VAT Enabled</Label>
+                </div>
+                {editForm.vatEnabled && (
+                  <div>
+                    <Label htmlFor="vatNumber">VAT Number</Label>
+                    <Input
+                      id="vatNumber"
+                      value={editForm.vatNumber}
+                      onChange={(e) => setEditForm({ ...editForm, vatNumber: e.target.value })}
+                    />
+                  </div>
+                )}
+                <div className="border-t border-zinc-200 pt-4">
+                  <p className="text-sm text-zinc-600">
+                    Note: Owner email and account details cannot be changed here.
+                  </p>
+                </div>
+              </form>
+            ) : (
+              <div className="space-y-4">
               <div>
                 <label className="text-sm font-medium text-zinc-600">Business Name</label>
                 <p className="mt-1 text-lg font-semibold text-zinc-900">{business.name}</p>
@@ -206,7 +388,8 @@ export default function BusinessDetailsPage({ params }: { params: Promise<{ id: 
                   </p>
                 </div>
               </div>
-            </div>
+              </div>
+            )}
           </Card>
 
           <Card className="p-6">
