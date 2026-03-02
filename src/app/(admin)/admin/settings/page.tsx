@@ -41,7 +41,7 @@ export default function AdminSettingsPage() {
             <div className="flex items-center justify-between rounded-lg bg-zinc-50 p-4">
               <div>
                 <p className="font-medium text-zinc-900">Support Email</p>
-                <p className="mt-1 text-sm text-zinc-600">support@clenvora.com</p>
+                <p className="mt-1 text-sm text-zinc-600">clenvora.app@gmail.com</p>
               </div>
               <Button variant="outline" size="sm">
                 Edit

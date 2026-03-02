@@ -16,6 +16,9 @@ const footerLinks = {
     { label: 'Privacy Policy', href: '/privacy' },
     { label: 'Terms of Service', href: '/terms' },
   ],
+  support: [
+    { label: 'Contact Us', href: 'mailto:clenvora.app@gmail.com' },
+  ],
 };
 
 export function MarketingFooter() {
@@ -29,6 +32,11 @@ export function MarketingFooter() {
             </Link>
             <p className="mt-3 max-w-sm text-sm leading-relaxed text-zinc-400">
               Run your cleaning business smoothly. Manage clients, schedule jobs, get paid faster.
+            </p>
+            <p className="mt-4 text-sm text-zinc-400">
+              <a href="mailto:clenvora.app@gmail.com" className="hover:text-white transition-colors">
+                clenvora.app@gmail.com
+              </a>
             </p>
           </div>
           <div>
@@ -63,6 +71,13 @@ export function MarketingFooter() {
                   <Link href={link.href} className="text-sm text-zinc-400 transition-colors hover:text-white">
                     {link.label}
                   </Link>
+                </li>
+              ))}
+              {footerLinks.support.map((link) => (
+                <li key={link.label} className="pt-2">
+                  <a href={link.href} className="text-sm text-zinc-400 transition-colors hover:text-white">
+                    {link.label}
+                  </a>
                 </li>
               ))}
             </ul>
