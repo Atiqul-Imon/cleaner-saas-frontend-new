@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { RequireOwner } from '@/components/require-owner';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import type { Client } from '@/types/api';
 import { Button } from '@/components/ui/button';
@@ -28,6 +28,7 @@ import { cn } from '@/lib/utils';
 function EditClientContent() {
   const router = useRouter();
   const params = useParams();
+  const queryClient = useQueryClient();
   const id = params.id as string;
 
   const [name, setName] = useState('');
@@ -80,6 +81,8 @@ function EditClientContent() {
         address: address.trim() || undefined,
         notes: Object.keys(notes).length ? notes : undefined,
       });
+      queryClient.invalidateQueries({ queryKey: ['clients'] });
+      queryClient.invalidateQueries({ queryKey: ['client', id] });
       router.push(`/clients/${id}`);
       router.refresh();
     } catch (err) {

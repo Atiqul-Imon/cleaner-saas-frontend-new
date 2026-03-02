@@ -90,6 +90,7 @@ function WorkersContent() {
       api.post<CreateCleanerResponse>('/business/cleaners', data),
     onSuccess: (result, variables) => {
       queryClient.invalidateQueries({ queryKey: ['workers'] });
+      queryClient.invalidateQueries({ queryKey: ['cleaners'] });
       if (result?.inviteLink) {
         setCreatedInvite({ email: result.email ?? variables.email, inviteLink: result.inviteLink });
         setShowAddModal(false);
@@ -113,6 +114,7 @@ function WorkersContent() {
       api.post(`/business/cleaners/${cleanerId}/deactivate`, {}),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['workers'] });
+      queryClient.invalidateQueries({ queryKey: ['cleaners'] });
       setShowDeactivateModal(false);
       setStaffToDeactivate(null);
       setMessage({ type: 'success', text: 'Staff member deactivated.' });
@@ -126,6 +128,7 @@ function WorkersContent() {
     mutationFn: (cleanerId: string) => api.delete(`/business/cleaners/${cleanerId}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['workers'] });
+      queryClient.invalidateQueries({ queryKey: ['cleaners'] });
       setShowDeleteModal(false);
       setStaffToDelete(null);
       setDeleteConfirmEmail('');

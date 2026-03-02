@@ -18,8 +18,8 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
             // Don't refetch on window focus (user-controlled refresh)
             refetchOnWindowFocus: false,
             
-            // OPTIMIZED: Only refetch on mount if explicitly requested
-            refetchOnMount: false,
+            // Refetch stale queries when component mounts (fixes stale data after mutations)
+            refetchOnMount: true,
             
             // OPTIMIZED: DO refetch after network reconnection (user came back online)
             refetchOnReconnect: true,

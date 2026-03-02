@@ -3,7 +3,7 @@
 import { Suspense, useState, useEffect } from 'react';
 import { RequireOwner } from '@/components/require-owner';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useUser } from '@/hooks/use-user';
 import { api, normalizeList } from '@/lib/api';
@@ -53,6 +53,7 @@ const REMINDER_OPTIONS = [
 
 function CreateJobContent() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const searchParams = useSearchParams();
   const clientIdParam = searchParams.get('clientId') ?? '';
 
@@ -117,6 +118,8 @@ function CreateJobContent() {
         reminderEnabled,
         reminderTime,
       });
+      queryClient.invalidateQueries({ queryKey: ['jobs'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
       router.push(`/jobs/${job.id}`);
       router.refresh();
     } catch (err) {

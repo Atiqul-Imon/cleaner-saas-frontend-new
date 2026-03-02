@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 import { api } from '@/lib/api';
 import { useUser } from '@/hooks/use-user';
@@ -18,6 +19,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 function AcceptInviteContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const token = searchParams.get('token');
   const { user, isLoading: userLoading } = useUser();
   const [invite, setInvite] = useState<{ email: string; businessName: string } | null>(null);
@@ -42,6 +44,9 @@ function AcceptInviteContent() {
     api
       .post('/business/cleaners/accept-invite', { token })
       .then(() => {
+        queryClient.invalidateQueries({ queryKey: ['user'] });
+        queryClient.invalidateQueries({ queryKey: ['my-business'] });
+        queryClient.invalidateQueries({ queryKey: ['jobs'] });
         setAccepted(true);
         setTimeout(() => {
           router.push('/my-jobs');

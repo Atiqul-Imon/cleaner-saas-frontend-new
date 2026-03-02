@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { RequireOwner } from '@/components/require-owner';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -25,6 +26,7 @@ import { cn } from '@/lib/utils';
 
 function NewClientContent() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
@@ -57,6 +59,7 @@ function NewClientContent() {
         address: address.trim() || undefined,
         notes: Object.keys(notes).length ? notes : undefined,
       });
+      queryClient.invalidateQueries({ queryKey: ['clients'] });
       router.push(`/clients/${client.id}`);
       router.refresh();
     } catch (err) {
