@@ -17,7 +17,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { ListItemSkeleton } from '@/components/loading-skeleton';
 import { format } from 'date-fns';
-import { Briefcase, LogOut, Building2 } from 'lucide-react';
+import { Briefcase, LogOut, Building2, UserCog } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -62,6 +62,21 @@ function MyJobsContent() {
 
   return (
     <div className="space-y-5 sm:space-y-8">
+      <div className="rounded-lg border border-emerald-200 bg-emerald-50/80 p-4 text-sm text-emerald-800">
+        <div className="flex items-start gap-3">
+          <UserCog className="mt-0.5 size-5 shrink-0 text-emerald-600" />
+          <div>
+            <p className="font-semibold">Welcome to the team!</p>
+            <p className="mt-1 text-emerald-700">
+              You can set a password and edit your name in{' '}
+              <Link href="/profile" className="font-medium underline hover:text-emerald-900">
+                Profile
+              </Link>
+              . You can also sign in with Google anytime.
+            </p>
+          </div>
+        </div>
+      </div>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-zinc-900">My Jobs</h1>

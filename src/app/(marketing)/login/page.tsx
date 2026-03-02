@@ -60,19 +60,21 @@ function LoginForm() {
     setGoogleLoading(true);
     try {
       const supabase = createSupabaseBrowserClient();
+      const nextParam = next && next.startsWith('/') ? next : '/dashboard';
       const { error: err } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
+          redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextParam)}`,
         },
       });
       if (err) throw err;
-      // Redirect happens automatically
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not sign in with Google');
       setGoogleLoading(false);
     }
   }
+
+  const isInviteFlow = next?.includes('accept-invite') ?? false;
 
   return (
     <div className="flex min-h-[calc(100vh-8rem)] flex-1 items-center justify-center px-4 py-12 sm:py-16">
@@ -82,10 +84,10 @@ function LoginForm() {
             <Logo href="/" size="lg" />
           </div>
           <h1 className="mt-6 text-2xl font-bold tracking-tight text-zinc-900">
-            Welcome back
+            {isInviteFlow ? 'Join the team' : 'Welcome back'}
           </h1>
           <p className="mt-2 text-sm text-zinc-600">
-            Sign in to your account to continue
+            {isInviteFlow ? 'Use your Google account to accept the invite' : 'Sign in to your account to continue'}
           </p>
         </div>
 
@@ -99,6 +101,11 @@ function LoginForm() {
             {sessionExpired && (
               <div className="mb-5 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
                 Sign-in expired or failed. Please try again.
+              </div>
+            )}
+            {error && (
+              <div className="mb-5 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+                {error}
               </div>
             )}
             <Button
@@ -128,6 +135,8 @@ function LoginForm() {
               </svg>
               {googleLoading ? 'Redirecting…' : 'Continue with Google'}
             </Button>
+            {!isInviteFlow && (
+            <>
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t border-zinc-200" />
@@ -189,6 +198,8 @@ function LoginForm() {
                 Create one
               </Link>
             </p>
+            </>
+            )}
           </CardContent>
         </Card>
 

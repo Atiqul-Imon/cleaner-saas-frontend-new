@@ -110,13 +110,23 @@ export async function middleware(request: NextRequest) {
     
     // Handle redirects based on cached or fetched role
     if (isAuthRoute) {
-      const redirectPath = userRole === 'ADMIN' ? '/admin' : '/dashboard';
+      const redirectPath =
+        userRole === 'ADMIN'
+          ? '/admin'
+          : userRole === 'CLEANER'
+            ? '/my-jobs'
+            : '/dashboard';
       return NextResponse.redirect(new URL(redirectPath, request.url));
     }
     
     // Redirect admins trying to access /dashboard to /admin
     if (userRole === 'ADMIN' && request.nextUrl.pathname.startsWith('/dashboard')) {
       return NextResponse.redirect(new URL('/admin', request.url));
+    }
+
+    // Redirect cleaners from /onboarding to /my-jobs (cleaners don't need business setup)
+    if (userRole === 'CLEANER' && request.nextUrl.pathname === '/onboarding') {
+      return NextResponse.redirect(new URL('/my-jobs', request.url));
     }
   }
 

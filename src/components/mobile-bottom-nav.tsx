@@ -24,6 +24,7 @@ const ownerNavItems = [
 const cleanerNavItems = [
   { href: '/dashboard', label: 'Home', icon: LayoutDashboard },
   { href: '/my-jobs', label: 'My Jobs', icon: ClipboardList },
+  { href: '/profile', label: 'Profile', icon: UserCog },
 ];
 
 export function MobileBottomNav() {

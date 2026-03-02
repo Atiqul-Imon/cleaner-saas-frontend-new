@@ -159,12 +159,15 @@ function AcceptInviteContent() {
         </div>
         <Card className="border-zinc-200 shadow-lg shadow-zinc-200/50">
           <CardHeader>
-            <CardTitle>Sign up or sign in</CardTitle>
+            <CardTitle>Continue with Google</CardTitle>
             <CardDescription>
-              Use the same email as the invite ({invite?.email ?? '…'}) to join
+              Use the Google account that matches the invite email to join the team
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
+            <p className="text-sm text-zinc-600">
+              Use the Google account <strong>{invite?.email ?? '…'}</strong> that your manager added.
+            </p>
             <Button
               type="button"
               variant="outline"
@@ -179,17 +182,6 @@ function AcceptInviteContent() {
               </svg>
               Continue with Google
             </Button>
-            <Button asChild variant="outline" className="h-11 w-full">
-              <Link href={`/register?next=${encodeURIComponent(`/login?registered=1&next=${encodeURIComponent(`/accept-invite?token=${token}`)}`)}`}>
-                Sign up with email
-              </Link>
-            </Button>
-            <p className="text-center text-sm text-zinc-500">
-              Already have an account?{' '}
-              <Link href={`/login?next=${encodeURIComponent(`/accept-invite?token=${token}`)}`} className="font-medium text-emerald-600 hover:text-emerald-700">
-                Sign in
-              </Link>
-            </p>
           </CardContent>
         </Card>
       </div>

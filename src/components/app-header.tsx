@@ -35,6 +35,7 @@ const ownerNavItems = [
 const cleanerNavItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/my-jobs', label: 'My Jobs', icon: ClipboardList },
+  { href: '/profile', label: 'Profile', icon: UserCog },
 ];
 
 export function AppHeader() {
