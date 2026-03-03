@@ -11,7 +11,7 @@ import type { Invoice } from '@/types/api';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { format } from 'date-fns';
+import { formatDate } from '@/lib/date-format';
 import { MessageCircle } from 'lucide-react';
 import { InlineMessage } from '@/components/ui/inline-message';
 import { VirtualGrid } from '@/components/ui/virtual-grid';
@@ -109,7 +109,7 @@ function InvoicesContentInner() {
                     <div>
                       <p className="font-medium text-zinc-900">#{inv.invoiceNumber}</p>
                       <p className="mt-0.5 text-sm leading-relaxed text-zinc-600">
-                        {inv.client?.name} · {format(new Date(inv.dueDate), 'MMM d')}
+                        {inv.client?.name} · {formatDate(inv.dueDate, 'short')}
                       </p>
                     </div>
                     <div className="mt-3 flex items-center justify-between gap-2">

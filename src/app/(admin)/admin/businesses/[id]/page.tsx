@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader2, ArrowLeft, Users, Calendar, FileText, UserCog, Briefcase, Edit, Trash2, AlertTriangle } from 'lucide-react';
+import { formatDate } from '@/lib/date-format';
 import { alertDialog } from '@/components/alert-dialog-provider';
 
 interface BusinessDetails {
@@ -370,21 +371,13 @@ export default function BusinessDetailsPage({ params }: { params: Promise<{ id: 
                 <div>
                   <label className="text-sm font-medium text-zinc-600">Created</label>
                   <p className="mt-1 text-zinc-900">
-                    {new Date(business.createdAt).toLocaleDateString('en-GB', {
-                      day: 'numeric',
-                      month: 'long',
-                      year: 'numeric',
-                    })}
+                    {formatDate(business.createdAt, 'short')}
                   </p>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-zinc-600">Last Updated</label>
                   <p className="mt-1 text-zinc-900">
-                    {new Date(business.updatedAt).toLocaleDateString('en-GB', {
-                      day: 'numeric',
-                      month: 'long',
-                      year: 'numeric',
-                    })}
+                    {formatDate(business.updatedAt, 'short')}
                   </p>
                 </div>
               </div>
@@ -415,7 +408,7 @@ export default function BusinessDetailsPage({ params }: { params: Promise<{ id: 
                         <p className="text-sm text-zinc-600">{cleaner.cleaner.phone}</p>
                       )}
                       <p className="text-xs text-zinc-500">
-                        Added {new Date(cleaner.createdAt).toLocaleDateString('en-GB')}
+                        Added {formatDate(cleaner.createdAt, 'short')}
                       </p>
                     </div>
                     <span
@@ -450,7 +443,7 @@ export default function BusinessDetailsPage({ params }: { params: Promise<{ id: 
                     <div>
                       <p className="font-medium text-zinc-900">{job.client.name}</p>
                       <p className="text-sm text-zinc-600">
-                        {new Date(job.scheduledDate).toLocaleDateString('en-GB')}
+                        {formatDate(job.scheduledDate, 'short')}
                       </p>
                     </div>
                     <span
@@ -487,7 +480,7 @@ export default function BusinessDetailsPage({ params }: { params: Promise<{ id: 
                     <div>
                       <p className="font-medium text-zinc-900">#{invoice.invoiceNumber}</p>
                       <p className="text-sm text-zinc-600">
-                        {new Date(invoice.createdAt).toLocaleDateString('en-GB')}
+                        {formatDate(invoice.createdAt, 'short')}
                       </p>
                     </div>
                     <div className="text-right">
@@ -623,22 +616,14 @@ export default function BusinessDetailsPage({ params }: { params: Promise<{ id: 
                 <div>
                   <label className="text-sm font-medium text-zinc-600">Current Period Ends</label>
                   <p className="mt-1 text-zinc-900">
-                    {new Date(business.subscription.currentPeriodEnd).toLocaleDateString('en-GB', {
-                      day: 'numeric',
-                      month: 'long',
-                      year: 'numeric',
-                    })}
+                    {formatDate(business.subscription.currentPeriodEnd, 'short')}
                   </p>
                 </div>
                 {business.subscription.trialEndsAt && (
                   <div>
                     <label className="text-sm font-medium text-zinc-600">Trial Ends</label>
                     <p className="mt-1 text-zinc-900">
-                      {new Date(business.subscription.trialEndsAt).toLocaleDateString('en-GB', {
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric',
-                      })}
+                      {formatDate(business.subscription.trialEndsAt, 'short')}
                     </p>
                   </div>
                 )}
@@ -684,7 +669,7 @@ export default function BusinessDetailsPage({ params }: { params: Promise<{ id: 
               <div>
                 <label className="text-sm font-medium text-zinc-600">Account Created</label>
                 <p className="mt-1 text-zinc-900">
-                  {new Date(business.user.createdAt).toLocaleDateString('en-GB')}
+                  {formatDate(business.user.createdAt, 'short')}
                 </p>
               </div>
               {business.invoiceTemplate && (

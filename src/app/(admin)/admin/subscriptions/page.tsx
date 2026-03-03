@@ -25,6 +25,7 @@ import {
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { formatDate } from '@/lib/date-format';
 const PLAN_LABELS: Record<string, string> = {
   SOLO: 'Solo (FREE - 1 staff, 20 jobs/mo)',
   TEAM: 'Team (£14.99/mo, 20 staff)',
@@ -281,7 +282,7 @@ export default function AdminSubscriptionsPage() {
                     <p className="text-xs text-zinc-500">
                       Ends{' '}
                       {business.subscription &&
-                        new Date(business.subscription.currentPeriodEnd).toLocaleDateString('en-GB')}
+                        formatDate(business.subscription.currentPeriodEnd, 'short')}
                     </p>
                   </div>
                   <span

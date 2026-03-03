@@ -8,6 +8,7 @@ import { useUser } from '@/hooks/use-user';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Search, Building2, Mail, Phone, MapPin, Loader2, ChevronRight } from 'lucide-react';
+import { formatDate } from '@/lib/date-format';
 
 interface Business {
   id: string;
@@ -170,11 +171,7 @@ export default function AdminBusinessesPage() {
                 <div className="flex shrink-0 flex-col items-end gap-2">
                   <span className="text-xs text-zinc-500">
                     Joined{' '}
-                    {new Date(business.createdAt).toLocaleDateString('en-GB', {
-                      day: 'numeric',
-                      month: 'short',
-                      year: 'numeric',
-                    })}
+                    {formatDate(business.createdAt, 'short')}
                   </span>
                   <ChevronRight className="h-5 w-5 text-zinc-400" />
                 </div>

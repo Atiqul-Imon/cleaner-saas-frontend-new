@@ -7,6 +7,7 @@ import { useUser } from '@/hooks/use-user';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Search, Users, Building2, Briefcase, Loader2 } from 'lucide-react';
+import { formatDate } from '@/lib/date-format';
 
 interface User {
   id: string;
@@ -173,11 +174,7 @@ export default function AdminUsersPage() {
                 <div className="flex shrink-0 flex-col items-end gap-2">
                   <span className="text-xs text-zinc-500">
                     Joined{' '}
-                    {new Date(user.createdAt).toLocaleDateString('en-GB', {
-                      day: 'numeric',
-                      month: 'short',
-                      year: 'numeric',
-                    })}
+                    {formatDate(user.createdAt, 'short')}
                   </span>
                   <span className="font-mono text-xs text-zinc-400">{user.id.slice(0, 8)}...</span>
                 </div>

@@ -6,6 +6,7 @@ import { useUser } from '@/hooks/use-user';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Loader2, TrendingUp, CheckCircle } from 'lucide-react';
+import { formatDate } from '@/lib/date-format';
 
 interface UpgradeRequest {
   id: string;
@@ -186,7 +187,7 @@ export default function UpgradeRequestsPage() {
                       )}
                     </td>
                     <td className="py-3 text-zinc-600">
-                      {new Date(request.createdAt).toLocaleDateString('en-GB')}
+                      {formatDate(request.createdAt, 'short')}
                     </td>
                   </tr>
                 ))}

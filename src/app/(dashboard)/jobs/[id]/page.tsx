@@ -32,10 +32,23 @@ import { JobChecklist } from '@/components/job-checklist';
 import { JobPhotoUpload } from '@/components/job-photo-upload';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { format } from 'date-fns';
+import { formatDate } from '@/lib/date-format';
 import { cn } from '@/lib/utils';
 import { InlineMessage } from '@/components/ui/inline-message';
 import { shareJobPhotosViaWhatsApp } from '@/lib/whatsapp-share';
+
+const DUE_DATE_LABELS: Record<number, string> = {
+  0: 'Same day',
+  1: '1 day',
+  3: '3 days',
+  7: '7 days',
+  15: '15 days',
+  30: '1 month',
+};
+
+function getDefaultDueDateLabel(days: number): string {
+  return DUE_DATE_LABELS[days] ?? `${days} days`;
+}
 
 export default function JobDetailPage() {
   const params = useParams();
@@ -50,6 +63,12 @@ export default function JobDetailPage() {
 
   const isCleaner = user?.role === 'CLEANER';
   const isOwner = user?.role === 'OWNER' || user?.role === 'ADMIN';
+
+  const { data: business } = useQuery({
+    queryKey: ['business', 'settings'],
+    queryFn: () => api.get<{ invoiceDueDateDays?: number | null }>('/business'),
+    enabled: isOwner && !!job?.status && job.status === 'COMPLETED',
+  });
   const isAssignedToMe = isCleaner && job?.cleanerId === user?.id;
   // Owner can update status and upload photos when: no cleaner assigned, or assigned to themselves
   const isOwnerDoingItThemselves = isOwner && (!job?.cleanerId || job?.cleanerId === user?.id);
@@ -57,6 +76,7 @@ export default function JobDetailPage() {
   const canUploadPhotos = isAssignedToMe || isOwnerDoingItThemselves;
   const [sendingPhotos, setSendingPhotos] = useState<string | null>(null);
   const [invoiceAmount, setInvoiceAmount] = useState('');
+  const [customDueDate, setCustomDueDate] = useState(''); // yyyy-MM-dd, empty = use default
   const [creatingInvoice, setCreatingInvoice] = useState(false);
   const [actionMessage, setActionMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
@@ -116,7 +136,9 @@ export default function JobDetailPage() {
     setActionMessage(null);
     setCreatingInvoice(true);
     try {
-      const invoice = await api.post<{ id: string }>(`/invoices/from-job/${id}`, { amount });
+      const body: { amount: number; dueDate?: string } = { amount };
+      if (customDueDate) body.dueDate = customDueDate;
+      const invoice = await api.post<{ id: string }>(`/invoices/from-job/${id}`, body);
       setActionMessage({ type: 'success', text: 'Invoice created.' });
       queryClient.invalidateQueries({ queryKey: ['job', id] });
       queryClient.invalidateQueries({ queryKey: ['invoices'] });
@@ -172,7 +194,7 @@ export default function JobDetailPage() {
             {client?.name ?? 'Unknown client'}
           </h1>
           <p className="text-zinc-600">
-            {format(new Date(job.scheduledDate), 'EEEE, MMMM d, yyyy')}
+            {formatDate(job.scheduledDate, 'fullDay')}
             {job.scheduledTime && ` at ${job.scheduledTime}`}
           </p>
         </div>
@@ -497,6 +519,31 @@ export default function JobDetailPage() {
                         disabled={creatingInvoice}
                         className="w-full"
                       />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="invoice-due-date">Due date (optional)</Label>
+                      <p className="text-xs text-zinc-500">
+                        {customDueDate
+                          ? `Custom: ${formatDate(customDueDate, 'short')}`
+                          : `Default: ${getDefaultDueDateLabel(business?.invoiceDueDateDays ?? 30)}`}
+                      </p>
+                      <Input
+                        id="invoice-due-date"
+                        type="date"
+                        value={customDueDate}
+                        onChange={(e) => setCustomDueDate(e.target.value)}
+                        disabled={creatingInvoice}
+                        className="w-full"
+                      />
+                      {customDueDate && (
+                        <button
+                          type="button"
+                          onClick={() => setCustomDueDate('')}
+                          className="text-xs text-zinc-600 hover:text-zinc-900 underline"
+                        >
+                          Use default instead
+                        </button>
+                      )}
                     </div>
                     <Button
                       type="submit"

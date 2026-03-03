@@ -82,6 +82,7 @@ export interface Invoice {
   dueDate: string;
   client?: { id: string; name: string; phone?: string | null };
   business?: { name?: string };
+  job?: { id: string };
   createdAt: string;
 }
 

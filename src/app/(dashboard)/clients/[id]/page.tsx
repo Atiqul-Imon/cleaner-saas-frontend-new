@@ -24,7 +24,7 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { format } from 'date-fns';
+import { formatDate } from '@/lib/date-format';
 
 function ClientDetailContent() {
   const params = useParams();
@@ -191,7 +191,7 @@ function ClientDetailContent() {
                     <Calendar className="size-4 text-zinc-400" />
                     <div>
                       <p className="font-medium">
-                        {format(new Date(job.scheduledDate), 'EEE, MMM d, yyyy')}
+                        {formatDate(job.scheduledDate, 'withDay')}
                       </p>
                       <p className="text-sm text-zinc-500">{job.type}</p>
                     </div>

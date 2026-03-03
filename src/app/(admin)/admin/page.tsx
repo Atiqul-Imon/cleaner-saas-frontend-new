@@ -8,6 +8,7 @@ import { useUser } from '@/hooks/use-user';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Building2, Users, CreditCard, PoundSterling, Loader2 } from 'lucide-react';
+import { formatDate } from '@/lib/date-format';
 
 interface AdminStats {
   totalBusinesses: number;
@@ -199,11 +200,7 @@ export default function AdminDashboardPage() {
                   </div>
                 </div>
                 <span className="text-xs text-zinc-500">
-                  {new Date(business.createdAt).toLocaleDateString('en-GB', {
-                    day: 'numeric',
-                    month: 'short',
-                    year: 'numeric',
-                  })}
+                  {formatDate(business.createdAt, 'short')}
                 </span>
               </div>
             ))}

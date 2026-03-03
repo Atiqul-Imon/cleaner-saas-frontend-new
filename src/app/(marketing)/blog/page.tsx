@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Calendar, ArrowRight, Sparkles } from 'lucide-react';
 import { Metadata } from 'next';
+import { formatDate } from '@/lib/date-format';
 
 export const metadata: Metadata = {
   title: 'Blog - Cleaning Business Tips & Guides | Clenvora',
@@ -87,11 +88,7 @@ export default function BlogPage() {
                   <div className="mb-4 flex items-center gap-4 text-xs text-zinc-500">
                     <div className="flex items-center gap-1">
                       <Calendar className="h-3.5 w-3.5" />
-                      {new Date(article.date).toLocaleDateString('en-GB', {
-                        day: 'numeric',
-                        month: 'short',
-                        year: 'numeric',
-                      })}
+                      {formatDate(article.date, 'short')}
                     </div>
                     <span>•</span>
                     <span>{article.readTime}</span>

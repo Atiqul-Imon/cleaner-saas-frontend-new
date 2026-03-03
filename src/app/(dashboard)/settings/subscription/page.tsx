@@ -9,6 +9,7 @@ import { RequireOwner } from '@/components/require-owner';
 import { CheckCircle2, ArrowLeft, Sparkles, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
 import { alertDialog } from '@/components/alert-dialog-provider';
+import { formatDate } from '@/lib/date-format';
 
 interface Subscription {
   id: string;
@@ -373,11 +374,7 @@ function SubscriptionContent() {
                   <p className="font-medium text-blue-900">Free trial active</p>
                   <p className="mt-1 text-sm text-blue-700">
                     Your trial ends on{' '}
-                    {new Date(subscription.trialEndsAt).toLocaleDateString('en-GB', {
-                      day: 'numeric',
-                      month: 'long',
-                      year: 'numeric',
-                    })}
+                    {formatDate(subscription.trialEndsAt, 'short')}
                   </p>
                 </div>
               </div>
@@ -388,11 +385,7 @@ function SubscriptionContent() {
           {subscription?.currentPeriodEnd && (
             <p className="text-sm text-zinc-600">
               Current period ends:{' '}
-              {new Date(subscription.currentPeriodEnd).toLocaleDateString('en-GB', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric',
-              })}
+              {formatDate(subscription.currentPeriodEnd, 'short')}
             </p>
           )}
         </CardContent>
@@ -578,7 +571,7 @@ function SubscriptionContent() {
               </p>
               <ul className="mt-2 space-y-1 text-sm text-zinc-600">
                 <li>• Stop future billing</li>
-                <li>• Keep access until end of current period ({subscription.currentPeriodEnd ? new Date(subscription.currentPeriodEnd).toLocaleDateString('en-GB') : 'N/A'})</li>
+                <li>• Keep access until end of current period ({subscription.currentPeriodEnd ? formatDate(subscription.currentPeriodEnd, 'short') : 'N/A'})</li>
                 <li>• Downgrade to SOLO plan after current period ends</li>
                 <li>• Limit you to 1 staff and 20 jobs/month</li>
               </ul>
@@ -603,11 +596,7 @@ function SubscriptionContent() {
           <CardContent>
             <p className="text-sm text-amber-700">
               Your subscription has been cancelled. You will retain access to your current plan until{' '}
-              {subscription.currentPeriodEnd && new Date(subscription.currentPeriodEnd).toLocaleDateString('en-GB', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric',
-              })}. After that, you'll be downgraded to the SOLO (FREE) plan.
+              {subscription.currentPeriodEnd && formatDate(subscription.currentPeriodEnd, 'short')}. After that, you'll be downgraded to the SOLO (FREE) plan.
             </p>
           </CardContent>
         </Card>

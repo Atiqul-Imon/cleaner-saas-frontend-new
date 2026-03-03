@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { DashboardSkeleton } from '@/components/loading-skeleton';
-import { format } from 'date-fns';
+import { formatDate } from '@/lib/date-format';
 import { cn } from '@/lib/utils';
 
 const quickActions = [
@@ -64,7 +64,7 @@ export default function DashboardPage() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl">Dashboard</h1>
           <p className="mt-2 text-lg leading-relaxed text-zinc-600">
-            {format(new Date(), 'EEEE, MMMM d, yyyy')}
+            {formatDate(new Date(), 'fullDay')}
           </p>
         </div>
         {isOwner && (

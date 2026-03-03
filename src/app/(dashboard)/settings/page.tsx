@@ -22,6 +22,8 @@ import { RequireOwner } from '@/components/require-owner';
 
 type InvoiceTemplate = 'classic' | 'modern' | 'minimal' | 'professional' | 'elegant' | 'bold';
 
+type InvoiceDueDatePreset = 0 | 1 | 3 | 7 | 15 | 30;
+
 interface BusinessSettings {
   id: string;
   name: string;
@@ -30,7 +32,17 @@ interface BusinessSettings {
   vatEnabled: boolean;
   vatNumber?: string | null;
   invoiceTemplate?: string | null;
+  invoiceDueDateDays?: number | null;
 }
+
+const DUE_DATE_OPTIONS: { value: InvoiceDueDatePreset; label: string }[] = [
+  { value: 0, label: 'Same day' },
+  { value: 1, label: '1 day' },
+  { value: 3, label: '3 days' },
+  { value: 7, label: '7 days' },
+  { value: 15, label: '15 days' },
+  { value: 30, label: '1 month' },
+];
 
 const INVOICE_TEMPLATES: {
   id: InvoiceTemplate;
@@ -189,6 +201,7 @@ function SettingsContent() {
   const [vatEnabled, setVatEnabled] = useState(false);
   const [vatNumber, setVatNumber] = useState('');
   const [invoiceTemplate, setInvoiceTemplate] = useState<InvoiceTemplate>('classic');
+  const [invoiceDueDateDays, setInvoiceDueDateDays] = useState<InvoiceDueDatePreset>(30);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
@@ -207,6 +220,12 @@ function SettingsContent() {
       setVatNumber(business.vatNumber ?? '');
       setInvoiceTemplate(
         (business.invoiceTemplate as InvoiceTemplate) || 'classic'
+      );
+      const dueDays = business.invoiceDueDateDays;
+      setInvoiceDueDateDays(
+        dueDays !== undefined && dueDays !== null && [0, 1, 3, 7, 15, 30].includes(dueDays)
+          ? (dueDays as InvoiceDueDatePreset)
+          : 30
       );
     }
   }, [business]);
@@ -238,6 +257,7 @@ function SettingsContent() {
         vatEnabled,
         vatNumber: vatEnabled ? vatNumber || undefined : undefined,
         invoiceTemplate,
+        invoiceDueDateDays,
       });
       await queryClient.invalidateQueries({ queryKey: ['business'] });
       setMessage({ type: 'success', text: 'Settings saved.' });
@@ -346,6 +366,34 @@ function SettingsContent() {
                 />
               </div>
             )}
+          </CardContent>
+        </Card>
+
+        <Card className="mt-6">
+          <CardHeader>
+            <CardTitle className="text-lg">Default invoice due date</CardTitle>
+            <CardDescription>How many days after creating an invoice is payment due</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-2">
+              {DUE_DATE_OPTIONS.map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => setInvoiceDueDateDays(opt.value)}
+                  className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                    invoiceDueDateDays === opt.value
+                      ? 'bg-emerald-600 text-white'
+                      : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200'
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+            <p className="mt-2 text-xs text-zinc-500">
+              You can override this when creating individual invoices.
+            </p>
           </CardContent>
         </Card>
 

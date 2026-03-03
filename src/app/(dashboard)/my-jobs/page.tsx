@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ListItemSkeleton } from '@/components/loading-skeleton';
-import { format } from 'date-fns';
+import { formatDate } from '@/lib/date-format';
 import { Briefcase, LogOut, Building2, UserCog } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -128,7 +128,7 @@ function MyJobsContent() {
                   <div>
                     <p className="font-medium text-zinc-900">{job.client?.name ?? 'Unknown'}</p>
                     <p className="mt-0.5 text-sm leading-relaxed text-zinc-600">
-                      {format(new Date(job.scheduledDate), 'EEEE, MMM d')}
+                      {formatDate(job.scheduledDate, 'fullDay')}
                       {job.scheduledTime && ` at ${job.scheduledTime}`}
                     </p>
                     <p className="mt-0.5 text-xs text-zinc-600">{job.type}</p>

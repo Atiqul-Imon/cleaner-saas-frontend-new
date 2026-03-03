@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { ArrowLeft, Briefcase } from 'lucide-react';
-import { format } from 'date-fns';
+import { formatDate } from '@/lib/date-format';
 
 function getStaffDisplayName(name?: string | null, email?: string): string {
   if (name?.trim()) return name.trim();
@@ -142,7 +142,7 @@ function WorkerDetailContent() {
                     <div>
                       <p className="font-medium text-zinc-900">{job.client?.name ?? 'Unknown'}</p>
                       <p className="text-sm text-zinc-500">
-                        {format(new Date(job.scheduledDate), 'MMM d, yyyy')} · {job.status}
+                        {formatDate(job.scheduledDate, 'short')} · {job.status}
                       </p>
                     </div>
                   </div>

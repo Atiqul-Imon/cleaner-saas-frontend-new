@@ -14,7 +14,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { VirtualGrid } from '@/components/ui/virtual-grid';
 import { JobsListSkeleton } from '@/components/ui/skeleton-loaders';
-import { format } from 'date-fns';
+import { formatDate } from '@/lib/date-format';
 import { cn } from '@/lib/utils';
 
 const STATUS_FILTERS = [
@@ -130,7 +130,7 @@ function JobsContent() {
                     <div>
                       <p className="font-medium text-zinc-900">{job.client?.name ?? 'Unknown'}</p>
                       <p className="mt-0.5 text-sm leading-relaxed text-zinc-600">
-                        {format(new Date(job.scheduledDate), 'MMM d, yyyy')}
+                        {formatDate(job.scheduledDate, 'short')}
                         {job.scheduledTime && ` · ${job.scheduledTime}`}
                       </p>
                       <p className="mt-0.5 text-xs text-zinc-600">{job.type}</p>
