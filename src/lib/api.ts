@@ -69,7 +69,8 @@ async function handleResponse<T>(res: Response, options?: { silent?: boolean }):
         path.startsWith('/login') ||
         path.startsWith('/register') ||
         path.startsWith('/forgot-password') ||
-        path.startsWith('/reset-password');
+        path.startsWith('/reset-password') ||
+        path.startsWith('/accept-invite');
       // Only redirect to login from protected routes where auth is required
       if (!isPublicRoute) {
         window.location.href = '/login?session=expired';

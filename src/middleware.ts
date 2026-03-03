@@ -11,6 +11,7 @@ export async function middleware(request: NextRequest) {
     const isAuthRoute =
       request.nextUrl.pathname.startsWith('/login') ||
       request.nextUrl.pathname.startsWith('/register') ||
+      request.nextUrl.pathname.startsWith('/accept-invite') ||
       request.nextUrl.pathname === '/';
     
     const isPublicContent =
