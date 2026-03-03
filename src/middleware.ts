@@ -75,8 +75,9 @@ export async function middleware(request: NextRequest) {
   if (user) {
     let userRole: string | null = request.cookies.get('user_role')?.value || null;
     
-    // Fetch role if not cached or for auth routes (to ensure fresh data on login)
-    if (!userRole || isAuthRoute) {
+    // Fetch role if not cached, for auth routes, or when on /onboarding as OWNER (need hasBusiness to redirect)
+    const needFreshAuthData = !userRole || isAuthRoute || (request.nextUrl.pathname === '/onboarding');
+    if (needFreshAuthData) {
       try {
         const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
         const { data: { session } } = await supabase.auth.getSession();
@@ -91,6 +92,12 @@ export async function middleware(request: NextRequest) {
           if (userResponse.ok) {
             const userData = await userResponse.json();
             userRole = userData.role;
+            const hasBusiness = userData.hasBusiness === true;
+            
+            // Redirect OWNER with business away from /onboarding to /dashboard
+            if (userRole === 'OWNER' && hasBusiness && request.nextUrl.pathname === '/onboarding') {
+              return NextResponse.redirect(new URL('/dashboard', request.url));
+            }
             
             // Cache role in cookie (1 hour expiry) - only if not null
             if (userRole) {
